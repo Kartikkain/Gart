@@ -27,9 +27,15 @@
     <ClInclude Include="src\BSS\EntryPoint.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\BSS\Log.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BSS\Application.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BSS\Log.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

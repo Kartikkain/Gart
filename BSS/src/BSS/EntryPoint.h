@@ -5,6 +5,9 @@ extern BSS::Application* BSS::CreateApplication();
 
 int main(int argc, char** argv)
 {
+	BSS::Log::init();
+	BSS_CORE_WARN("Initialize Log");
+	BSS_CLIENT_INFO("Hello");
 	auto app = BSS::CreateApplication();
 	app->Run();
 	delete app;
