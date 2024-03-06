@@ -46,7 +46,7 @@ project "BSS"
 		}
 
 	filter "configurations:Debug"
-		defines "BSS_DEBUG"
+		defines {"BSS_PLATFORM_WINDOW","BSS_BUILD_DLL","BSS_DEBUG"}
 		symbols "on"
 
 	filter "configurations:Release"
@@ -96,7 +96,7 @@ project "Sandbox"
 
 		
 	filter "configurations:Debug"
-		defines "BSS_DEBUG"
+		defines {"BSS_PLATFORM_WINDOW","BSS_DEBUG"}
 		symbols "on"
 
 	filter "configurations:Release"
