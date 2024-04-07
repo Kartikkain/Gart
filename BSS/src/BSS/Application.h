@@ -2,6 +2,8 @@
 
 #include "Core.h"
 
+#include "Events/Event.h"
+
 namespace BSS
 {
 	class BSS_API Application

@@ -10,6 +10,7 @@ int main(int argc, char** argv)
 	BSS_CLIENT_INFO("Hello");
 	auto app = BSS::CreateApplication();
 	app->Run();
+	BSS_CLIENT_INFO("Hello");
 	delete app;
 }
 #endif // BSS_PLATFORM_WINDOW

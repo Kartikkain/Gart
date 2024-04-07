@@ -9,3 +9,4 @@
 #else 
 	#error BSS Only Works On Windows!
 #endif // BSS_PLATFORM_WINDOW
+#define BIT(x) (1 << x)

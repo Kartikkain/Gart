@@ -26,6 +26,7 @@ project "BSS"
 
 	includedirs
 	{
+		"%{prj.name}/src",
 		"%{prj.name}/vendor/spdlog/include"
 	}
 
@@ -42,7 +43,7 @@ project "BSS"
 
 		postbuildcommands
 		{
-			("{COPY} %{cfg.buildtarget.relpath} ../bin/" ..OutputDir.. "/Sandbox")
+			("{COPY} %{cfg.buildtarget.relpath} \"../bin/" .. OutputDir .. "/Sandbox/\"")
 		}
 
 	filter "configurations:Debug"
