@@ -1,8 +1,6 @@
 #pragma once
 #include "BSS/Core.h"
 
-#include<functional>
-#include<string>
 
 namespace BSS
 {

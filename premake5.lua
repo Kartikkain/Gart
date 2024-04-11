@@ -18,6 +18,9 @@ project "BSS"
 	targetdir("bin/".. OutputDir .."/%{prj.name}")
 	objdir("bin-int/".. OutputDir .."/%{prj.name}")
 
+	pchheader "bsspch.h"
+	pchsource "BSS/src/bsspch.cpp"
+
 	files
 	{
 		"%{prj.name}/src/**.h",
