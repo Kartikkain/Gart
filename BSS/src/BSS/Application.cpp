@@ -6,7 +6,7 @@ namespace BSS
 {
 	Application::Application()
 	{
-
+		m_Window = std::unique_ptr<Window>(Window::Create());
 	}
 
 	Application::~Application()
@@ -16,11 +16,10 @@ namespace BSS
 
 	void Application::Run()
 	{
-		WindowResizeEvent e(1920, 1080);
-		BSS_CORE_INFO(e);
-		while (true)
+		
+		while (m_Running)
 		{
-
+			m_Window->OnUpdate();
 		}
 	}
 }
