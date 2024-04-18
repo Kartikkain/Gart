@@ -42,6 +42,8 @@ namespace BSS
 			ss << "MouseScrollEvent: " << m_OffsetX << "," << m_OffsetY;
 			return ss.str();
 		}
+		EVENT_CLASS_CATEGORY(EventCategoryInput | EventCategoryMouse)
+		EVENT_CLASS_TYPE(MouseScrolled)
 	private:
 		float m_OffsetX, m_OffsetY;
 	};
@@ -77,6 +79,7 @@ namespace BSS
 
 	class BSS_API MouseButtonReleasedEvent :public MouseButtonEvent
 	{
+	public:
 		MouseButtonReleasedEvent(int button)
 			:MouseButtonEvent(button) {}
 
