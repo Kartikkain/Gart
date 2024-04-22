@@ -64,14 +64,17 @@ project "BSS"
 
 	filter "configurations:Debug"
 		defines {"BSS_PLATFORM_WINDOW","BSS_BUILD_DLL","BSS_DEBUG"}
+		buildoptions "/MDd"
 		symbols "on"
 
 	filter "configurations:Release"
 		defines "BSS_RELEASE"
+		buildoptions "/MD"
 		optimize "on"
 
 	filter "configurations:Dist"
 		defines "BSS_DIST"
+		buildoptions "/MD"
 		optimize "on"
 
 
@@ -114,12 +117,15 @@ project "Sandbox"
 		
 	filter "configurations:Debug"
 		defines {"BSS_PLATFORM_WINDOW","BSS_DEBUG"}
+		buildoptions "/MDd"
 		symbols "on"
 
 	filter "configurations:Release"
 		defines "BSS_RELEASE"
+		buildoptions "/MD"
 		optimize "on"
 
 	filter "configurations:Dist"
 		defines "BSS_DIST"
+		buildoptions "/MD"
 		optimize "on"

@@ -25,6 +25,12 @@
     <ClInclude Include="src\BSS\EntryPoint.h">
       <Filter>BSS</Filter>
     </ClInclude>
+    <ClInclude Include="src\BSS\Layer.h">
+      <Filter>BSS</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BSS\LayerStack.h">
+      <Filter>BSS</Filter>
+    </ClInclude>
     <ClInclude Include="src\BSS\Log.h">
       <Filter>BSS</Filter>
     </ClInclude>
@@ -50,6 +56,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BSS\Application.cpp">
+      <Filter>BSS</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BSS\Layer.cpp">
+      <Filter>BSS</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BSS\LayerStack.cpp">
       <Filter>BSS</Filter>
     </ClCompile>
     <ClCompile Include="src\BSS\Log.cpp">

@@ -47,9 +47,6 @@ namespace BSS
 		{
 			return GetCategoryFlag() & category;
 		}
-
-	protected:
-
 		bool m_Handled = false;
 	};
 
