@@ -1,6 +1,7 @@
 #include"bsspch.h"
 #include "Application.h"
 #include "Log.h"
+#include <glad/glad.h>
 namespace BSS
 {
 #define BSS_EVENT_FN(x) std::bind(&Application::x,this,std::placeholders::_1)
@@ -9,6 +10,8 @@ namespace BSS
 	{
 		m_Window = std::unique_ptr<Window>(Window::Create());
 		m_Window->SetEventCallback(BSS_EVENT_FN(OnEvent));
+		unsigned int id;
+		glGenVertexArrays(1, &id);
 	}
 
 	Application::~Application()

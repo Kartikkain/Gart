@@ -58,7 +58,8 @@ project "BSS"
 		defines
 		{
 			"BSS_PLATFORM_WINDOW",
-			"BSS_BUILD_DLL"
+			"BSS_BUILD_DLL",
+			"GLFW_INCLUDE_NONE"
 		}
 
 		postbuildcommands

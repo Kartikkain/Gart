@@ -5,6 +5,7 @@
 #include "Events/MouseEvent.h"
 #include "Events/KeyEvent.h"
 #include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
 namespace BSS
 {
