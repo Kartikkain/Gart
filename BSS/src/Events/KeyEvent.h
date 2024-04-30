@@ -56,4 +56,22 @@ namespace BSS
 		EVENT_CLASS_TYPE(KeyPressed)
 
 	};
+
+	class BSS_API KeyTypedEvent :public KeyEvent
+	{
+	public:
+
+		KeyTypedEvent(int keycode)
+			:KeyEvent(keycode) {}
+
+		virtual std::string ToString() const override
+		{
+			std::stringstream ss;
+			ss << "KeyTypedEvent: " << m_KeyCode;
+			return ss.str();
+		}
+
+		EVENT_CLASS_TYPE(KeyTyped)
+
+	};
 }

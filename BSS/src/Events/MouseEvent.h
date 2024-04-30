@@ -7,7 +7,7 @@ namespace BSS
 	class BSS_API MouseMoveEvent :public Event
 	{
 	public :
-		MouseMoveEvent(float xPos, int yPos)
+		MouseMoveEvent(float xPos, float yPos)
 			:m_MouseX(xPos),m_MouseY(yPos){}
 
 		inline float GetX() const { return m_MouseX; }

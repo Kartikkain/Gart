@@ -10,3 +10,5 @@
 	#error BSS Only Works On Windows!
 #endif // BSS_PLATFORM_WINDOW
 #define BIT(x) (1 << x)
+
+#define BSS_EVENT_BIND_FN(fn) std::bind(&fn,this,std::placeholders::_1)
