@@ -67,6 +67,8 @@
     </ClInclude>
     <ClInclude Include="src\BSS\Input.h" />
     <ClInclude Include="src\Platform\Windows\WindowInput.h" />
+    <ClInclude Include="src\BSS\KeyCodes.h" />
+    <ClInclude Include="src\BSS\MouseButtonCodes.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BSS\Application.cpp">

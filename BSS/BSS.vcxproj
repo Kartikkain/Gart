@@ -146,9 +146,11 @@
     <ClInclude Include="src\BSS\Core.h" />
     <ClInclude Include="src\BSS\EntryPoint.h" />
     <ClInclude Include="src\BSS\Input.h" />
+    <ClInclude Include="src\BSS\KeyCodes.h" />
     <ClInclude Include="src\BSS\Layer.h" />
     <ClInclude Include="src\BSS\LayerStack.h" />
     <ClInclude Include="src\BSS\Log.h" />
+    <ClInclude Include="src\BSS\MouseButtonCodes.h" />
     <ClInclude Include="src\BSS\Window.h" />
     <ClInclude Include="src\Events\ApplicationEvent.h" />
     <ClInclude Include="src\Events\Event.h" />
