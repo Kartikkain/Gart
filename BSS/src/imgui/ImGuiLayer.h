@@ -11,20 +11,11 @@ namespace BSS {
 		ImGuiLayer();
 		~ImGuiLayer();
 
-		void OnAttach();
-		void OnDitach();
-		void OnUpdate();
-		void OnEvent(Event& event);
-
-	private:
-		bool OnMouseButtonPressedEvent(MouseButtonPressedEvent& e);
-		bool OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e);
-		bool OnMouseMovedEvent(MouseMoveEvent& e);
-		bool OnMouseScrollEvent(MouseScrollEvent& e);
-		bool OnKeyPressedEvent(KeyPressedEvent& e);
-		bool OnKeyReleasedEvent(KeyRelesedEvent& e);
-		bool OnKeyTypedEvent(KeyTypedEvent& e);
-		bool OnWindowResizeEvent(WindowResizeEvent& e);
+		virtual void OnAttach() override;
+		virtual void OnDitach() override;
+		virtual void OnImGuiRender() override;
+		void Begin();
+		void End();
 	private:
 		float m_Time;
 	};

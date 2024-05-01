@@ -6,7 +6,7 @@
 #include "Events/Event.h"
 #include "BSS/LayerStack.h"
 #include "Events/ApplicationEvent.h"
-
+#include "imgui/ImGuiLayer.h"
 namespace BSS
 {
 	class BSS_API Application
@@ -24,6 +24,7 @@ namespace BSS
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);
 		std::unique_ptr<Window> m_Window;
+		ImGuiLayer* m_ImGuiLayer;
 		bool m_Running = true;
 		LayerStack m_LayerStack;
 		static Application* s_Instance;

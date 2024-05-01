@@ -31,6 +31,12 @@
     <ClInclude Include="src\BSS\EntryPoint.h">
       <Filter>BSS</Filter>
     </ClInclude>
+    <ClInclude Include="src\BSS\Input.h">
+      <Filter>BSS</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BSS\KeyCodes.h">
+      <Filter>BSS</Filter>
+    </ClInclude>
     <ClInclude Include="src\BSS\Layer.h">
       <Filter>BSS</Filter>
     </ClInclude>
@@ -38,6 +44,9 @@
       <Filter>BSS</Filter>
     </ClInclude>
     <ClInclude Include="src\BSS\Log.h">
+      <Filter>BSS</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BSS\MouseButtonCodes.h">
       <Filter>BSS</Filter>
     </ClInclude>
     <ClInclude Include="src\BSS\Window.h">
@@ -58,6 +67,9 @@
     <ClInclude Include="src\Platform\OpenGl\ImGuiOpenGlRenderer.h">
       <Filter>Platform\OpenGl</Filter>
     </ClInclude>
+    <ClInclude Include="src\Platform\Windows\WindowInput.h">
+      <Filter>Platform\Windows</Filter>
+    </ClInclude>
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h">
       <Filter>Platform\Windows</Filter>
     </ClInclude>
@@ -65,10 +77,6 @@
     <ClInclude Include="src\imgui\ImGuiLayer.h">
       <Filter>imgui</Filter>
     </ClInclude>
-    <ClInclude Include="src\BSS\Input.h" />
-    <ClInclude Include="src\Platform\Windows\WindowInput.h" />
-    <ClInclude Include="src\BSS\KeyCodes.h" />
-    <ClInclude Include="src\BSS\MouseButtonCodes.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BSS\Application.cpp">
@@ -86,13 +94,18 @@
     <ClCompile Include="src\Platform\OpenGl\ImGuiOpenGlRenderer.cpp">
       <Filter>Platform\OpenGl</Filter>
     </ClCompile>
+    <ClCompile Include="src\Platform\Windows\WindowInput.cpp">
+      <Filter>Platform\Windows</Filter>
+    </ClCompile>
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp">
       <Filter>Platform\Windows</Filter>
     </ClCompile>
     <ClCompile Include="src\bsspch.cpp" />
+    <ClCompile Include="src\imgui\ImGuiBuild.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
     <ClCompile Include="src\imgui\ImGuiLayer.cpp">
       <Filter>imgui</Filter>
     </ClCompile>
-    <ClCompile Include="src\Platform\Windows\WindowInput.cpp" />
   </ItemGroup>
 </Project>
