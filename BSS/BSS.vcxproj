@@ -19,6 +19,7 @@
     <IgnoreWarnCompileDuplicatedFilename>true</IgnoreWarnCompileDuplicatedFilename>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>BSS</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -84,6 +85,7 @@
       <Optimization>Disabled</Optimization>
       <AdditionalOptions>/MDd %(AdditionalOptions)</AdditionalOptions>
       <ExternalWarningLevel>Level3</ExternalWarningLevel>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -143,6 +145,7 @@
     <ClInclude Include="src\BSS\Application.h" />
     <ClInclude Include="src\BSS\Core.h" />
     <ClInclude Include="src\BSS\EntryPoint.h" />
+    <ClInclude Include="src\BSS\Input.h" />
     <ClInclude Include="src\BSS\Layer.h" />
     <ClInclude Include="src\BSS\LayerStack.h" />
     <ClInclude Include="src\BSS\Log.h" />
@@ -152,6 +155,7 @@
     <ClInclude Include="src\Events\KeyEvent.h" />
     <ClInclude Include="src\Events\MouseEvent.h" />
     <ClInclude Include="src\Platform\OpenGl\ImGuiOpenGlRenderer.h" />
+    <ClInclude Include="src\Platform\Windows\WindowInput.h" />
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h" />
     <ClInclude Include="src\bsspch.h" />
     <ClInclude Include="src\imgui\ImGuiLayer.h" />
@@ -162,6 +166,7 @@
     <ClCompile Include="src\BSS\LayerStack.cpp" />
     <ClCompile Include="src\BSS\Log.cpp" />
     <ClCompile Include="src\Platform\OpenGl\ImGuiOpenGlRenderer.cpp" />
+    <ClCompile Include="src\Platform\Windows\WindowInput.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp" />
     <ClCompile Include="src\bsspch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
