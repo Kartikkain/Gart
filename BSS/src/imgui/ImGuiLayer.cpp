@@ -2,7 +2,6 @@
 #include "bsspch.h"
 #include "ImGuiLayer.h"
 #include "imgui.h"
-#include "Platform/OpenGl/ImGuiOpenGlRenderer.h"
 #include "BSS/Application.h"
 
 #define IMGUI_IMPL_API

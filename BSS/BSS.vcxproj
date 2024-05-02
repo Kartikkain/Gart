@@ -155,7 +155,6 @@
     <ClInclude Include="src\Events\Event.h" />
     <ClInclude Include="src\Events\KeyEvent.h" />
     <ClInclude Include="src\Events\MouseEvent.h" />
-    <ClInclude Include="src\Platform\OpenGl\ImGuiOpenGlRenderer.h" />
     <ClInclude Include="src\Platform\Windows\WindowInput.h" />
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h" />
     <ClInclude Include="src\bsspch.h" />
@@ -166,7 +165,6 @@
     <ClCompile Include="src\BSS\Layer.cpp" />
     <ClCompile Include="src\BSS\LayerStack.cpp" />
     <ClCompile Include="src\BSS\Log.cpp" />
-    <ClCompile Include="src\Platform\OpenGl\ImGuiOpenGlRenderer.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowInput.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp" />
     <ClCompile Include="src\bsspch.cpp">

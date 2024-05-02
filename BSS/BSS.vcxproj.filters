@@ -64,9 +64,6 @@
     <ClInclude Include="src\Events\MouseEvent.h">
       <Filter>Events</Filter>
     </ClInclude>
-    <ClInclude Include="src\Platform\OpenGl\ImGuiOpenGlRenderer.h">
-      <Filter>Platform\OpenGl</Filter>
-    </ClInclude>
     <ClInclude Include="src\Platform\Windows\WindowInput.h">
       <Filter>Platform\Windows</Filter>
     </ClInclude>
@@ -90,9 +87,6 @@
     </ClCompile>
     <ClCompile Include="src\BSS\Log.cpp">
       <Filter>BSS</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Platform\OpenGl\ImGuiOpenGlRenderer.cpp">
-      <Filter>Platform\OpenGl</Filter>
     </ClCompile>
     <ClCompile Include="src\Platform\Windows\WindowInput.cpp">
       <Filter>Platform\Windows</Filter>
