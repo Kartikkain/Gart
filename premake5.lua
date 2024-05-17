@@ -1,4 +1,4 @@
-workspace "BSS"
+workspace "Gart"
 	architecture "x64"
 
 	configurations
@@ -20,8 +20,8 @@ include "BSS/vendor/GLFW"
 include "BSS/vendor/Glad"
 include "BSS/vendor/ImGui"
 
-project "BSS"
-	location "BSS"
+project "Gart"
+	location "Gart"
 	kind "SharedLib"
 	language "C++"
 
@@ -110,7 +110,7 @@ project "Sandbox"
 
 	links
 	{
-		"BSS"
+		"Gart"
 	}
 
 	filter "system.windows"
