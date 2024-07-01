@@ -1,9 +1,9 @@
-[submodule "BSS/vendor/spdlog"]
-	path = BSS/vendor/spdlog
+[submodule "Gart/vendor/spdlog"]
+	path = Gart/vendor/spdlog
 	url = https://github.com/gabime/spdlog
-[submodule "BSS/vendor/GLFW"]
-	path = BSS/vendor/GLFW
+[submodule "Gart/vendor/GLFW"]
+	path = Gart/vendor/GLFW
 	url = https://github.com/Kartikkain/glfw.git
-[submodule "BSS/vendor/imgui"]
-	path = BSS/vendor/imgui
+[submodule "Gart/vendor/imgui"]
+	path = Gart/vendor/imgui
 	url = https://github.com/Kartikkain/imgui.git
