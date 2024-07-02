@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="BSS">
+      <UniqueIdentifier>{ADD6870B-19E0-877C-A25B-9E7C0E64937C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Events">
+      <UniqueIdentifier>{3A8963B1-262B-8E87-0FE6-A1DBFB2615D8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Platform">
+      <UniqueIdentifier>{2AC788B4-1694-E3BF-3FAD-D1672BD9184E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Platform\Windows">
+      <UniqueIdentifier>{64FBD71A-50F4-F66C-7926-DCF1657ED678}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="imgui">
+      <UniqueIdentifier>{0098A80F-6CAC-D0C0-352E-7420A101CDF1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\BSS.h" />
+    <ClInclude Include="src\BSS\Application.h">
+      <Filter>BSS</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BSS\Core.h">
+      <Filter>BSS</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BSS\EntryPoint.h">
+      <Filter>BSS</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BSS\Input.h">
+      <Filter>BSS</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BSS\KeyCodes.h">
+      <Filter>BSS</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BSS\Layer.h">
+      <Filter>BSS</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BSS\LayerStack.h">
+      <Filter>BSS</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BSS\Log.h">
+      <Filter>BSS</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BSS\MouseButtonCodes.h">
+      <Filter>BSS</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BSS\Window.h">
+      <Filter>BSS</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Events\ApplicationEvent.h">
+      <Filter>Events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Events\Event.h">
+      <Filter>Events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Events\KeyEvent.h">
+      <Filter>Events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Events\MouseEvent.h">
+      <Filter>Events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\Windows\WindowInput.h">
+      <Filter>Platform\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\Windows\WindowsWindow.h">
+      <Filter>Platform\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="src\bsspch.h" />
+    <ClInclude Include="src\imgui\ImGuiLayer.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\BSS\Application.cpp">
+      <Filter>BSS</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BSS\Layer.cpp">
+      <Filter>BSS</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BSS\LayerStack.cpp">
+      <Filter>BSS</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BSS\Log.cpp">
+      <Filter>BSS</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\Windows\WindowInput.cpp">
+      <Filter>Platform\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp">
+      <Filter>Platform\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\bsspch.cpp" />
+    <ClCompile Include="src\imgui\ImGuiBuild.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\imgui\ImGuiLayer.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

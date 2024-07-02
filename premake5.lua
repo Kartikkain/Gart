@@ -22,14 +22,16 @@ include "BSS/vendor/ImGui"
 
 project "Gart"
 	location "Gart"
-	kind "SharedLib"
+	kind "StaticLib"
 	language "C++"
+	cppdialect "C++17"
+	staticruntime "on"
 
 	targetdir("bin/".. OutputDir .."/%{prj.name}")
 	objdir("bin-int/".. OutputDir .."/%{prj.name}")
 
 	pchheader "bsspch.h"
-	pchsource "BSS/src/bsspch.cpp"
+	pchsource "Gart/src/bsspch.cpp"
 
 	files
 	{
@@ -55,8 +57,7 @@ project "Gart"
 	}
 
 	filter "system.windows"
-		cppdialect "C++17"
-		staticruntime "on"
+		
 		systemversion "latest"
 
 		defines
@@ -66,10 +67,7 @@ project "Gart"
 			"GLFW_INCLUDE_NONE"
 		}
 
-		postbuildcommands
-		{
-			("{COPY} %{cfg.buildtarget.relpath} \"../bin/" .. OutputDir .. "/Sandbox/\"")
-		}
+		
 
 	filter "configurations:Debug"
 		defines {"BSS_PLATFORM_WINDOW","BSS_BUILD_DLL","BSS_DEBUG"}
@@ -91,7 +89,8 @@ project "Sandbox"
 	location "Sandbox"
 	kind "ConsoleApp"
 	language "C++"
-	
+	cppdialect "C++17"
+	staticruntime "on"
 
 	targetdir("bin/".. OutputDir .."/%{prj.name}")
 	objdir("bin-int/".. OutputDir .."/%{prj.name}")
@@ -104,8 +103,8 @@ project "Sandbox"
 
 	includedirs
 	{
-		"BSS/vendor/spdlog/include",
-		"BSS/src"
+		"Gart/vendor/spdlog/include",
+		"Gart/src"
 	}
 
 	links
@@ -115,7 +114,6 @@ project "Sandbox"
 
 	filter "system.windows"
 		cppdialect "C++17"
-		staticruntime "on"
 		systemversion "latest"
 
 		defines
