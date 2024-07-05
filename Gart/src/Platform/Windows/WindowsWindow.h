@@ -1,4 +1,5 @@
 #include"BSS/Window.h"
+#include "Renderer/GraphicContext.h"
 
 struct GLFWwindow;
 
@@ -28,6 +29,8 @@ namespace BSS
 	private:
 
 		GLFWwindow* m_Window;
+
+		GraphicContext* m_Context;
 
 		struct WindowData
 		{

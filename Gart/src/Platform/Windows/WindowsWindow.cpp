@@ -4,8 +4,10 @@
 #include "Events/ApplicationEvent.h"
 #include "Events/MouseEvent.h"
 #include "Events/KeyEvent.h"
+#include "Platform/OpenGl/OpenGlContext.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+
 
 namespace BSS
 {
@@ -47,8 +49,11 @@ namespace BSS
 		}
 
 		m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, props.Title.c_str(), nullptr, nullptr);
-		glfwMakeContextCurrent(m_Window);
-		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+
+		m_Context = new OpenGlContext(m_Window);
+		m_Context->init();
+
+		
 		glfwSetWindowUserPointer(m_Window,&m_Data);
 		SetVSync(true);
 
@@ -155,7 +160,8 @@ namespace BSS
 	void WindowsWindow::OnUpdate()
 	{
 		glfwPollEvents();
-		glfwSwapBuffers(m_Window);
+		m_Context->swapbuffers();
+		
 	}
 
 	void WindowsWindow::SetVSync(bool enabled)
