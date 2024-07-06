@@ -12,13 +12,13 @@ OutputDir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 
 IncludeDir = {}
-IncludeDir["GLFW"] = "BSS/vendor/GLFW/include"
-IncludeDir["Glad"] = "BSS/vendor/Glad/include"
-IncludeDir["ImGui"] = "BSS/vendor/imgui"
+IncludeDir["GLFW"] = "Gart/vendor/GLFW/include"
+IncludeDir["Glad"] = "Gart/vendor/Glad/include"
+IncludeDir["ImGui"] = "Gart/vendor/imgui"
 
-include "BSS/vendor/GLFW"
-include "BSS/vendor/Glad"
-include "BSS/vendor/ImGui"
+include "Gart/vendor/GLFW"
+include "Gart/vendor/Glad"
+include "Gart/vendor/ImGui"
 
 project "Gart"
 	location "Gart"
