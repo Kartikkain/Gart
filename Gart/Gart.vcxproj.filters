@@ -72,6 +72,11 @@
       <Filter>imgui</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\OpenGl\OpenGlContext.h" />
+    <ClInclude Include="src\Renderer\GraphicContext.h" />
+    <ClInclude Include="src\Renderer\Shader.h" />
+    <ClInclude Include="src\Renderer\Buffer.h" />
+    <ClInclude Include="src\Platform\OpenGl\OpenGlBuffer.h" />
+    <ClInclude Include="src\Renderer\Renderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BSS\Application.cpp">
@@ -100,5 +105,9 @@
       <Filter>imgui</Filter>
     </ClCompile>
     <ClCompile Include="src\Platform\OpenGl\OpenGlContext.cpp" />
+    <ClCompile Include="src\Renderer\Shader.cpp" />
+    <ClCompile Include="src\Renderer\Buffer.cpp" />
+    <ClCompile Include="src\Platform\OpenGl\OpenGlBuffer.cpp" />
+    <ClCompile Include="src\Renderer\Renderer.cpp" />
   </ItemGroup>
 </Project>
