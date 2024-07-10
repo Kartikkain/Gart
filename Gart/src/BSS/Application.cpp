@@ -9,6 +9,26 @@ namespace BSS
 	
 	Application* Application::s_Instance = nullptr;
 
+	static GLenum ShaderDataTypeToOpenGlBaseType(Gart::ShaderDataType type)
+	{
+
+		switch (type)
+		{
+			case Gart::ShaderDataType::Float:   return GL_FLOAT;
+			case Gart::ShaderDataType::Float2:  return GL_FLOAT;
+			case Gart::ShaderDataType::Float3:  return GL_FLOAT;
+			case Gart::ShaderDataType::Float4:  return GL_FLOAT;
+			case Gart::ShaderDataType::Mat3:    return GL_FLOAT;
+			case Gart::ShaderDataType::Mat4:    return GL_FLOAT;
+			case Gart::ShaderDataType::Int:     return GL_INT;
+			case Gart::ShaderDataType::Int2:    return GL_INT;
+			case Gart::ShaderDataType::Int3:    return GL_INT;
+			case Gart::ShaderDataType::Int4:    return GL_INT;
+			case Gart::ShaderDataType::Bool:    return GL_INT;
+		}
+		return 0;
+	}
+
 	Application::Application()
 	{
 		s_Instance = this;
@@ -21,38 +41,59 @@ namespace BSS
 		glGenVertexArrays(1, &m_vertexarray);
 		glBindVertexArray(m_vertexarray);
 
-		/*glGenBuffers(1, &m_vertexbuffer);
-		glBindBuffer(GL_ARRAY_BUFFER, m_vertexbuffer);*/
 
-		float vertex[3 * 3] =
+		float vertex[3 * 7] =
 		{
-			-0.5f,-0.5f,0.0f,
-			 0.5f,-0.5f,0.0f,
-			 0.0f, 0.5f,0.0f,
+			-0.5f,-0.5f,0.0f,  1.0f,0.0f,1.0f,1.0f,
+			 0.5f,-0.5f,0.0f,  0.0f,1.0f,1.0f,1.0f,
+			 0.0f, 0.5f,0.0f,  0.0f,0.0f,1.0f,1.0f
 		};
 		
 		m_vertexBuffer.reset(Gart::VertexBuffer::Create(vertex, sizeof(vertex)));
 
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertex), vertex, GL_STATIC_DRAW);
-		
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
+		{
 
-		/*glGenBuffers(1, &m_indexbuffer);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexbuffer);*/
+			Gart::BufferLayout layout = {
+				{Gart::ShaderDataType::Float3, "a_Position"},
+				{Gart::ShaderDataType::Float4, "a_Color"}
+			};
+
+			m_vertexBuffer->SetLayout(layout);
+		}
+
+		Gart::BufferLayout m_layout = m_vertexBuffer->GetLayout();
+
+		uint32_t index = 0;
+		for (const auto& element : m_layout)
+		{
+
+			glEnableVertexAttribArray(index);
+			glVertexAttribPointer(index, 
+				element.GetElementCount(),
+				ShaderDataTypeToOpenGlBaseType(element.Type), 
+				element.Normalize ? GL_TRUE :GL_FALSE, 
+				m_layout.GetStride(),
+				(const void*) element.Offset);
+			index++;
+		}
+		
+
 
 		unsigned int indicies[3] = { 0,1,2 };
 		m_IndexBuffer.reset(Gart::IndexBuffer::Create(indicies, sizeof(indicies) / sizeof(uint32_t)));
 
-		/*glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indicies), indicies, GL_STATIC_DRAW);*/
 
 		const std::string vertexsrc = R"(
 			#version 330 core
 			
 			layout(location = 0) in vec3 a_Position;
+			layout(location = 1) in vec4 a_Color;
+
+			out vec4 v_Color;
 			
 			void main()
 			{
+				v_Color = a_Color;
 				gl_Position = vec4(a_Position,1.0);
 			}
 		)";
@@ -63,9 +104,11 @@ namespace BSS
 			
 			layout(location = 0) out vec4 fragColor;
 			
+			in vec4 v_Color;
+				
 			void main()
 			{
-				fragColor = vec4(0.3,0.8,0.2,1.0);
+				fragColor = v_Color;
 			}
 		)";
 
