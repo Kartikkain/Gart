@@ -8,7 +8,7 @@
 #include "Events/ApplicationEvent.h"
 #include "imgui/ImGuiLayer.h"
 #include "Renderer/Shader.h"
-#include "Renderer/Buffer.h"
+#include "Renderer/VertexArray.h"
 namespace BSS
 {
 	class BSS_API Application
@@ -30,10 +30,11 @@ namespace BSS
 		bool m_Running = true;
 		LayerStack m_LayerStack;
 		static Application* s_Instance;
-		unsigned int m_vertexarray;
-		std::unique_ptr<Gart::Shader> m_Shader;
-		std::unique_ptr<Gart::VertexBuffer> m_vertexBuffer;
-		std::unique_ptr<Gart::IndexBuffer> m_IndexBuffer;
+
+		std::shared_ptr<Gart::Shader> m_Shader;
+		std::shared_ptr<Gart::VertexArray> m_VertexArray;
+		std::shared_ptr<Gart::VertexBuffer> m_vertexBuffer;
+		std::shared_ptr<Gart::IndexBuffer> m_IndexBuffer;
 	};
 
 	Application* CreateApplication();

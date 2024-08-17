@@ -162,14 +162,16 @@
     <ClInclude Include="src\Events\MouseEvent.h" />
     <ClInclude Include="src\Platform\OpenGl\OpenGlBuffer.h" />
     <ClInclude Include="src\Platform\OpenGl\OpenGlContext.h" />
-    <ClInclude Include="src\Renderer\Renderer.h" />
+    <ClInclude Include="src\Platform\OpenGl\OpenGlVertexArray.h" />
     <ClInclude Include="src\Platform\Windows\WindowInput.h" />
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h" />
-    <ClInclude Include="src\bsspch.h" />
-    <ClInclude Include="src\imgui\ImGuiLayer.h" />
     <ClInclude Include="src\Renderer\Buffer.h" />
     <ClInclude Include="src\Renderer\GraphicContext.h" />
+    <ClInclude Include="src\Renderer\Renderer.h" />
     <ClInclude Include="src\Renderer\Shader.h" />
+    <ClInclude Include="src\Renderer\VertexArray.h" />
+    <ClInclude Include="src\bsspch.h" />
+    <ClInclude Include="src\imgui\ImGuiLayer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BSS\Application.cpp" />
@@ -178,16 +180,18 @@
     <ClCompile Include="src\BSS\Log.cpp" />
     <ClCompile Include="src\Platform\OpenGl\OpenGlBuffer.cpp" />
     <ClCompile Include="src\Platform\OpenGl\OpenGlContext.cpp" />
-    <ClCompile Include="src\Renderer\Renderer.cpp" />
+    <ClCompile Include="src\Platform\OpenGl\OpenGlVertexArray.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowInput.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp" />
+    <ClCompile Include="src\Renderer\Buffer.cpp" />
+    <ClCompile Include="src\Renderer\Renderer.cpp" />
+    <ClCompile Include="src\Renderer\Shader.cpp" />
+    <ClCompile Include="src\Renderer\VertexArray.cpp" />
     <ClCompile Include="src\bsspch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\imgui\ImGuiBuild.cpp" />
     <ClCompile Include="src\imgui\ImGuiLayer.cpp" />
-    <ClCompile Include="src\Renderer\Buffer.cpp" />
-    <ClCompile Include="src\Renderer\Shader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="vendor\GLFW\GLFW.vcxproj">

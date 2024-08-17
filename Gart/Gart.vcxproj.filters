@@ -10,8 +10,14 @@
     <Filter Include="Platform">
       <UniqueIdentifier>{2AC788B4-1694-E3BF-3FAD-D1672BD9184E}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Platform\OpenGl">
+      <UniqueIdentifier>{3E7D2C1D-AA08-9AE1-B319-1DD61F24F6E1}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Platform\Windows">
       <UniqueIdentifier>{64FBD71A-50F4-F66C-7926-DCF1657ED678}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Renderer">
+      <UniqueIdentifier>{7CCE658F-689B-C09A-91B4-AE427DE0F528}</UniqueIdentifier>
     </Filter>
     <Filter Include="imgui">
       <UniqueIdentifier>{0098A80F-6CAC-D0C0-352E-7420A101CDF1}</UniqueIdentifier>
@@ -61,22 +67,40 @@
     <ClInclude Include="src\Events\MouseEvent.h">
       <Filter>Events</Filter>
     </ClInclude>
+    <ClInclude Include="src\Platform\OpenGl\OpenGlBuffer.h">
+      <Filter>Platform\OpenGl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\OpenGl\OpenGlContext.h">
+      <Filter>Platform\OpenGl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\OpenGl\OpenGlVertexArray.h">
+      <Filter>Platform\OpenGl</Filter>
+    </ClInclude>
     <ClInclude Include="src\Platform\Windows\WindowInput.h">
       <Filter>Platform\Windows</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h">
       <Filter>Platform\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="src\Renderer\Buffer.h">
+      <Filter>Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Renderer\GraphicContext.h">
+      <Filter>Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Renderer\Renderer.h">
+      <Filter>Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Renderer\Shader.h">
+      <Filter>Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Renderer\VertexArray.h">
+      <Filter>Renderer</Filter>
+    </ClInclude>
     <ClInclude Include="src\bsspch.h" />
     <ClInclude Include="src\imgui\ImGuiLayer.h">
       <Filter>imgui</Filter>
     </ClInclude>
-    <ClInclude Include="src\Platform\OpenGl\OpenGlContext.h" />
-    <ClInclude Include="src\Renderer\GraphicContext.h" />
-    <ClInclude Include="src\Renderer\Shader.h" />
-    <ClInclude Include="src\Renderer\Buffer.h" />
-    <ClInclude Include="src\Platform\OpenGl\OpenGlBuffer.h" />
-    <ClInclude Include="src\Renderer\Renderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BSS\Application.cpp">
@@ -91,11 +115,32 @@
     <ClCompile Include="src\BSS\Log.cpp">
       <Filter>BSS</Filter>
     </ClCompile>
+    <ClCompile Include="src\Platform\OpenGl\OpenGlBuffer.cpp">
+      <Filter>Platform\OpenGl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\OpenGl\OpenGlContext.cpp">
+      <Filter>Platform\OpenGl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\OpenGl\OpenGlVertexArray.cpp">
+      <Filter>Platform\OpenGl</Filter>
+    </ClCompile>
     <ClCompile Include="src\Platform\Windows\WindowInput.cpp">
       <Filter>Platform\Windows</Filter>
     </ClCompile>
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp">
       <Filter>Platform\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderer\Buffer.cpp">
+      <Filter>Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderer\Renderer.cpp">
+      <Filter>Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderer\Shader.cpp">
+      <Filter>Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderer\VertexArray.cpp">
+      <Filter>Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\bsspch.cpp" />
     <ClCompile Include="src\imgui\ImGuiBuild.cpp">
@@ -104,10 +149,5 @@
     <ClCompile Include="src\imgui\ImGuiLayer.cpp">
       <Filter>imgui</Filter>
     </ClCompile>
-    <ClCompile Include="src\Platform\OpenGl\OpenGlContext.cpp" />
-    <ClCompile Include="src\Renderer\Shader.cpp" />
-    <ClCompile Include="src\Renderer\Buffer.cpp" />
-    <ClCompile Include="src\Platform\OpenGl\OpenGlBuffer.cpp" />
-    <ClCompile Include="src\Renderer\Renderer.cpp" />
   </ItemGroup>
 </Project>

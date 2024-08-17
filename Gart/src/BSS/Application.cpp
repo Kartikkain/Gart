@@ -38,8 +38,7 @@ namespace BSS
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);
 
-		glGenVertexArrays(1, &m_vertexarray);
-		glBindVertexArray(m_vertexarray);
+		m_VertexArray.reset(Gart::VertexArray::Create());
 
 
 		float vertex[3 * 7] =
@@ -51,37 +50,19 @@ namespace BSS
 		
 		m_vertexBuffer.reset(Gart::VertexBuffer::Create(vertex, sizeof(vertex)));
 
-		{
-
-			Gart::BufferLayout layout = {
-				{Gart::ShaderDataType::Float3, "a_Position"},
-				{Gart::ShaderDataType::Float4, "a_Color"}
-			};
-
-			m_vertexBuffer->SetLayout(layout);
-		}
-
-		Gart::BufferLayout m_layout = m_vertexBuffer->GetLayout();
-
-		uint32_t index = 0;
-		for (const auto& element : m_layout)
-		{
-
-			glEnableVertexAttribArray(index);
-			glVertexAttribPointer(index, 
-				element.GetElementCount(),
-				ShaderDataTypeToOpenGlBaseType(element.Type), 
-				element.Normalize ? GL_TRUE :GL_FALSE, 
-				m_layout.GetStride(),
-				(const void*) element.Offset);
-			index++;
-		}
 		
+		Gart::BufferLayout layout = {
+			{Gart::ShaderDataType::Float3, "a_Position"},
+			{Gart::ShaderDataType::Float4, "a_Color"}
+		};
 
-
+		m_vertexBuffer->SetLayout(layout);
+		
+		m_VertexArray->AddVertexBuffer(m_vertexBuffer);
+		
 		unsigned int indicies[3] = { 0,1,2 };
 		m_IndexBuffer.reset(Gart::IndexBuffer::Create(indicies, sizeof(indicies) / sizeof(uint32_t)));
-
+		m_VertexArray->SetIndexBuffer(m_IndexBuffer);
 
 		const std::string vertexsrc = R"(
 			#version 330 core
@@ -142,7 +123,7 @@ namespace BSS
 			glClear(GL_COLOR_BUFFER_BIT);
 
 			m_Shader->Bind();
-			glBindVertexArray(m_vertexarray);
+			m_VertexArray->Bind();
 			glDrawElements(GL_TRIANGLES, m_IndexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr);
 
 			for (Layer* layer : m_LayerStack)
