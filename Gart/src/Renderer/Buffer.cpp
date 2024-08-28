@@ -8,7 +8,7 @@ namespace Gart
 	{
 		switch (Renderer::GetAPI())
 		{
-			case RendererAPI::OpenGl: return new OpenGlVertexBuffer(vertices, size);
+		case RendererAPI::API::OpenGl: return new OpenGlVertexBuffer(vertices, size);
 		}
 
 		return nullptr;
@@ -18,7 +18,7 @@ namespace Gart
 	{
 		switch (Renderer::GetAPI())
 		{
-			case RendererAPI::OpenGl: return new OpenGlIndexBuffer(indices, size);
+			case RendererAPI::API::OpenGl: return new OpenGlIndexBuffer(indices, size);
 		}
 
 		return nullptr;

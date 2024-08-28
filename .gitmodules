@@ -7,3 +7,6 @@
 [submodule "Gart/vendor/imgui"]
 	path = Gart/vendor/imgui
 	url = https://github.com/Kartikkain/imgui.git
+[submodule "Gart/vendor/glm"]
+	path = Gart/vendor/glm
+	url = https://github.com/g-truc/glm

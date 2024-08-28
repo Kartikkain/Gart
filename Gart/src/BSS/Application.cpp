@@ -3,6 +3,7 @@
 #include "Log.h"
 #include <glad/glad.h>
 #include "Input.h"
+#include "Renderer/Renderer.h"
 namespace BSS
 {
 #define BSS_EVENT_FN(x) std::bind(&Application::x,this,std::placeholders::_1)
@@ -122,9 +123,16 @@ namespace BSS
 			
 			glClear(GL_COLOR_BUFFER_BIT);
 
+			Gart::RenderCommand::SetClearColor({ 0.1f,0.1f,0.1f,1 });
+			Gart::RenderCommand::Clear();
+
+			Gart::Renderer::BeginScene();
 			m_Shader->Bind();
-			m_VertexArray->Bind();
-			glDrawElements(GL_TRIANGLES, m_IndexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr);
+			Gart::Renderer::Submit(m_VertexArray);
+			Gart::Renderer::EndScene();
+
+			/*m_VertexArray->Bind();
+			glDrawElements(GL_TRIANGLES, m_IndexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr);*/
 
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate();

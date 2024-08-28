@@ -8,7 +8,7 @@ namespace Gart
 	{
 		switch (Renderer::GetAPI())
 		{
-			case RendererAPI::OpenGl: return new OpenGlVertexArray();
+			case RendererAPI::API::OpenGl: return new OpenGlVertexArray();
 		}
 		return nullptr;
 	}
