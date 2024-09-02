@@ -9,6 +9,7 @@
 #include "imgui/ImGuiLayer.h"
 #include "Renderer/Shader.h"
 #include "Renderer/VertexArray.h"
+#include "Renderer/OrthoGraphicCamera.h"
 namespace BSS
 {
 	class BSS_API Application
@@ -30,6 +31,7 @@ namespace BSS
 		bool m_Running = true;
 		LayerStack m_LayerStack;
 		static Application* s_Instance;
+		Gart::OrthoGraphicCamera m_OrthoCamera;
 
 		std::shared_ptr<Gart::Shader> m_Shader;
 		std::shared_ptr<Gart::VertexArray> m_VertexArray;

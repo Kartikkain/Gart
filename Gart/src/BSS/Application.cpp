@@ -4,6 +4,7 @@
 #include <glad/glad.h>
 #include "Input.h"
 #include "Renderer/Renderer.h"
+
 namespace BSS
 {
 #define BSS_EVENT_FN(x) std::bind(&Application::x,this,std::placeholders::_1)
@@ -31,6 +32,7 @@ namespace BSS
 	}
 
 	Application::Application()
+		:m_OrthoCamera(-1.0f,1.0f,-1.0f,1.0f)
 	{
 		s_Instance = this;
 		m_Window = std::unique_ptr<Window>(Window::Create());
@@ -72,11 +74,13 @@ namespace BSS
 			layout(location = 1) in vec4 a_Color;
 
 			out vec4 v_Color;
+
+			uniform mat4 u_ViewProjectionMatrix;
 			
 			void main()
 			{
 				v_Color = a_Color;
-				gl_Position = vec4(a_Position,1.0);
+				gl_Position = u_ViewProjectionMatrix * vec4(a_Position,1.0);
 			}
 		)";
 
@@ -128,6 +132,7 @@ namespace BSS
 
 			Gart::Renderer::BeginScene();
 			m_Shader->Bind();
+			m_Shader->UploadUniformMat4("u_ViewProjectionMatrix", m_OrthoCamera.GetViewProjectionMatrix());
 			Gart::Renderer::Submit(m_VertexArray);
 			Gart::Renderer::EndScene();
 
