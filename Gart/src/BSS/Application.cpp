@@ -3,7 +3,7 @@
 #include "Log.h"
 #include <glad/glad.h>
 #include "Input.h"
-#include "Renderer/Renderer.h"
+
 
 namespace BSS
 {
@@ -32,7 +32,7 @@ namespace BSS
 	}
 
 	Application::Application()
-		:m_OrthoCamera(-1.0f,1.0f,-1.0f,1.0f)
+		:m_OrthoCamera(-2.0f,2.0f,-2.0f,2.0f)
 	{
 		s_Instance = this;
 		m_Window = std::unique_ptr<Window>(Window::Create());
@@ -129,16 +129,9 @@ namespace BSS
 
 			Gart::RenderCommand::SetClearColor({ 0.1f,0.1f,0.1f,1 });
 			Gart::RenderCommand::Clear();
-
-			Gart::Renderer::BeginScene();
-			m_Shader->Bind();
-			m_Shader->UploadUniformMat4("u_ViewProjectionMatrix", m_OrthoCamera.GetViewProjectionMatrix());
-			Gart::Renderer::Submit(m_VertexArray);
+			Gart::Renderer::BeginScene(m_OrthoCamera);
+			Gart::Renderer::Submit(m_VertexArray,m_Shader);
 			Gart::Renderer::EndScene();
-
-			/*m_VertexArray->Bind();
-			glDrawElements(GL_TRIANGLES, m_IndexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr);*/
-
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate();
 
