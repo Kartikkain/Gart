@@ -3,7 +3,7 @@
 #include "Log.h"
 #include <glad/glad.h>
 #include "Input.h"
-#include "Renderer/Renderer.h"
+
 
 namespace BSS
 {
@@ -128,6 +128,7 @@ namespace BSS
 
 			/*Gart::RenderCommand::SetClearColor({ 0.1f,0.1f,0.1f,1 });
 			Gart::RenderCommand::Clear();
+<<<<<<< HEAD
 
 			Gart::Renderer::BeginScene();
 			m_Shader->Bind();

@@ -78,10 +78,10 @@ public:
 		Gart::RenderCommand::SetClearColor({ 0.1f,0.1f,0.1f,1 });
 		Gart::RenderCommand::Clear();
 
-		Gart::Renderer::BeginScene();
+		Gart::Renderer::BeginScene(m_OrthoCamera);
 		m_Shader->Bind();
 		m_Shader->UploadUniformMat4("u_ViewProjectionMatrix", m_OrthoCamera.GetViewProjectionMatrix());
-		Gart::Renderer::Submit(m_VertexArray);
+		Gart::Renderer::Submit(m_VertexArray,m_Shader);
 		Gart::Renderer::EndScene();
 	}
 
