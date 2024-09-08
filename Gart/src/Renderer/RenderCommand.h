@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Platform/OpenGl/OpenGlRendererAPI.h"
 
 namespace Gart

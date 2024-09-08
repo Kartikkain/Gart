@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Renderer/RendererAPI.h"
 namespace Gart
 {

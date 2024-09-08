@@ -32,7 +32,6 @@ namespace BSS
 	}
 
 	Application::Application()
-		:m_OrthoCamera(-1.0f,1.0f,-1.0f,1.0f)
 	{
 		s_Instance = this;
 		m_Window = std::unique_ptr<Window>(Window::Create());
@@ -41,7 +40,7 @@ namespace BSS
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);
 
-		m_VertexArray.reset(Gart::VertexArray::Create());
+		/*m_VertexArray.reset(Gart::VertexArray::Create());
 
 
 		float vertex[3 * 7] =
@@ -98,7 +97,7 @@ namespace BSS
 			}
 		)";
 
-		m_Shader.reset(new Gart::Shader(vertexsrc,fragsrc));
+		m_Shader.reset(new Gart::Shader(vertexsrc,fragsrc));*/
 	}
 
 	Application::~Application()
@@ -127,17 +126,14 @@ namespace BSS
 			
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			Gart::RenderCommand::SetClearColor({ 0.1f,0.1f,0.1f,1 });
+			/*Gart::RenderCommand::SetClearColor({ 0.1f,0.1f,0.1f,1 });
 			Gart::RenderCommand::Clear();
 
 			Gart::Renderer::BeginScene();
 			m_Shader->Bind();
 			m_Shader->UploadUniformMat4("u_ViewProjectionMatrix", m_OrthoCamera.GetViewProjectionMatrix());
 			Gart::Renderer::Submit(m_VertexArray);
-			Gart::Renderer::EndScene();
-
-			/*m_VertexArray->Bind();
-			glDrawElements(GL_TRIANGLES, m_IndexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr);*/
+			Gart::Renderer::EndScene();*/
 
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate();

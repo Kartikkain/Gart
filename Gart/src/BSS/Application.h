@@ -31,12 +31,12 @@ namespace BSS
 		bool m_Running = true;
 		LayerStack m_LayerStack;
 		static Application* s_Instance;
-		Gart::OrthoGraphicCamera m_OrthoCamera;
+		/*Gart::OrthoGraphicCamera m_OrthoCamera;
 
 		std::shared_ptr<Gart::Shader> m_Shader;
 		std::shared_ptr<Gart::VertexArray> m_VertexArray;
 		std::shared_ptr<Gart::VertexBuffer> m_vertexBuffer;
-		std::shared_ptr<Gart::IndexBuffer> m_IndexBuffer;
+		std::shared_ptr<Gart::IndexBuffer> m_IndexBuffer;*/
 	};
 
 	Application* CreateApplication();
