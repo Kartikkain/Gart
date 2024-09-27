@@ -9,6 +9,8 @@
 #include "BSS/EntryPoint.h"
 #include "imgui/ImGuiLayer.h"
 
+#include "Core/TimeStep.h"
+
 //------------------- Render -----------------------//
 #include "Renderer/Renderer.h"
 #include "Renderer/RenderCommand.h"

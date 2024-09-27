@@ -66,12 +66,14 @@ public:
 		m_Shader.reset(new Gart::Shader(vertexsrc, fragsrc));
 	}
 
-	void OnUpdate() override
+	void OnUpdate(Gart::TimeStep ts) override
 	{
-		if (BSS::Input::IsKeyPressed(BSS_KEY_LEFT)) { m_CameraPosition.x += m_CameraSpeed; }
-		else if (BSS::Input::IsKeyPressed(BSS_KEY_RIGHT)) { m_CameraPosition.x -= m_CameraSpeed; }
-		else if (BSS::Input::IsKeyPressed(BSS_KEY_UP)) { m_CameraPosition.y -= m_CameraSpeed; }
-		else if (BSS::Input::IsKeyPressed(BSS_KEY_DOWN)) { m_CameraPosition.y += m_CameraSpeed; }
+		BSS_CLIENT_INFO("Delta Time :: {0}s ({1}ms)", ts.GetSeconds(), ts.GetMilliSeconds());
+
+		if (BSS::Input::IsKeyPressed(BSS_KEY_LEFT)) { m_CameraPosition.x -= m_CameraSpeed * ts; }
+		else if (BSS::Input::IsKeyPressed(BSS_KEY_RIGHT)) { m_CameraPosition.x += m_CameraSpeed * ts; }
+		else if (BSS::Input::IsKeyPressed(BSS_KEY_UP)) { m_CameraPosition.y += m_CameraSpeed * ts; }
+		else if (BSS::Input::IsKeyPressed(BSS_KEY_DOWN)) { m_CameraPosition.y -= m_CameraSpeed * ts; }
 
 		m_OrthoCamera.SetPosition(m_CameraPosition);
 
@@ -99,7 +101,7 @@ private :
 	std::shared_ptr<Gart::IndexBuffer> m_IndexBuffer;
 
 	glm::vec3 m_CameraPosition;
-	float m_CameraSpeed = 0.1f;
+	float m_CameraSpeed = 1.0f;
 };
 class Sandbox : public BSS::Application
 {

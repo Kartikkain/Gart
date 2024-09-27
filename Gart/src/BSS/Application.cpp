@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "Log.h"
 #include <glad/glad.h>
+#include <GLFW/glfw3.h>
 #include "Input.h"
 
 
@@ -40,64 +41,7 @@ namespace BSS
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);
 
-		/*m_VertexArray.reset(Gart::VertexArray::Create());
-
-
-		float vertex[3 * 7] =
-		{
-			-0.5f,-0.5f,0.0f,  1.0f,0.0f,1.0f,1.0f,
-			 0.5f,-0.5f,0.0f,  0.0f,1.0f,1.0f,1.0f,
-			 0.0f, 0.5f,0.0f,  0.0f,0.0f,1.0f,1.0f
-		};
 		
-		m_vertexBuffer.reset(Gart::VertexBuffer::Create(vertex, sizeof(vertex)));
-
-		
-		Gart::BufferLayout layout = {
-			{Gart::ShaderDataType::Float3, "a_Position"},
-			{Gart::ShaderDataType::Float4, "a_Color"}
-		};
-
-		m_vertexBuffer->SetLayout(layout);
-		
-		m_VertexArray->AddVertexBuffer(m_vertexBuffer);
-		
-		unsigned int indicies[3] = { 0,1,2 };
-		m_IndexBuffer.reset(Gart::IndexBuffer::Create(indicies, sizeof(indicies) / sizeof(uint32_t)));
-		m_VertexArray->SetIndexBuffer(m_IndexBuffer);
-
-		const std::string vertexsrc = R"(
-			#version 330 core
-			
-			layout(location = 0) in vec3 a_Position;
-			layout(location = 1) in vec4 a_Color;
-
-			out vec4 v_Color;
-
-			uniform mat4 u_ViewProjectionMatrix;
-			
-			void main()
-			{
-				v_Color = a_Color;
-				gl_Position = u_ViewProjectionMatrix * vec4(a_Position,1.0);
-			}
-		)";
-
-
-		const std::string fragsrc = R"(
-			#version 330 core
-			
-			layout(location = 0) out vec4 fragColor;
-			
-			in vec4 v_Color;
-				
-			void main()
-			{
-				fragColor = v_Color;
-			}
-		)";
-
-		m_Shader.reset(new Gart::Shader(vertexsrc,fragsrc));*/
 	}
 
 	Application::~Application()
@@ -124,20 +68,14 @@ namespace BSS
 		while (m_Running)
 		{
 			
+			float l_time = (float)glfwGetTime();
+			Gart::TimeStep timestep = l_time - m_LastFrameTime;
+			m_LastFrameTime = l_time;
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			/*Gart::RenderCommand::SetClearColor({ 0.1f,0.1f,0.1f,1 });
-			Gart::RenderCommand::Clear();
-<<<<<<< HEAD
-
-			Gart::Renderer::BeginScene();
-			m_Shader->Bind();
-			m_Shader->UploadUniformMat4("u_ViewProjectionMatrix", m_OrthoCamera.GetViewProjectionMatrix());
-			Gart::Renderer::Submit(m_VertexArray);
-			Gart::Renderer::EndScene();*/
 
 			for (Layer* layer : m_LayerStack)
-				layer->OnUpdate();
+				layer->OnUpdate(timestep);
 
 			m_ImGuiLayer->Begin();
 			for (Layer* layer : m_LayerStack)

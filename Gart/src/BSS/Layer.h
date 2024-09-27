@@ -1,6 +1,7 @@
 #pragma once
 #include "BSS/Core.h"
 #include "Events/Event.h"
+#include "Core/TimeStep.h"
 
 namespace BSS
 {
@@ -13,7 +14,7 @@ namespace BSS
 
 		virtual void OnAttach() {}
 		virtual void OnDitach() {}
-		virtual void OnUpdate() {}
+		virtual void OnUpdate(Gart::TimeStep ts) {}
 		virtual void OnEvent(Event& event) {}
 		virtual void OnImGuiRender() {}
 		inline const std::string& GetName() const { return m_DebugName; }
