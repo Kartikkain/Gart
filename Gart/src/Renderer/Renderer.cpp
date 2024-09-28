@@ -14,11 +14,11 @@ namespace Gart
 	{
 	}
 
-	void Renderer::Submit(const std::shared_ptr<VertexArray>& vertexarray, const std::shared_ptr<Shader>& shader)
+	void Renderer::Submit(const std::shared_ptr<VertexArray>& vertexarray, const std::shared_ptr<Shader>& shader, const glm::mat4& transform)
 	{
 		shader->Bind();
 		shader->UploadUniformMat4("u_ViewProjectionMatrix", m_SceneData->ViewProjectionMatrix);
-
+		shader->UploadUniformMat4("u_Transform", transform);
 		vertexarray->Bind();
 		RenderCommand::DrawIndexed(vertexarray);
 	}

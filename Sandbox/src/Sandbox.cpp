@@ -4,7 +4,7 @@ class ExampleLayer :public BSS::Layer
 {
 public:
 	ExampleLayer()
-		:Layer("Example"), m_OrthoCamera(-2.0f, 2.0f, -2.0f, 2.0f), m_CameraPosition(0.0f)
+		:Layer("Example"), m_OrthoCamera(-2.0f, 2.0f, -2.0f, 2.0f), m_CameraPosition(0.0f),m_ModelTransform(0.0f)
 	{
 		m_VertexArray.reset(Gart::VertexArray::Create());
 
@@ -41,11 +41,12 @@ public:
 			out vec4 v_Color;
 
 			uniform mat4 u_ViewProjectionMatrix;
+			uniform mat4 u_Transform;
 			
 			void main()
 			{
 				v_Color = a_Color;
-				gl_Position = u_ViewProjectionMatrix * vec4(a_Position,1.0);
+				gl_Position = u_ViewProjectionMatrix * u_Transform * vec4(a_Position,1.0);
 			}
 		)";
 
@@ -75,6 +76,10 @@ public:
 		else if (BSS::Input::IsKeyPressed(BSS_KEY_UP)) { m_CameraPosition.y += m_CameraSpeed * ts; }
 		else if (BSS::Input::IsKeyPressed(BSS_KEY_DOWN)) { m_CameraPosition.y -= m_CameraSpeed * ts; }
 
+		if (BSS::Input::IsKeyPressed(BSS_KEY_A)) { m_ModelTransform.x -= m_modelspeed * ts; }
+		else if (BSS::Input::IsKeyPressed(BSS_KEY_D)) { m_ModelTransform.x += m_modelspeed * ts; }
+		else if (BSS::Input::IsKeyPressed(BSS_KEY_W)) { m_ModelTransform.y += m_modelspeed * ts; }
+		else if (BSS::Input::IsKeyPressed(BSS_KEY_S)) { m_ModelTransform.y -= m_modelspeed * ts; }
 		m_OrthoCamera.SetPosition(m_CameraPosition);
 
 		Gart::RenderCommand::SetClearColor({ 0.1f,0.1f,0.1f,1 });
@@ -83,7 +88,10 @@ public:
 		Gart::Renderer::BeginScene(m_OrthoCamera);
 		m_Shader->Bind();
 		m_Shader->UploadUniformMat4("u_ViewProjectionMatrix", m_OrthoCamera.GetViewProjectionMatrix());
-		Gart::Renderer::Submit(m_VertexArray,m_Shader);
+
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_ModelTransform);
+
+		Gart::Renderer::Submit(m_VertexArray,m_Shader,transform);
 		Gart::Renderer::EndScene();
 	}
 
@@ -102,6 +110,9 @@ private :
 
 	glm::vec3 m_CameraPosition;
 	float m_CameraSpeed = 1.0f;
+
+	glm::vec3 m_ModelTransform;
+	float m_modelspeed = 0.5f;
 };
 class Sandbox : public BSS::Application
 {
