@@ -164,6 +164,7 @@
     <ClInclude Include="src\Platform\OpenGl\OpenGlBuffer.h" />
     <ClInclude Include="src\Platform\OpenGl\OpenGlContext.h" />
     <ClInclude Include="src\Platform\OpenGl\OpenGlRendererAPI.h" />
+    <ClInclude Include="src\Platform\OpenGl\OpenGLShader.h" />
     <ClInclude Include="src\Platform\OpenGl\OpenGlVertexArray.h" />
     <ClInclude Include="src\Platform\Windows\WindowInput.h" />
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h" />
@@ -602,6 +603,7 @@
     <ClCompile Include="src\Platform\OpenGl\OpenGlBuffer.cpp" />
     <ClCompile Include="src\Platform\OpenGl\OpenGlContext.cpp" />
     <ClCompile Include="src\Platform\OpenGl\OpenGlRendererAPI.cpp" />
+    <ClCompile Include="src\Platform\OpenGl\OpenGLShader.cpp" />
     <ClCompile Include="src\Platform\OpenGl\OpenGlVertexArray.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowInput.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp" />

@@ -1,5 +1,7 @@
 #include <BSS.h>
-
+#include "Platform/OpenGl/OpenGLShader.h"
+#include "/C++ Projects/Gart/Gart/Gart/vendor/imgui/imgui.h"
+#include <glm/gtc/type_ptr.hpp>
 class ExampleLayer :public BSS::Layer
 {
 public:
@@ -57,14 +59,16 @@ public:
 			layout(location = 0) out vec4 fragColor;
 			
 			in vec4 v_Color;
-				
+			
+			uniform vec3 u_Color;			
+	
 			void main()
 			{
-				fragColor = v_Color;
+				fragColor = vec4(u_Color,1.0f);
 			}
 		)";
 
-		m_Shader.reset(new Gart::Shader(vertexsrc, fragsrc));
+		m_Shader.reset(Gart::Shader::Create(vertexsrc, fragsrc));
 	}
 
 	void OnUpdate(Gart::TimeStep ts) override
@@ -87,12 +91,19 @@ public:
 
 		Gart::Renderer::BeginScene(m_OrthoCamera);
 		m_Shader->Bind();
-		m_Shader->UploadUniformMat4("u_ViewProjectionMatrix", m_OrthoCamera.GetViewProjectionMatrix());
-
+		std::dynamic_pointer_cast<Gart::OpenGLShader>(m_Shader)->UploadUniformMat4("u_ViewProjectionMatrix", m_OrthoCamera.GetViewProjectionMatrix());
+		std::dynamic_pointer_cast<Gart::OpenGLShader>(m_Shader)->UploadUniformFloat3("u_Color", m_TriangleColor);
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_ModelTransform);
 
 		Gart::Renderer::Submit(m_VertexArray,m_Shader,transform);
 		Gart::Renderer::EndScene();
+	}
+
+	void OnImGuiRender()
+	{
+		ImGui::Begin("Setting");
+		ImGui::ColorEdit3("Triangle Color", glm::value_ptr(m_TriangleColor));
+		ImGui::End();
 	}
 
 	void OnEvent(BSS::Event& e)
@@ -113,6 +124,7 @@ private :
 
 	glm::vec3 m_ModelTransform;
 	float m_modelspeed = 0.5f;
+	glm::vec3 m_TriangleColor = { 1.0f,0.0f,0.0f };
 };
 class Sandbox : public BSS::Application
 {
