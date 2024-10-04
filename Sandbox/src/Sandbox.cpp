@@ -11,26 +11,30 @@ public:
 		m_VertexArray.reset(Gart::VertexArray::Create());
 
 
-		float vertex[3 * 7] =
+		float vertex[4 * 9] =
 		{
-			-0.5f,-0.5f,0.0f,  1.0f,0.0f,1.0f,1.0f,
-			 0.5f,-0.5f,0.0f,  0.0f,1.0f,1.0f,1.0f,
-			 0.0f, 0.5f,0.0f,  0.0f,0.0f,1.0f,1.0f
+			-0.5f,-0.5f,0.0f,  1.0f,0.0f,1.0f,1.0f, 0.0f,0.0f,
+			 0.5f,-0.5f,0.0f,  0.0f,1.0f,1.0f,1.0f, 1.0f,1.0f,
+			 0.5f, 0.5f,0.0f,  0.0f,0.0f,1.0f,1.0f, 1.0f,0.0f,
+			-0.5f, 0.5f,0.0f,  0.0f,0.0f,1.0f,1.0f, 0.0f,1.0f
 		};
+
+		
 
 		m_vertexBuffer.reset(Gart::VertexBuffer::Create(vertex, sizeof(vertex)));
 
 
 		Gart::BufferLayout layout = {
 			{Gart::ShaderDataType::Float3, "a_Position"},
-			{Gart::ShaderDataType::Float4, "a_Color"}
+			{Gart::ShaderDataType::Float4, "a_Color"},
+			{Gart::ShaderDataType::Float2, "a_Texture"}
 		};
 
 		m_vertexBuffer->SetLayout(layout);
 
 		m_VertexArray->AddVertexBuffer(m_vertexBuffer);
 
-		unsigned int indicies[3] = { 0,1,2 };
+		unsigned int indicies[6] = { 0,1,2,2,3,0 };
 		m_IndexBuffer.reset(Gart::IndexBuffer::Create(indicies, sizeof(indicies) / sizeof(uint32_t)));
 		m_VertexArray->SetIndexBuffer(m_IndexBuffer);
 
@@ -39,8 +43,10 @@ public:
 			
 			layout(location = 0) in vec3 a_Position;
 			layout(location = 1) in vec4 a_Color;
+			layout(location = 2) in vec2 a_Texture;
 
 			out vec4 v_Color;
+			out vec2 v_Texture;
 
 			uniform mat4 u_ViewProjectionMatrix;
 			uniform mat4 u_Transform;
@@ -48,6 +54,7 @@ public:
 			void main()
 			{
 				v_Color = a_Color;
+				v_Texture = a_Texture;
 				gl_Position = u_ViewProjectionMatrix * u_Transform * vec4(a_Position,1.0);
 			}
 		)";
@@ -59,16 +66,21 @@ public:
 			layout(location = 0) out vec4 fragColor;
 			
 			in vec4 v_Color;
-			
-			uniform vec3 u_Color;			
+			in vec2 v_Texture;
+
+			uniform vec3 u_Color;	
+			uniform sampler2D u_Texture;		
 	
 			void main()
 			{
-				fragColor = vec4(u_Color,1.0f);
+				fragColor = texture(u_Texture,v_Texture);
 			}
 		)";
 
 		m_Shader.reset(Gart::Shader::Create(vertexsrc, fragsrc));
+		m_Texture = Gart::Texture2D::Create("assets/textures/smile.png");
+		m_Shader->Bind();
+		std::dynamic_pointer_cast<Gart::OpenGLShader>(m_Shader)->UploadUniformInt("u_Texture", 0);
 	}
 
 	void OnUpdate(Gart::TimeStep ts) override
@@ -95,6 +107,7 @@ public:
 		std::dynamic_pointer_cast<Gart::OpenGLShader>(m_Shader)->UploadUniformFloat3("u_Color", m_TriangleColor);
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_ModelTransform);
 
+		m_Texture->Bind();
 		Gart::Renderer::Submit(m_VertexArray,m_Shader,transform);
 		Gart::Renderer::EndScene();
 	}
@@ -114,10 +127,11 @@ public:
 private :
 	Gart::OrthoGraphicCamera m_OrthoCamera;
 
-	std::shared_ptr<Gart::Shader> m_Shader;
-	std::shared_ptr<Gart::VertexArray> m_VertexArray;
-	std::shared_ptr<Gart::VertexBuffer> m_vertexBuffer;
-	std::shared_ptr<Gart::IndexBuffer> m_IndexBuffer;
+	Gart::Ref<Gart::Shader> m_Shader;
+	Gart::Ref<Gart::VertexArray> m_VertexArray;
+	Gart::Ref<Gart::VertexBuffer> m_vertexBuffer;
+	Gart::Ref<Gart::IndexBuffer> m_IndexBuffer;
+	Gart::Ref<Gart::Texture2D> m_Texture;
 
 	glm::vec3 m_CameraPosition;
 	float m_CameraSpeed = 1.0f;

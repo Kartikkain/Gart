@@ -16,6 +16,8 @@ IncludeDir["GLFW"] = "Gart/vendor/GLFW/include"
 IncludeDir["Glad"] = "Gart/vendor/Glad/include"
 IncludeDir["ImGui"] = "Gart/vendor/imgui"
 IncludeDir["glm"] = "Gart/vendor/glm"
+IncludeDir["stb_image"] = "Gart/vendor/stb_image"
+
 
 include "Gart/vendor/GLFW"
 include "Gart/vendor/Glad"
@@ -38,6 +40,8 @@ project "Gart"
 	{
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp",
+		"%{prj.name}/vendor/stb_image/**.cpp",
+		"%{prj.name}/vendor/stb_image/**.h",
 		"%{prj.name}/vendor/glm/glm/**.hpp",
 		"%{prj.name}/vendor/glm/glm/**.inl"
 	}
@@ -49,7 +53,8 @@ project "Gart"
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.ImGui}",
-		"%{IncludeDir.glm}"
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.stb_image}"
 	}
 
 	links

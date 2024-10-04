@@ -38,6 +38,8 @@ namespace BSS
 		m_Window = std::unique_ptr<Window>(Window::Create());
 		m_Window->SetEventCallback(BSS_EVENT_FN(OnEvent));
 
+		Gart::Renderer::Init();
+
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);
 

@@ -30,7 +30,7 @@ namespace BSS
 		float m_LastFrameTime = 0.0f;
 
 		bool OnWindowClose(WindowCloseEvent& e);
-		std::unique_ptr<Window> m_Window;
+		Gart::Scope<Window> m_Window;
 		ImGuiLayer* m_ImGuiLayer;
 		bool m_Running = true;
 		LayerStack m_LayerStack;
