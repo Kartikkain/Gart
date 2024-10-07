@@ -9,12 +9,12 @@ namespace Gart
 	{
 	public:
 		OpenGLShader(const std::string& filepath);
-		OpenGLShader(const std::string& vertexsrc, const std::string& fragmentsrc);
+		OpenGLShader(const std::string& name,const std::string& vertexsrc, const std::string& fragmentsrc);
 		virtual ~OpenGLShader();
 
 		void Bind() const override;
 		void UnBind() const override;
-		
+		const std::string& GetName() const override { return m_Name; }
 		void UploadUniformInt(const std::string& name, int value);
 
 		void UploadUniformFloat(const std::string& name, float value);
@@ -31,5 +31,6 @@ namespace Gart
 		void Compile(std::unordered_map<GLenum, std::string>& shaderSources);
 	private:
 		uint32_t m_RenderID;
+		std::string m_Name;
 	};
 }

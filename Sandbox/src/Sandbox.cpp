@@ -38,7 +38,8 @@ public:
 		m_IndexBuffer.reset(Gart::IndexBuffer::Create(indicies, sizeof(indicies) / sizeof(uint32_t)));
 		m_VertexArray->SetIndexBuffer(m_IndexBuffer);
 
-		m_Shader.reset(Gart::Shader::Create("assets/shaders/Texture.glsl"));
+		auto m_Shader = m_shadeLibrary.Load("assets/shaders/Texture.glsl");
+		//m_Shader = Gart::Shader::Create("assets/shaders/Texture.glsl");
 		m_Texture = Gart::Texture2D::Create("assets/textures/smile.png");
 		m_Shader->Bind();
 		std::dynamic_pointer_cast<Gart::OpenGLShader>(m_Shader)->UploadUniformInt("u_Texture", 0);
@@ -63,6 +64,7 @@ public:
 		Gart::RenderCommand::Clear();
 
 		Gart::Renderer::BeginScene(m_OrthoCamera);
+		auto m_Shader = m_shadeLibrary.Get("Texture");
 		m_Shader->Bind();
 		std::dynamic_pointer_cast<Gart::OpenGLShader>(m_Shader)->UploadUniformMat4("u_ViewProjectionMatrix", m_OrthoCamera.GetViewProjectionMatrix());
 		std::dynamic_pointer_cast<Gart::OpenGLShader>(m_Shader)->UploadUniformFloat3("u_Color", m_TriangleColor);
@@ -87,8 +89,8 @@ public:
 
 private :
 	Gart::OrthoGraphicCamera m_OrthoCamera;
-
-	Gart::Ref<Gart::Shader> m_Shader;
+	Gart::ShaderLibrary m_shadeLibrary;
+	//Gart::Ref<Gart::Shader> m_Shader;
 	Gart::Ref<Gart::VertexArray> m_VertexArray;
 	Gart::Ref<Gart::VertexBuffer> m_vertexBuffer;
 	Gart::Ref<Gart::IndexBuffer> m_IndexBuffer;

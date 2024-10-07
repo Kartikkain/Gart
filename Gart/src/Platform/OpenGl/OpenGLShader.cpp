@@ -16,8 +16,16 @@ namespace Gart {
 		std::string source = ReadFile(filepath);
 		auto shaderSource = PreProcess(source);
 		Compile(shaderSource);
+
+		// Get FileName.
+		auto lastSlash = filepath.find_last_of("/\\");
+		lastSlash = lastSlash == std::string::npos ? 0 : lastSlash + 1;
+		auto lastDot = filepath.rfind('.');
+		int count = lastDot == std::string::npos ? filepath.size() - lastSlash : lastDot - lastSlash;
+		m_Name = filepath.substr(lastSlash, count); 
 	}
-	OpenGLShader::OpenGLShader(const std::string& vertexsrc, const std::string& fragmentsrc)
+	OpenGLShader::OpenGLShader(const std::string& name,const std::string& vertexsrc, const std::string& fragmentsrc)
+		:m_Name(name)
 	{
 		std::unordered_map<GLenum, std::string> shadersource;
 		shadersource[GL_VERTEX_SHADER] = vertexsrc;
@@ -121,7 +129,8 @@ namespace Gart {
 	void OpenGLShader::Compile(std::unordered_map<GLenum, std::string>& shaderSources)
 	{
 		GLuint program = glCreateProgram();
-		std::vector<GLenum> glShadersID(shaderSources.size());
+		std::array<GLenum,2> glShadersID;
+		int glShaderIDIndex = 0;
 		for (auto& kv : shaderSources)
 		{
 			GLenum type = kv.first;
@@ -159,7 +168,7 @@ namespace Gart {
 
 			// Attach our shaders to our program
 			glAttachShader(program, shader);
-			glShadersID.push_back(shader);
+			glShadersID[glShaderIDIndex++] = shader;
 		}
 
 
