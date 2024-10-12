@@ -6,7 +6,7 @@ class ExampleLayer :public BSS::Layer
 {
 public:
 	ExampleLayer()
-		:Layer("Example"), m_OrthoCamera(-2.0f, 2.0f, -2.0f, 2.0f), m_CameraPosition(0.0f),m_ModelTransform(0.0f)
+		:Layer("Example"), m_OrthoCamera(1280.0f/720.0f), m_CameraPosition(0.0f),m_ModelTransform(0.0f)
 	{
 		m_VertexArray.reset(Gart::VertexArray::Create());
 
@@ -49,24 +49,22 @@ public:
 	{
 		BSS_CLIENT_INFO("Delta Time :: {0}s ({1}ms)", ts.GetSeconds(), ts.GetMilliSeconds());
 
-		if (BSS::Input::IsKeyPressed(BSS_KEY_LEFT)) { m_CameraPosition.x -= m_CameraSpeed * ts; }
-		else if (BSS::Input::IsKeyPressed(BSS_KEY_RIGHT)) { m_CameraPosition.x += m_CameraSpeed * ts; }
-		else if (BSS::Input::IsKeyPressed(BSS_KEY_UP)) { m_CameraPosition.y += m_CameraSpeed * ts; }
-		else if (BSS::Input::IsKeyPressed(BSS_KEY_DOWN)) { m_CameraPosition.y -= m_CameraSpeed * ts; }
+		m_OrthoCamera.OnUpdate(ts);
+		
 
 		if (BSS::Input::IsKeyPressed(BSS_KEY_A)) { m_ModelTransform.x -= m_modelspeed * ts; }
 		else if (BSS::Input::IsKeyPressed(BSS_KEY_D)) { m_ModelTransform.x += m_modelspeed * ts; }
 		else if (BSS::Input::IsKeyPressed(BSS_KEY_W)) { m_ModelTransform.y += m_modelspeed * ts; }
 		else if (BSS::Input::IsKeyPressed(BSS_KEY_S)) { m_ModelTransform.y -= m_modelspeed * ts; }
-		m_OrthoCamera.SetPosition(m_CameraPosition);
+		
 
 		Gart::RenderCommand::SetClearColor({ 0.1f,0.1f,0.1f,1 });
 		Gart::RenderCommand::Clear();
 
-		Gart::Renderer::BeginScene(m_OrthoCamera);
+		Gart::Renderer::BeginScene(m_OrthoCamera.GetCamera());
 		auto m_Shader = m_shadeLibrary.Get("Texture");
 		m_Shader->Bind();
-		std::dynamic_pointer_cast<Gart::OpenGLShader>(m_Shader)->UploadUniformMat4("u_ViewProjectionMatrix", m_OrthoCamera.GetViewProjectionMatrix());
+		std::dynamic_pointer_cast<Gart::OpenGLShader>(m_Shader)->UploadUniformMat4("u_ViewProjectionMatrix", m_OrthoCamera.GetCamera().GetViewProjectionMatrix());
 		std::dynamic_pointer_cast<Gart::OpenGLShader>(m_Shader)->UploadUniformFloat3("u_Color", m_TriangleColor);
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_ModelTransform);
 
@@ -85,10 +83,11 @@ public:
 	void OnEvent(BSS::Event& e)
 	{
 		//BSS_CLIENT_TRACE("{0}", e);
+		m_OrthoCamera.OnEvent(e);
 	}
 
 private :
-	Gart::OrthoGraphicCamera m_OrthoCamera;
+	Gart::OrthoGraphicCameraController m_OrthoCamera;
 	Gart::ShaderLibrary m_shadeLibrary;
 	//Gart::Ref<Gart::Shader> m_Shader;
 	Gart::Ref<Gart::VertexArray> m_VertexArray;

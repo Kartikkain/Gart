@@ -21,4 +21,5 @@
 #include "Renderer/Shader.h"
 
 #include "Renderer/OrthoGraphicCamera.h"
+#include "Renderer/OrthoGraphicCameraController.h"
 
