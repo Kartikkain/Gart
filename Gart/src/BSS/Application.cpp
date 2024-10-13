@@ -55,6 +55,7 @@ namespace BSS
 	{
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<WindowCloseEvent>(BSS_EVENT_FN(OnWindowClose));
+		dispatcher.Dispatch<WindowResizeEvent>(BSS_EVENT_FN(OnWindowResize));
 		BSS_CORE_INFO("{0}", e);
 		
 		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();)
@@ -75,10 +76,11 @@ namespace BSS
 			m_LastFrameTime = l_time;
 			glClear(GL_COLOR_BUFFER_BIT);
 
-
-			for (Layer* layer : m_LayerStack)
-				layer->OnUpdate(timestep);
-
+			if (!m_Minimize)
+			{
+				for (Layer* layer : m_LayerStack)
+					layer->OnUpdate(timestep);
+			}
 			m_ImGuiLayer->Begin();
 			for (Layer* layer : m_LayerStack)
 				layer->OnImGuiRender();
@@ -103,6 +105,20 @@ namespace BSS
 	{
 		m_Running = false;
 		return true;
+	}
+
+	bool Application::OnWindowResize(WindowResizeEvent& e)
+	{
+		if (e.GetWidth() == 0 || e.GetHeight() == 0)
+		{
+			m_Minimize = true;
+			return false;
+		}
+		m_Minimize = false;
+
+		Gart::Renderer::WindowResize(e.GetWidth(), e.GetHeight());
+
+		return false;
 	}
 
 }

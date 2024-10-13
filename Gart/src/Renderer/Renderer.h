@@ -9,6 +9,7 @@ namespace Gart
 	{
 	public :
 		static void Init();
+		static void WindowResize(uint32_t Width, uint32_t Height);
 		static void BeginScene(OrthoGraphicCamera& camera);
 		static void EndScene();
 

@@ -13,6 +13,11 @@ namespace Gart
 		glClearColor(color.r, color.g, color.b, color.a);
 	}
 
+	void OpenGlRendererAPI::SetViewPort(uint32_t x, uint32_t y, uint32_t Width, uint32_t Height)
+	{
+		glViewport(x, y, Width, Height);
+	}
+
 	void OpenGlRendererAPI::Clear()
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

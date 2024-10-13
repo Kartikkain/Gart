@@ -11,6 +11,11 @@ namespace Gart
 		RenderCommand::Init();
 	}
 
+	void Renderer::WindowResize(uint32_t Width, uint32_t Height)
+	{
+		RenderCommand::SetViewPort(0, 0, Width, Height);
+	}
+
 	void Renderer::BeginScene(OrthoGraphicCamera& camera)
 	{
 		m_SceneData->ViewProjectionMatrix = camera.GetViewProjectionMatrix();
