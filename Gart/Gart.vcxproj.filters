@@ -4,9 +4,6 @@
     <Filter Include="src">
       <UniqueIdentifier>{2DAB880B-99B4-887C-2230-9F7C8E38947C}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\BSS">
-      <UniqueIdentifier>{44632FA9-B042-AE44-B95A-391B25B914A6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\Core">
       <UniqueIdentifier>{A5D31CCF-91A0-77DA-BAB9-6582A6E5AC68}</UniqueIdentifier>
     </Filter>
@@ -57,37 +54,37 @@
     <ClInclude Include="src\BSS.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\BSS\Application.h">
-      <Filter>src\BSS</Filter>
+    <ClInclude Include="src\Core\Application.h">
+      <Filter>src\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\BSS\Core.h">
-      <Filter>src\BSS</Filter>
+    <ClInclude Include="src\Core\Core.h">
+      <Filter>src\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\BSS\EntryPoint.h">
-      <Filter>src\BSS</Filter>
+    <ClInclude Include="src\Core\EntryPoint.h">
+      <Filter>src\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\BSS\Input.h">
-      <Filter>src\BSS</Filter>
+    <ClInclude Include="src\Core\Input.h">
+      <Filter>src\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\BSS\KeyCodes.h">
-      <Filter>src\BSS</Filter>
+    <ClInclude Include="src\Core\KeyCodes.h">
+      <Filter>src\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\BSS\Layer.h">
-      <Filter>src\BSS</Filter>
+    <ClInclude Include="src\Core\Layer.h">
+      <Filter>src\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\BSS\LayerStack.h">
-      <Filter>src\BSS</Filter>
+    <ClInclude Include="src\Core\LayerStack.h">
+      <Filter>src\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\BSS\Log.h">
-      <Filter>src\BSS</Filter>
+    <ClInclude Include="src\Core\Log.h">
+      <Filter>src\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\BSS\MouseButtonCodes.h">
-      <Filter>src\BSS</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BSS\Window.h">
-      <Filter>src\BSS</Filter>
+    <ClInclude Include="src\Core\MouseButtonCodes.h">
+      <Filter>src\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Core\TimeStep.h">
+      <Filter>src\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Window.h">
       <Filter>src\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Events\ApplicationEvent.h">
@@ -133,6 +130,9 @@
       <Filter>src\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Renderer\OrthoGraphicCamera.h">
+      <Filter>src\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Renderer\OrthoGraphicCameraController.h">
       <Filter>src\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Renderer\RenderCommand.h">
@@ -1410,20 +1410,19 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="src\Renderer\OrthoGraphicCameraController.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\BSS\Application.cpp">
-      <Filter>src\BSS</Filter>
+    <ClCompile Include="src\Core\Application.cpp">
+      <Filter>src\Core</Filter>
     </ClCompile>
-    <ClCompile Include="src\BSS\Layer.cpp">
-      <Filter>src\BSS</Filter>
+    <ClCompile Include="src\Core\Layer.cpp">
+      <Filter>src\Core</Filter>
     </ClCompile>
-    <ClCompile Include="src\BSS\LayerStack.cpp">
-      <Filter>src\BSS</Filter>
+    <ClCompile Include="src\Core\LayerStack.cpp">
+      <Filter>src\Core</Filter>
     </ClCompile>
-    <ClCompile Include="src\BSS\Log.cpp">
-      <Filter>src\BSS</Filter>
+    <ClCompile Include="src\Core\Log.cpp">
+      <Filter>src\Core</Filter>
     </ClCompile>
     <ClCompile Include="src\Platform\OpenGl\OpenGLShader.cpp">
       <Filter>src\Platform\OpenGl</Filter>
@@ -1453,6 +1452,9 @@
       <Filter>src\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Renderer\OrthoGraphicCamera.cpp">
+      <Filter>src\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderer\OrthoGraphicCameraController.cpp">
       <Filter>src\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Renderer\RenderCommand.cpp">
@@ -1485,6 +1487,5 @@
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="src\Renderer\OrthoGraphicCameraController.cpp" />
   </ItemGroup>
 </Project>

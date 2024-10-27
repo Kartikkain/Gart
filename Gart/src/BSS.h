@@ -1,12 +1,12 @@
 #pragma once
 
-#include "BSS/Application.h"
-#include "BSS/Input.h"
-#include "BSS/KeyCodes.h"
-#include "BSS/MouseButtonCodes.h"
-#include "BSS/Layer.h"
-#include "BSS/Log.h"
-#include "BSS/EntryPoint.h"
+#include "Core/Application.h"
+#include "Core/Input.h"
+#include "Core/KeyCodes.h"
+#include "Core/MouseButtonCodes.h"
+#include "Core/Layer.h"
+#include "Core/Log.h"
+#include "Core/EntryPoint.h"
 #include "imgui/ImGuiLayer.h"
 
 #include "Core/TimeStep.h"

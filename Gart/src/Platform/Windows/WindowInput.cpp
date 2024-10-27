@@ -1,7 +1,7 @@
 #include "bsspch.h"
 #include "WindowInput.h"
 
-#include "BSS/Application.h"
+#include "Core/Application.h"
 #include <GLFW/glfw3.h>
 
 namespace BSS

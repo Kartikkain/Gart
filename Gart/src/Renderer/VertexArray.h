@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Renderer/Buffer.h"
-#include "BSS/Core.h"
+#include "Core/Core.h"
 
 namespace Gart
 {

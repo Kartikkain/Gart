@@ -1,7 +1,7 @@
 #include "bsspch.h"
 #include "OrthoGraphicCameraController.h"
-#include "BSS/Input.h"
-#include "BSS/KeyCodes.h"
+#include "Core/Input.h"
+#include "Core/KeyCodes.h"
 
 namespace Gart 
 {

@@ -146,17 +146,17 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\BSS.h" />
-    <ClInclude Include="src\BSS\Application.h" />
-    <ClInclude Include="src\BSS\Core.h" />
-    <ClInclude Include="src\BSS\EntryPoint.h" />
-    <ClInclude Include="src\BSS\Input.h" />
-    <ClInclude Include="src\BSS\KeyCodes.h" />
-    <ClInclude Include="src\BSS\Layer.h" />
-    <ClInclude Include="src\BSS\LayerStack.h" />
-    <ClInclude Include="src\BSS\Log.h" />
-    <ClInclude Include="src\BSS\MouseButtonCodes.h" />
-    <ClInclude Include="src\BSS\Window.h" />
+    <ClInclude Include="src\Core\Application.h" />
+    <ClInclude Include="src\Core\Core.h" />
+    <ClInclude Include="src\Core\EntryPoint.h" />
+    <ClInclude Include="src\Core\Input.h" />
+    <ClInclude Include="src\Core\KeyCodes.h" />
+    <ClInclude Include="src\Core\Layer.h" />
+    <ClInclude Include="src\Core\LayerStack.h" />
+    <ClInclude Include="src\Core\Log.h" />
+    <ClInclude Include="src\Core\MouseButtonCodes.h" />
     <ClInclude Include="src\Core\TimeStep.h" />
+    <ClInclude Include="src\Core\Window.h" />
     <ClInclude Include="src\Events\ApplicationEvent.h" />
     <ClInclude Include="src\Events\Event.h" />
     <ClInclude Include="src\Events\KeyEvent.h" />
@@ -600,10 +600,10 @@
     <ClInclude Include="vendor\stb_image\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\BSS\Application.cpp" />
-    <ClCompile Include="src\BSS\Layer.cpp" />
-    <ClCompile Include="src\BSS\LayerStack.cpp" />
-    <ClCompile Include="src\BSS\Log.cpp" />
+    <ClCompile Include="src\Core\Application.cpp" />
+    <ClCompile Include="src\Core\Layer.cpp" />
+    <ClCompile Include="src\Core\LayerStack.cpp" />
+    <ClCompile Include="src\Core\Log.cpp" />
     <ClCompile Include="src\Platform\OpenGl\OpenGLShader.cpp" />
     <ClCompile Include="src\Platform\OpenGl\OpenGlBuffer.cpp" />
     <ClCompile Include="src\Platform\OpenGl\OpenGlContext.cpp" />
