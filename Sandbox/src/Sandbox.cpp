@@ -1,14 +1,16 @@
 #include <BSS.h>
+#include "Core/EntryPoint.h"
 #include "Platform/OpenGl/OpenGLShader.h"
 #include "/C++ Projects/Gart/Gart/Gart/vendor/imgui/imgui.h"
 #include <glm/gtc/type_ptr.hpp>
+#include "Sandbox2D.h"
 class ExampleLayer :public BSS::Layer
 {
 public:
 	ExampleLayer()
 		:Layer("Example"), m_OrthoCamera(1280.0f/720.0f), m_CameraPosition(0.0f),m_ModelTransform(0.0f)
 	{
-		m_VertexArray.reset(Gart::VertexArray::Create());
+		m_VertexArray = Gart::VertexArray::Create();
 
 
 		float vertex[4 * 9] =
@@ -107,7 +109,8 @@ class Sandbox : public BSS::Application
 public:
 	Sandbox()
 	{
-		PushLayer(new ExampleLayer());
+		//PushLayer(new ExampleLayer());
+		PushLayer(new Sandbox2D());
 		
 	}
 

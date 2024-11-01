@@ -6,7 +6,6 @@
 #include "Core/MouseButtonCodes.h"
 #include "Core/Layer.h"
 #include "Core/Log.h"
-#include "Core/EntryPoint.h"
 #include "imgui/ImGuiLayer.h"
 
 #include "Core/TimeStep.h"

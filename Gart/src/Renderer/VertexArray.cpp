@@ -4,11 +4,11 @@
 #include "Platform/OpenGl/OpenGlVertexArray.h"
 namespace Gart
 {
-	VertexArray* VertexArray::Create()
+	Ref<VertexArray> VertexArray::Create()
 	{
 		switch (Renderer::GetAPI())
 		{
-			case RendererAPI::API::OpenGl: return new OpenGlVertexArray();
+		case RendererAPI::API::OpenGl: return std::make_shared<OpenGlVertexArray>();
 		}
 		return nullptr;
 	}
