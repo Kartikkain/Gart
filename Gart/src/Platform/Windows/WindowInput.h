@@ -1,6 +1,6 @@
 #pragma once
 
-#include "BSS/Input.h"
+#include "Core/Input.h"
 
 namespace BSS
 {

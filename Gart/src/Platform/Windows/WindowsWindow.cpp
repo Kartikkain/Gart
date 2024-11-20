@@ -1,6 +1,6 @@
 #include "bsspch.h"
 #include "WindowsWindow.h"
-#include "BSS/Log.h"
+#include "Core/Log.h"
 #include "Events/ApplicationEvent.h"
 #include "Events/MouseEvent.h"
 #include "Events/KeyEvent.h"

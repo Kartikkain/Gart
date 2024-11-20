@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Platform/OpenGl/OpenGlRendererAPI.h"
 
 namespace Gart
@@ -5,7 +7,15 @@ namespace Gart
 	class RenderCommand
 	{
 	public :
+		inline static void Init()
+		{
+			s_RendererAPI->Init();
+		}
 
+		inline static void SetViewPort(uint32_t x, uint32_t y, uint32_t Width, uint32_t Height)
+		{
+			s_RendererAPI->SetViewPort(x, y, Width, Height);
+		}
 		inline static void SetClearColor(const glm::vec4& color)
 		{
 			s_RendererAPI->SetClearColor(color);

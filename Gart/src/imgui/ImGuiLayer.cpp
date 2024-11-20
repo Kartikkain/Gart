@@ -2,7 +2,7 @@
 #include "bsspch.h"
 #include "ImGuiLayer.h"
 #include "imgui.h"
-#include "BSS/Application.h"
+#include "Core/Application.h"
 
 #define IMGUI_IMPL_API
 #include "backends/imgui_impl_glfw.h"
