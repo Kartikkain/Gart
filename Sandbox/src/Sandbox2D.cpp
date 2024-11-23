@@ -1,5 +1,4 @@
 #include "Sandbox2D.h"
-#include "Platform/OpenGl/OpenGLShader.h"
 #include "imgui.h"
 #include <glm/gtc/type_ptr.hpp>
 
@@ -62,7 +61,8 @@ void Sandbox2D::OnUpdate(Gart::TimeStep ts)
 	m_Shader->Bind();
 
 	//Gart::Renderer::Submit(m_VertexArray, m_Shader);
-	Gart::Renderer2D::DrawQuad({ 0.0f,0.0f }, { 1.0f,1.0f }, { 0.8f,0.2f,0.3f,1.0f });
+	Gart::Renderer2D::DrawQuad({ 0.0f,0.0f }, { 0.5f,0.5f }, { 0.8f,0.2f,0.3f,1.0f });
+	Gart::Renderer2D::DrawQuad({ 2.0f,1.0f }, { 0.2f,0.5f }, { 1.0f,0.5f,0.3f,1.0f });
 	Gart::Renderer2D::EndScene();
 
 	/*std::dynamic_pointer_cast<Gart::OpenGLShader>(m_Shader)->UploadUniformMat4("u_ViewProjectionMatrix", m_OrthoCamera.GetCamera().GetViewProjectionMatrix());
