@@ -64,6 +64,11 @@ namespace Gart {
 		UploadUniformFloat3(name, value);
 	}
 
+	void OpenGLShader::SetInt(const std::string& name, int value)
+	{
+		UploadUniformInt(name, value);
+	}
+
 	void OpenGLShader::UploadUniformInt(const std::string& name, int value)
 	{
 		GLuint location = glGetUniformLocation(m_RenderID, name.c_str());

@@ -19,5 +19,6 @@ private:
 	// Temporary 
 	Gart::Ref<Gart::Shader> m_Shader;
 	Gart::Ref<Gart::VertexArray> m_VertexArray;
+	Gart::Ref<Gart::Texture2D> m_Texture;
 	glm::vec3 m_TriangleColor = { 1.0f,0.0f,0.0f };
 };
