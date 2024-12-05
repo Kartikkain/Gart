@@ -12,6 +12,8 @@
 #include<unordered_map>
 #include<unordered_set>
 
+#include "Debug/Instrumentor.h"
+
 #ifdef BSS_PLATFORM_WINDOW
 	#include<Windows.h>
 #endif // BSS_PLATFORM_WINDOW
