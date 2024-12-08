@@ -13,6 +13,8 @@ namespace Gart
 
 	void OrthoGraphicCameraController::OnUpdate(TimeStep ts)
 	{
+		GART_PROFILE_FUNCTION();
+
 		if (BSS::Input::IsKeyPressed(BSS_KEY_A)) { m_CameraPosition.x -= m_CameraTranslationSpeed * ts; }
 		else if (BSS::Input::IsKeyPressed(BSS_KEY_D)) { m_CameraPosition.x += m_CameraTranslationSpeed * ts; }
 		else if (BSS::Input::IsKeyPressed(BSS_KEY_W)) { m_CameraPosition.y += m_CameraTranslationSpeed * ts; }
@@ -23,6 +25,8 @@ namespace Gart
 
 	void OrthoGraphicCameraController::OnEvent(BSS::Event& e)
 	{
+		GART_PROFILE_FUNCTION();
+
 		BSS::EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<BSS::MouseScrollEvent>(BSS_EVENT_BIND_FN(OrthoGraphicCameraController::OnMouseScrolled));
 		dispatcher.Dispatch<BSS::WindowResizeEvent>(BSS_EVENT_BIND_FN(OrthoGraphicCameraController::OnWindowResized));
@@ -30,6 +34,8 @@ namespace Gart
 
 	bool OrthoGraphicCameraController::OnMouseScrolled(BSS::MouseScrollEvent& e)
 	{
+		GART_PROFILE_FUNCTION();
+
 		m_ZoomLevel -= e.GetOffsetY() * 0.25f;
 		m_ZoomLevel = std::max(m_ZoomLevel, 0.25f);
 		m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);

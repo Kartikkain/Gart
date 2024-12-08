@@ -12,17 +12,21 @@ Sandbox2D::Sandbox2D()
 
 void Sandbox2D::OnAttach()
 {
-	
+	GART_PROFILE_FUNCTION();
+
 	m_Texture = Gart::Texture2D::Create("assets/textures/smile.png");
 }
 
 void Sandbox2D::OnDitach()
 {
+	GART_PROFILE_FUNCTION();
+
 }
 
 void Sandbox2D::OnUpdate(Gart::TimeStep ts)
 {
-	GART_PROFILE_SCOPE();
+	GART_PROFILE_FUNCTION();
+
 
 	m_OrthoCamera.OnUpdate(ts);
 
@@ -41,7 +45,8 @@ void Sandbox2D::OnUpdate(Gart::TimeStep ts)
 
 void Sandbox2D::OnImGuiRender()
 {
-	GART_PROFILE_SCOPE();
+	GART_PROFILE_FUNCTION();
+
 	ImGui::Begin("Setting");
 	ImGui::ColorEdit3("Triangle Color", glm::value_ptr(m_TriangleColor));
 	ImGui::End();
@@ -49,5 +54,7 @@ void Sandbox2D::OnImGuiRender()
 
 void Sandbox2D::OnEvent(BSS::Event& e)
 {
+	GART_PROFILE_FUNCTION();
+
 	m_OrthoCamera.OnEvent(e);
 }

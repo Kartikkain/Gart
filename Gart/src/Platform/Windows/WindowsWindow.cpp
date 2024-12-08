@@ -20,6 +20,8 @@ namespace BSS
 
 	Window* Window::Create(const WindowProps& props)
 	{
+		GART_PROFILE_FUNCTION();
+
 		return new WindowsWindow(props);
 	}
 
@@ -35,6 +37,8 @@ namespace BSS
 
 	void WindowsWindow::Init(const WindowProps& props)
 	{
+		GART_PROFILE_FUNCTION();
+
 		m_Data.Title = props.Title;
 		m_Data.Width = props.Width;
 		m_Data.Height = props.Height;

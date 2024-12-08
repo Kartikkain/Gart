@@ -27,15 +27,21 @@ namespace Gart
 
 	OpenGlVertexArray::OpenGlVertexArray()
 	{
+		GART_PROFILE_FUNCTION();
+
 		glCreateVertexArrays(1, &m_RenderID);
 	}
 	void OpenGlVertexArray::Bind() const
 	{
+		GART_PROFILE_FUNCTION();
+
 		glBindVertexArray(m_RenderID);
 	}
 
 	void OpenGlVertexArray::UnBind() const
 	{
+		GART_PROFILE_FUNCTION();
+
 		glBindVertexArray(0);
 	}
 

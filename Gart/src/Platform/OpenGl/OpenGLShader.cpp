@@ -13,6 +13,8 @@ namespace Gart {
 	}
 	OpenGLShader::OpenGLShader(const std::string& filepath)
 	{
+		GART_PROFILE_FUNCTION();
+
 		std::string source = ReadFile(filepath);
 		auto shaderSource = PreProcess(source);
 		Compile(shaderSource);
@@ -27,6 +29,8 @@ namespace Gart {
 	OpenGLShader::OpenGLShader(const std::string& name,const std::string& vertexsrc, const std::string& fragmentsrc)
 		:m_Name(name)
 	{
+		GART_PROFILE_FUNCTION();
+
 		std::unordered_map<GLenum, std::string> shadersource;
 		shadersource[GL_VERTEX_SHADER] = vertexsrc;
 		shadersource[GL_FRAGMENT_SHADER] = fragmentsrc;
@@ -36,36 +40,50 @@ namespace Gart {
 
 	OpenGLShader::~OpenGLShader()
 	{
+		GART_PROFILE_FUNCTION();
+
 		glDeleteProgram(m_RenderID);
 	}
 
 	void OpenGLShader::Bind() const
 	{
+		GART_PROFILE_FUNCTION();
+
 		glUseProgram(m_RenderID);
 	}
 
 	void OpenGLShader::UnBind() const
 	{
+		GART_PROFILE_FUNCTION();
+
 		glUseProgram(0);
 	}
 
 	void OpenGLShader::SetMat4(const std::string& name, const glm::mat4& value)
 	{
+		GART_PROFILE_FUNCTION();
+
 		UploadUniformMat4(name, value);
 	}
 
 	void OpenGLShader::SetFloat4(const std::string& name, glm::vec4& value)
 	{
+		GART_PROFILE_FUNCTION();
+
 		UploadUniformFloat4(name, value);
 	}
 
 	void OpenGLShader::SetFloat3(const std::string& name, glm::vec3& value)
 	{
+		GART_PROFILE_FUNCTION();
+
 		UploadUniformFloat3(name, value);
 	}
 
 	void OpenGLShader::SetInt(const std::string& name, int value)
 	{
+		GART_PROFILE_FUNCTION();
+
 		UploadUniformInt(name, value);
 	}
 
@@ -113,6 +131,8 @@ namespace Gart {
 
 	std::string OpenGLShader::ReadFile(const std::string& filePath)
 	{
+		GART_PROFILE_FUNCTION();
+
 		std::string result;
 		std::ifstream in(filePath, std::ios::in, std::ios::binary);
 		if (in)
@@ -128,6 +148,8 @@ namespace Gart {
 
 	std::unordered_map<GLenum, std::string> OpenGLShader::PreProcess(const std::string& source)
 	{
+		GART_PROFILE_FUNCTION();
+
 		std::unordered_map<GLenum, std::string> shaderSource;
 
 		const char* typeToken = "#type";
@@ -148,6 +170,8 @@ namespace Gart {
 
 	void OpenGLShader::Compile(std::unordered_map<GLenum, std::string>& shaderSources)
 	{
+		GART_PROFILE_FUNCTION();
+
 		GLuint program = glCreateProgram();
 		std::array<GLenum,2> glShadersID;
 		int glShaderIDIndex = 0;

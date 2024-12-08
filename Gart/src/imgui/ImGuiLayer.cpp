@@ -23,6 +23,8 @@ namespace BSS
 	}
 	void ImGuiLayer::OnAttach()
 	{
+		GART_PROFILE_FUNCTION();
+
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
 		ImGuiIO& io = ImGui::GetIO(); 
@@ -49,6 +51,8 @@ namespace BSS
 	}
 	void ImGuiLayer::OnDitach()
 	{
+		GART_PROFILE_FUNCTION();
+
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();
@@ -57,6 +61,8 @@ namespace BSS
 
 	void ImGuiLayer::OnImGuiRender()
 	{
+		GART_PROFILE_FUNCTION();
+
 		static bool show = true;
 		ImGui::ShowDemoWindow(&show);
 
@@ -64,6 +70,8 @@ namespace BSS
 
 	void ImGuiLayer::Begin()
 	{
+		GART_PROFILE_FUNCTION();
+
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
@@ -71,6 +79,8 @@ namespace BSS
 
 	void ImGuiLayer::End()
 	{
+		GART_PROFILE_FUNCTION();
+
 		ImGuiIO& io = ImGui::GetIO();
 		Application& app = Application::Get();
 		io.DisplaySize = ImVec2(app.GetWindow().GetWidth(), app.GetWindow().GetHeight());
