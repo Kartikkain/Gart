@@ -16,7 +16,12 @@ namespace Gart
 
 		static void DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color);
 		static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color);
-		static void DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D> texture);
-		static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D> texture);
+		static void DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D> texture, float tilling = 1.0f, glm::vec4 tintcolor = glm::vec4(1.0f));
+		static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D> texture, float tilling = 1.0f, glm::vec4 tintcolor = glm::vec4(1.0f));
+
+		static void DrawRotateQuad(const glm::vec2& position, float rotation,  const glm::vec2& size, const glm::vec4& color);
+		static void DrawRotateQuad(const glm::vec3& position, float rotation, const glm::vec2& size, const glm::vec4& color);
+		static void DrawRotateQuad(const glm::vec2& position, float rotation, const glm::vec2& size, const Ref<Texture2D> texture, float tilling = 1.0f, glm::vec4 tintcolor = glm::vec4(1.0f));
+		static void DrawRotateQuad(const glm::vec3& position, float rotation, const glm::vec2& size, const Ref<Texture2D> texture, float tilling = 1.0f, glm::vec4 tintcolor = glm::vec4(1.0f));
 	};
 }

@@ -59,6 +59,12 @@ namespace Gart {
 		glUseProgram(0);
 	}
 
+	void OpenGLShader::SetFloat(const std::string& name, float value)
+	{
+		GART_PROFILE_FUNCTION();
+
+		UploadUniformFloat(name, value);
+	}
 	void OpenGLShader::SetMat4(const std::string& name, const glm::mat4& value)
 	{
 		GART_PROFILE_FUNCTION();

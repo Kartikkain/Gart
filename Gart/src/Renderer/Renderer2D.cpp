@@ -95,6 +95,7 @@ namespace Gart
 
 		s_Data->TextureShader->Bind();
 		s_Data->TextureShader->SetFloat4("u_Color", glm::vec4(color));
+		s_Data->TextureShader->SetFloat("u_Tilling", 1.0f);
 
 		// Bind White Texture.
 
@@ -108,22 +109,66 @@ namespace Gart
 		RenderCommand::DrawIndexed(s_Data->QuadVertexArray);
 	}
 
-	void Renderer2D::DrawQuad(const glm::vec2 & position, const glm::vec2 & size, const Ref<Texture2D> texture)
+	void Renderer2D::DrawQuad(const glm::vec2 & position, const glm::vec2 & size, const Ref<Texture2D> texture , float tilling, glm::vec4 tintcolor)
 	{
 		GART_PROFILE_FUNCTION();
 
-		DrawQuad({ position.x,position.y,0.0f }, size, texture);
+		DrawQuad({ position.x,position.y,0.0f }, size, texture,tilling,tintcolor);
 	}
-	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D> texture)
+	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D> texture , float tilling, glm::vec4 tintcolor)
 	{
 		GART_PROFILE_FUNCTION();
 
 		s_Data->TextureShader->Bind();
-		s_Data->TextureShader->SetFloat4("u_Color", glm::vec4(1.0f));
+		s_Data->TextureShader->SetFloat4("u_Color", tintcolor);
+		s_Data->TextureShader->SetFloat("u_Tilling", tilling);
 
 		// POV : Transform matrix caluclation should be like translate * rotation * scaling.
 
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), glm::vec3(size.x, size.y, 1.0f));
+		s_Data->TextureShader->SetMat4("u_Transform", transform);
+		texture->Bind();
+		s_Data->QuadVertexArray->Bind();
+		RenderCommand::DrawIndexed(s_Data->QuadVertexArray);
+	}
+	void Renderer2D::DrawRotateQuad(const glm::vec2& position, float rotation, const glm::vec2& size, const glm::vec4& color)
+	{
+		DrawRotateQuad({ position.x,position.y,0.0f }, rotation, size, color);
+	}
+	void Renderer2D::DrawRotateQuad(const glm::vec3& position, float rotation, const glm::vec2& size, const glm::vec4& color)
+	{
+		GART_PROFILE_FUNCTION();
+
+		s_Data->TextureShader->Bind();
+		s_Data->TextureShader->SetFloat4("u_Color", glm::vec4(color));
+		s_Data->TextureShader->SetFloat("u_Tilling", 1.0f);
+
+		// Bind White Texture.
+
+		s_Data->WhiteTexture->Bind();
+
+		// POV : Transform matrix caluclation should be like translate * rotation * scaling.
+
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::rotate(glm::mat4(1.0f), rotation, glm::vec3(0.0f, 0.0f, 1.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(size.x, size.y, 1.0f));
+		s_Data->TextureShader->SetMat4("u_Transform", transform);
+		s_Data->QuadVertexArray->Bind();
+		RenderCommand::DrawIndexed(s_Data->QuadVertexArray);
+	}
+	void Renderer2D::DrawRotateQuad(const glm::vec2& position, float rotation, const glm::vec2& size, const Ref<Texture2D> texture, float tilling, glm::vec4 tintcolor)
+	{
+		DrawRotateQuad({ position.x,position.y,0.0f }, rotation, size, texture, tilling,tintcolor);
+	}
+	void Renderer2D::DrawRotateQuad(const glm::vec3& position, float rotation, const glm::vec2& size, const Ref<Texture2D> texture, float tilling, glm::vec4 tintcolor)
+	{
+		GART_PROFILE_FUNCTION();
+
+		s_Data->TextureShader->Bind();
+		s_Data->TextureShader->SetFloat4("u_Color", tintcolor);
+		s_Data->TextureShader->SetFloat("u_Tilling", tilling);
+
+		// POV : Transform matrix caluclation should be like translate * rotation * scaling.
+
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::rotate(glm::mat4(1.0f),rotation,glm::vec3(0.0f,0.0f,1.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(size.x, size.y, 1.0f));
 		s_Data->TextureShader->SetMat4("u_Transform", transform);
 		texture->Bind();
 		s_Data->QuadVertexArray->Bind();
