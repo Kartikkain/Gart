@@ -7,21 +7,37 @@
 
 namespace Gart
 {
-	struct Renderer2DStorage
+	struct QuadVertex
 	{
-		Ref<VertexArray> QuadVertexArray;
-		Ref<Shader> TextureShader;
-		Ref<Texture2D> WhiteTexture;
+		glm::vec3 Position;
+		glm::vec4 Color;
+		glm::vec2 TexCoord;
 	};
 
-	static Renderer2DStorage* s_Data;
+	struct Renderer2DStorage
+	{
+		const uint32_t MaxQuads = 10000;
+		const uint32_t MaxVertices = MaxQuads * 4;
+		const uint32_t MaxIndices = MaxQuads * 6;
+
+		Ref<VertexArray> QuadVertexArray;
+		Ref<VertexBuffer> QuadVertexBuffer;
+		Ref<Shader> TextureShader;
+		Ref<Texture2D> WhiteTexture;
+
+		uint32_t QuadindexCount = 0;
+		QuadVertex* QuadVertexBase = nullptr;
+		QuadVertex* QuadVertexPtr = nullptr;
+	};
+
+	
+	static Renderer2DStorage s_Data;
 
 	void Renderer2D::init()
 	{
 		GART_PROFILE_FUNCTION();
 
-		s_Data = new Renderer2DStorage();
-		s_Data->QuadVertexArray = VertexArray::Create();
+		s_Data.QuadVertexArray = VertexArray::Create();
 
 
 		float vertex[5 * 4] =
@@ -33,54 +49,66 @@ namespace Gart
 		};
 
 
-		Ref<VertexBuffer> m_vertexBuffer;
-		m_vertexBuffer.reset(VertexBuffer::Create(vertex, sizeof(vertex)));
+		
+		s_Data.QuadVertexBuffer.reset(VertexBuffer::Create(s_Data.MaxVertices * sizeof(QuadVertex)));
 
 
 		Gart::BufferLayout layout = {
 			{Gart::ShaderDataType::Float3, "a_Position"},
+			{Gart::ShaderDataType::Float4, "a_Color"},
 			{Gart::ShaderDataType::Float2, "a_Texture"}
 		};
 
-		m_vertexBuffer->SetLayout(layout);
+		s_Data.QuadVertexBuffer->SetLayout(layout);
 
-		s_Data->QuadVertexArray->AddVertexBuffer(m_vertexBuffer);
+		s_Data.QuadVertexArray->AddVertexBuffer(s_Data.QuadVertexBuffer);
 
+		s_Data.QuadVertexBase = new QuadVertex[s_Data.MaxVertices];
+
+		uint32_t* quadIndicies = new uint32_t[s_Data.MaxIndices];
 		unsigned int indicies[6] = { 0,1,2,2,3,0 };
 		Ref<IndexBuffer> m_IndexBuffer;
-		m_IndexBuffer.reset(IndexBuffer::Create(indicies, sizeof(indicies) / sizeof(uint32_t)));
-		s_Data->QuadVertexArray->SetIndexBuffer(m_IndexBuffer);
-
+		m_IndexBuffer.reset(IndexBuffer::Create(quadIndicies, s_Data.MaxIndices));
+		s_Data.QuadVertexArray->SetIndexBuffer(m_IndexBuffer);
+		delete[] quadIndicies;
 		//auto m_Shader = m_shadeLibrary.Load("assets/shaders/Texture.glsl");
-		s_Data->TextureShader = Shader::Create("assets/shaders/Texture.glsl");
-		s_Data->TextureShader->Bind();
-		s_Data->TextureShader->SetInt("u_Texture", 0);
+		s_Data.TextureShader = Shader::Create("assets/shaders/Texture.glsl");
+		s_Data.TextureShader->Bind();
+		s_Data.TextureShader->SetInt("u_Texture", 0);
 
-		s_Data->WhiteTexture = Texture2D::Create(1, 1);
+		s_Data.WhiteTexture = Texture2D::Create(1, 1);
 		uint32_t whitetexturedata = 0xffffffff;
-		s_Data->WhiteTexture->SetData(&whitetexturedata, sizeof(uint32_t));
+		s_Data.WhiteTexture->SetData(&whitetexturedata, sizeof(uint32_t));
 	}
 	void Renderer2D::Shutdown()
 	{
 		GART_PROFILE_FUNCTION();
-
-		delete s_Data;
 	}
 	void Renderer2D::BeginScene(const OrthoGraphicCamera& camera)
 	{
 		GART_PROFILE_FUNCTION();
 
-		/*s_Data->FlatColorShader->Bind();
-		s_Data->FlatColorShader->SetMat4("u_ViewProjectionMatrix", camera.GetViewProjectionMatrix());
+		/*s_Data.FlatColorShader->Bind();
+		s_Data.FlatColorShader->SetMat4("u_ViewProjectionMatrix", camera.GetViewProjectionMatrix());
 		*/
 
-		s_Data->TextureShader->Bind();
-		s_Data->TextureShader->SetMat4("u_ViewProjectionMatrix", camera.GetViewProjectionMatrix());
+		s_Data.TextureShader->Bind();
+		s_Data.TextureShader->SetMat4("u_ViewProjectionMatrix", camera.GetViewProjectionMatrix());
+
+		s_Data.QuadindexCount = 0;
+		s_Data.QuadVertexPtr = s_Data.QuadVertexPtr;
 
 	}
 	void Renderer2D::EndScene()
 	{
 		GART_PROFILE_FUNCTION();
+		uint32_t datasize = (uint32_t*)s_Data.QuadVertexPtr - (uint32_t*)s_Data.QuadVertexBase;
+		s_Data.QuadVertexBuffer->SetData(s_Data.QuadVertexBase, datasize);
+		Flush();
+	}
+
+	void Renderer2D::Flush()
+	{
 
 	}
 	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color)
@@ -93,20 +121,42 @@ namespace Gart
 	{
 		GART_PROFILE_FUNCTION();
 
-		s_Data->TextureShader->Bind();
-		s_Data->TextureShader->SetFloat4("u_Color", glm::vec4(color));
-		s_Data->TextureShader->SetFloat("u_Tilling", 1.0f);
+		s_Data.QuadVertexPtr->Position = position;
+		s_Data.QuadVertexPtr->Color = color;
+		s_Data.QuadVertexPtr->TexCoord = {0.0f,0.0f};
+		s_Data.QuadVertexPtr++;
 
-		// Bind White Texture.
+		s_Data.QuadVertexPtr->Position = { position.x + size.x,position.y, 0.0f };
+		s_Data.QuadVertexPtr->Color = color;
+		s_Data.QuadVertexPtr->TexCoord = { 1.0f,0.0f };
+		s_Data.QuadVertexPtr++;
 
-		s_Data->WhiteTexture->Bind();
+		s_Data.QuadVertexPtr->Position = { position.x + size.x,position.y + size.y, 0.0f };
+		s_Data.QuadVertexPtr->Color = color;
+		s_Data.QuadVertexPtr->TexCoord = { 1.0f,1.0f };
+		s_Data.QuadVertexPtr++;
 
-		// POV : Transform matrix caluclation should be like translate * rotation * scaling.
+		s_Data.QuadVertexPtr->Position = { position.x ,position.y + size.y, 0.0f };
+		s_Data.QuadVertexPtr->Color = color;
+		s_Data.QuadVertexPtr->TexCoord = { 0.0f,1.0f };
+		s_Data.QuadVertexPtr++;
 
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), glm::vec3(size.x, size.y, 1.0f));
-		s_Data->TextureShader->SetMat4("u_Transform", transform);
-		s_Data->QuadVertexArray->Bind();
-		RenderCommand::DrawIndexed(s_Data->QuadVertexArray);
+		s_Data.QuadindexCount += 6;
+
+		//s_Data.TextureShader->Bind();
+		//s_Data.TextureShader->SetFloat4("u_Color", glm::vec4(color));
+		//s_Data.TextureShader->SetFloat("u_Tilling", 1.0f);
+
+		//// Bind White Texture.
+
+		//s_Data.WhiteTexture->Bind();
+
+		//// POV : Transform matrix caluclation should be like translate * rotation * scaling.
+
+		//glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), glm::vec3(size.x, size.y, 1.0f));
+		//s_Data.TextureShader->SetMat4("u_Transform", transform);
+		//s_Data.QuadVertexArray->Bind();
+		//RenderCommand::DrawIndexed(s_Data.QuadVertexArray);
 	}
 
 	void Renderer2D::DrawQuad(const glm::vec2 & position, const glm::vec2 & size, const Ref<Texture2D> texture , float tilling, glm::vec4 tintcolor)
@@ -119,17 +169,17 @@ namespace Gart
 	{
 		GART_PROFILE_FUNCTION();
 
-		s_Data->TextureShader->Bind();
-		s_Data->TextureShader->SetFloat4("u_Color", tintcolor);
-		s_Data->TextureShader->SetFloat("u_Tilling", tilling);
+		s_Data.TextureShader->Bind();
+		s_Data.TextureShader->SetFloat4("u_Color", tintcolor);
+		s_Data.TextureShader->SetFloat("u_Tilling", tilling);
 
 		// POV : Transform matrix caluclation should be like translate * rotation * scaling.
 
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), glm::vec3(size.x, size.y, 1.0f));
-		s_Data->TextureShader->SetMat4("u_Transform", transform);
+		s_Data.TextureShader->SetMat4("u_Transform", transform);
 		texture->Bind();
-		s_Data->QuadVertexArray->Bind();
-		RenderCommand::DrawIndexed(s_Data->QuadVertexArray);
+		s_Data.QuadVertexArray->Bind();
+		RenderCommand::DrawIndexed(s_Data.QuadVertexArray);
 	}
 	void Renderer2D::DrawRotateQuad(const glm::vec2& position, float rotation, const glm::vec2& size, const glm::vec4& color)
 	{
@@ -139,20 +189,20 @@ namespace Gart
 	{
 		GART_PROFILE_FUNCTION();
 
-		s_Data->TextureShader->Bind();
-		s_Data->TextureShader->SetFloat4("u_Color", glm::vec4(color));
-		s_Data->TextureShader->SetFloat("u_Tilling", 1.0f);
+		s_Data.TextureShader->Bind();
+		s_Data.TextureShader->SetFloat4("u_Color", glm::vec4(color));
+		s_Data.TextureShader->SetFloat("u_Tilling", 1.0f);
 
 		// Bind White Texture.
 
-		s_Data->WhiteTexture->Bind();
+		s_Data.WhiteTexture->Bind();
 
 		// POV : Transform matrix caluclation should be like translate * rotation * scaling.
 
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::rotate(glm::mat4(1.0f), rotation, glm::vec3(0.0f, 0.0f, 1.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(size.x, size.y, 1.0f));
-		s_Data->TextureShader->SetMat4("u_Transform", transform);
-		s_Data->QuadVertexArray->Bind();
-		RenderCommand::DrawIndexed(s_Data->QuadVertexArray);
+		s_Data.TextureShader->SetMat4("u_Transform", transform);
+		s_Data.QuadVertexArray->Bind();
+		RenderCommand::DrawIndexed(s_Data.QuadVertexArray);
 	}
 	void Renderer2D::DrawRotateQuad(const glm::vec2& position, float rotation, const glm::vec2& size, const Ref<Texture2D> texture, float tilling, glm::vec4 tintcolor)
 	{
@@ -162,16 +212,16 @@ namespace Gart
 	{
 		GART_PROFILE_FUNCTION();
 
-		s_Data->TextureShader->Bind();
-		s_Data->TextureShader->SetFloat4("u_Color", tintcolor);
-		s_Data->TextureShader->SetFloat("u_Tilling", tilling);
+		s_Data.TextureShader->Bind();
+		s_Data.TextureShader->SetFloat4("u_Color", tintcolor);
+		s_Data.TextureShader->SetFloat("u_Tilling", tilling);
 
 		// POV : Transform matrix caluclation should be like translate * rotation * scaling.
 
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::rotate(glm::mat4(1.0f),rotation,glm::vec3(0.0f,0.0f,1.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(size.x, size.y, 1.0f));
-		s_Data->TextureShader->SetMat4("u_Transform", transform);
+		s_Data.TextureShader->SetMat4("u_Transform", transform);
 		texture->Bind();
-		s_Data->QuadVertexArray->Bind();
-		RenderCommand::DrawIndexed(s_Data->QuadVertexArray);
+		s_Data.QuadVertexArray->Bind();
+		RenderCommand::DrawIndexed(s_Data.QuadVertexArray);
 	}
 }
