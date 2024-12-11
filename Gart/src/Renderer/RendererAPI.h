@@ -19,7 +19,7 @@ namespace Gart
 		virtual void SetViewPort(uint32_t x, uint32_t y, uint32_t Width, uint32_t Height) = 0;
 		virtual void Clear() = 0;
 
-		virtual void DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray) = 0;
+		virtual void DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray, uint32_t count = 0 ) = 0;
 
 		inline static API GetAPI() { return s_API; }
 

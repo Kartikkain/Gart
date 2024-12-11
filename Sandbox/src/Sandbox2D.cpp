@@ -36,8 +36,10 @@ void Sandbox2D::OnUpdate(Gart::TimeStep ts)
 	Gart::Renderer2D::BeginScene(m_OrthoCamera.GetCamera());
 
 	//Gart::Renderer2D::DrawQuad({ 0.0f,0.0f }, { 10.0f,10.0f }, m_Texture,10.0f);
-	Gart::Renderer2D::DrawRotateQuad({ 0.0f,0.0f }, 45 ,{ 10.0f,10.0f }, m_Texture,10.0f,{1.0f,0.0f,0.0f,1.0f});
-	Gart::Renderer2D::DrawQuad({ 2.0f,1.0f }, { 0.5f,0.8f }, { 1.0f,1.0f,1.0f,1.0f });
+	//Gart::Renderer2D::DrawRotateQuad({ 0.0f,0.0f }, 45 ,{ 10.0f,10.0f }, m_Texture,10.0f,{1.0f,0.0f,0.0f,1.0f});
+	Gart::Renderer2D::DrawQuad({ 0.0f,-1.0f }, { 0.5f,0.8f }, { 1.0f,1.0f,1.0f,1.0f });
+	Gart::Renderer2D::DrawQuad({ -0.5f,0.4f }, { 0.2f,0.2f }, { 1.0f,0.0f,0.0f,1.0f });
+	
 
 	Gart::Renderer2D::EndScene();
 

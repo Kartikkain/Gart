@@ -26,8 +26,8 @@ namespace Gart
 		Ref<Texture2D> WhiteTexture;
 
 		uint32_t QuadindexCount = 0;
-		QuadVertex* QuadVertexBase = nullptr;
-		QuadVertex* QuadVertexPtr = nullptr;
+		QuadVertex* QuadVertexBufferBase = nullptr;
+		QuadVertex* QuadVertexBufferPtr = nullptr;
 	};
 
 	
@@ -63,12 +63,27 @@ namespace Gart
 
 		s_Data.QuadVertexArray->AddVertexBuffer(s_Data.QuadVertexBuffer);
 
-		s_Data.QuadVertexBase = new QuadVertex[s_Data.MaxVertices];
+		s_Data.QuadVertexBufferBase = new QuadVertex[s_Data.MaxVertices];
 
 		uint32_t* quadIndicies = new uint32_t[s_Data.MaxIndices];
+
+		uint32_t Offset = 0;
+		
+		for (uint32_t i = 0; i < s_Data.MaxIndices; i += 6)
+		{
+			quadIndicies[i + 0] = Offset + 0;
+			quadIndicies[i + 1] = Offset + 1;
+			quadIndicies[i + 2] = Offset + 2;
+
+			quadIndicies[i + 3] = Offset + 2;
+			quadIndicies[i + 4] = Offset + 3;
+			quadIndicies[i + 5] = Offset + 0;
+
+			Offset += 4;
+		}
 		unsigned int indicies[6] = { 0,1,2,2,3,0 };
 		Ref<IndexBuffer> m_IndexBuffer;
-		m_IndexBuffer.reset(IndexBuffer::Create(quadIndicies, s_Data.MaxIndices));
+		m_IndexBuffer.reset(IndexBuffer::Create(quadIndicies, s_Data.MaxIndices ));
 		s_Data.QuadVertexArray->SetIndexBuffer(m_IndexBuffer);
 		delete[] quadIndicies;
 		//auto m_Shader = m_shadeLibrary.Load("assets/shaders/Texture.glsl");
@@ -96,20 +111,20 @@ namespace Gart
 		s_Data.TextureShader->SetMat4("u_ViewProjectionMatrix", camera.GetViewProjectionMatrix());
 
 		s_Data.QuadindexCount = 0;
-		s_Data.QuadVertexPtr = s_Data.QuadVertexPtr;
+		s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
 
 	}
 	void Renderer2D::EndScene()
 	{
 		GART_PROFILE_FUNCTION();
-		uint32_t datasize = (uint32_t*)s_Data.QuadVertexPtr - (uint32_t*)s_Data.QuadVertexBase;
-		s_Data.QuadVertexBuffer->SetData(s_Data.QuadVertexBase, datasize);
+		uint32_t datasize = (uint8_t*)s_Data.QuadVertexBufferPtr - (uint8_t*)s_Data.QuadVertexBufferBase;
+		s_Data.QuadVertexBuffer->SetData(s_Data.QuadVertexBufferBase, datasize);
 		Flush();
 	}
 
 	void Renderer2D::Flush()
 	{
-
+		RenderCommand::DrawIndexed(s_Data.QuadVertexArray, s_Data.QuadindexCount);
 	}
 	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color)
 	{
@@ -121,25 +136,25 @@ namespace Gart
 	{
 		GART_PROFILE_FUNCTION();
 
-		s_Data.QuadVertexPtr->Position = position;
-		s_Data.QuadVertexPtr->Color = color;
-		s_Data.QuadVertexPtr->TexCoord = {0.0f,0.0f};
-		s_Data.QuadVertexPtr++;
+		s_Data.QuadVertexBufferPtr->Position = position;
+		s_Data.QuadVertexBufferPtr->Color = color;
+		s_Data.QuadVertexBufferPtr->TexCoord = {0.0f,0.0f};
+		s_Data.QuadVertexBufferPtr++;
 
-		s_Data.QuadVertexPtr->Position = { position.x + size.x,position.y, 0.0f };
-		s_Data.QuadVertexPtr->Color = color;
-		s_Data.QuadVertexPtr->TexCoord = { 1.0f,0.0f };
-		s_Data.QuadVertexPtr++;
+		s_Data.QuadVertexBufferPtr->Position = { position.x + size.x,position.y, 0.0f };
+		s_Data.QuadVertexBufferPtr->Color = color;
+		s_Data.QuadVertexBufferPtr->TexCoord = { 1.0f,0.0f };
+		s_Data.QuadVertexBufferPtr++;
 
-		s_Data.QuadVertexPtr->Position = { position.x + size.x,position.y + size.y, 0.0f };
-		s_Data.QuadVertexPtr->Color = color;
-		s_Data.QuadVertexPtr->TexCoord = { 1.0f,1.0f };
-		s_Data.QuadVertexPtr++;
+		s_Data.QuadVertexBufferPtr->Position = { position.x + size.x,position.y + size.y, 0.0f };
+		s_Data.QuadVertexBufferPtr->Color = color;
+		s_Data.QuadVertexBufferPtr->TexCoord = { 1.0f,1.0f };
+		s_Data.QuadVertexBufferPtr++;
 
-		s_Data.QuadVertexPtr->Position = { position.x ,position.y + size.y, 0.0f };
-		s_Data.QuadVertexPtr->Color = color;
-		s_Data.QuadVertexPtr->TexCoord = { 0.0f,1.0f };
-		s_Data.QuadVertexPtr++;
+		s_Data.QuadVertexBufferPtr->Position = { position.x ,position.y + size.y, 0.0f };
+		s_Data.QuadVertexBufferPtr->Color = color;
+		s_Data.QuadVertexBufferPtr->TexCoord = { 0.0f,1.0f };
+		s_Data.QuadVertexBufferPtr++;
 
 		s_Data.QuadindexCount += 6;
 

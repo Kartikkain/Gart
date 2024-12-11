@@ -2,17 +2,20 @@
 #version 330 core
 			
 layout(location = 0) in vec3 a_Position;
-layout(location = 1) in vec2 a_Texture;
+layout(location = 1) in vec4 a_Color;
+layout(location = 2) in vec2 a_Texture;
 
 out vec2 v_Texture;
-
+out vec4 v_Color;
 uniform mat4 u_ViewProjectionMatrix;
 uniform mat4 u_Transform;
 			
 void main()
 {
 	v_Texture = a_Texture;
-	gl_Position = u_ViewProjectionMatrix * u_Transform * vec4(a_Position,1.0);
+	v_Color = a_Color;
+	//gl_Position = u_ViewProjectionMatrix * u_Transform * vec4(a_Position,1.0);
+	gl_Position = u_ViewProjectionMatrix * vec4(a_Position,1.0);
 }
 
 #type fragment
@@ -21,6 +24,7 @@ void main()
 layout(location = 0) out vec4 fragColor;
 			
 in vec2 v_Texture;
+in vec4 v_Color;
 
 uniform vec4 u_Color;
 uniform float u_Tilling;
@@ -28,5 +32,6 @@ uniform sampler2D u_Texture;
 	
 void main()
 {
-	fragColor = texture(u_Texture,v_Texture * u_Tilling) * u_Color;
+	//fragColor = texture(u_Texture,v_Texture * u_Tilling) * u_Color;
+	fragColor = v_Color;
 }
