@@ -12,6 +12,8 @@ namespace Gart
 		glm::vec3 Position;
 		glm::vec4 Color;
 		glm::vec2 TexCoord;
+		float TexIndex;
+		float TillingFactor;
 	};
 
 	struct Renderer2DStorage
@@ -19,6 +21,7 @@ namespace Gart
 		const uint32_t MaxQuads = 10000;
 		const uint32_t MaxVertices = MaxQuads * 4;
 		const uint32_t MaxIndices = MaxQuads * 6;
+		static const uint32_t MaxTexureSlots = 32;
 
 		Ref<VertexArray> QuadVertexArray;
 		Ref<VertexBuffer> QuadVertexBuffer;
@@ -28,6 +31,9 @@ namespace Gart
 		uint32_t QuadindexCount = 0;
 		QuadVertex* QuadVertexBufferBase = nullptr;
 		QuadVertex* QuadVertexBufferPtr = nullptr;
+
+		std::array<Ref<Texture2D>, MaxTexureSlots> TextureSlots;
+		uint32_t TextureSlotIndex = 1;
 	};
 
 	
@@ -56,7 +62,9 @@ namespace Gart
 		Gart::BufferLayout layout = {
 			{Gart::ShaderDataType::Float3, "a_Position"},
 			{Gart::ShaderDataType::Float4, "a_Color"},
-			{Gart::ShaderDataType::Float2, "a_Texture"}
+			{Gart::ShaderDataType::Float2, "a_Texture"},
+			{Gart::ShaderDataType::Float, "a_TexIndex"},
+			{Gart::ShaderDataType::Float, "a_TillingFactor"}
 		};
 
 		s_Data.QuadVertexBuffer->SetLayout(layout);
@@ -87,13 +95,20 @@ namespace Gart
 		s_Data.QuadVertexArray->SetIndexBuffer(m_IndexBuffer);
 		delete[] quadIndicies;
 		//auto m_Shader = m_shadeLibrary.Load("assets/shaders/Texture.glsl");
+
+		int32_t samplers[s_Data.MaxTexureSlots];
+		for (uint32_t i = 0; i < s_Data.MaxTexureSlots; i++)
+			samplers[i] = i;
 		s_Data.TextureShader = Shader::Create("assets/shaders/Texture.glsl");
 		s_Data.TextureShader->Bind();
-		s_Data.TextureShader->SetInt("u_Texture", 0);
+		s_Data.TextureShader->SetIntArray("u_Texture",samplers,s_Data.MaxTexureSlots);
 
 		s_Data.WhiteTexture = Texture2D::Create(1, 1);
 		uint32_t whitetexturedata = 0xffffffff;
 		s_Data.WhiteTexture->SetData(&whitetexturedata, sizeof(uint32_t));
+
+		
+		s_Data.TextureSlots[0] = s_Data.WhiteTexture;
 	}
 	void Renderer2D::Shutdown()
 	{
@@ -111,6 +126,7 @@ namespace Gart
 		s_Data.TextureShader->SetMat4("u_ViewProjectionMatrix", camera.GetViewProjectionMatrix());
 
 		s_Data.QuadindexCount = 0;
+		s_Data.TextureSlotIndex = 1;
 		s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
 
 	}
@@ -123,7 +139,11 @@ namespace Gart
 	}
 
 	void Renderer2D::Flush()
-	{
+	{ 
+		for (uint32_t i = 0; i < s_Data.TextureSlotIndex; i++)
+		{
+			s_Data.TextureSlots[i]->Bind(i);
+		}
 		RenderCommand::DrawIndexed(s_Data.QuadVertexArray, s_Data.QuadindexCount);
 	}
 	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color)
@@ -136,42 +156,55 @@ namespace Gart
 	{
 		GART_PROFILE_FUNCTION();
 
+		float textureIndex = 0.0f;
+		float tilling = 1.0f;
 		s_Data.QuadVertexBufferPtr->Position = position;
 		s_Data.QuadVertexBufferPtr->Color = color;
 		s_Data.QuadVertexBufferPtr->TexCoord = {0.0f,0.0f};
+		s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
+		s_Data.QuadVertexBufferPtr->TillingFactor = tilling;
 		s_Data.QuadVertexBufferPtr++;
 
 		s_Data.QuadVertexBufferPtr->Position = { position.x + size.x,position.y, 0.0f };
 		s_Data.QuadVertexBufferPtr->Color = color;
 		s_Data.QuadVertexBufferPtr->TexCoord = { 1.0f,0.0f };
+		s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
+		s_Data.QuadVertexBufferPtr->TillingFactor = tilling;
 		s_Data.QuadVertexBufferPtr++;
 
 		s_Data.QuadVertexBufferPtr->Position = { position.x + size.x,position.y + size.y, 0.0f };
 		s_Data.QuadVertexBufferPtr->Color = color;
 		s_Data.QuadVertexBufferPtr->TexCoord = { 1.0f,1.0f };
+		s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
+		s_Data.QuadVertexBufferPtr->TillingFactor = tilling;
 		s_Data.QuadVertexBufferPtr++;
 
 		s_Data.QuadVertexBufferPtr->Position = { position.x ,position.y + size.y, 0.0f };
 		s_Data.QuadVertexBufferPtr->Color = color;
 		s_Data.QuadVertexBufferPtr->TexCoord = { 0.0f,1.0f };
+		s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
+		s_Data.QuadVertexBufferPtr->TillingFactor = tilling;
 		s_Data.QuadVertexBufferPtr++;
 
 		s_Data.QuadindexCount += 6;
 
-		//s_Data.TextureShader->Bind();
-		//s_Data.TextureShader->SetFloat4("u_Color", glm::vec4(color));
-		//s_Data.TextureShader->SetFloat("u_Tilling", 1.0f);
+#if OLD_CODE
+		s_Data.TextureShader->Bind();
+		s_Data.TextureShader->SetFloat4("u_Color", glm::vec4(color));
+		s_Data.TextureShader->SetFloat("u_Tilling", 1.0f);
 
 		//// Bind White Texture.
 
-		//s_Data.WhiteTexture->Bind();
+		s_Data.WhiteTexture->Bind();
 
 		//// POV : Transform matrix caluclation should be like translate * rotation * scaling.
 
-		//glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), glm::vec3(size.x, size.y, 1.0f));
-		//s_Data.TextureShader->SetMat4("u_Transform", transform);
-		//s_Data.QuadVertexArray->Bind();
-		//RenderCommand::DrawIndexed(s_Data.QuadVertexArray);
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), glm::vec3(size.x, size.y, 1.0f));
+		s_Data.TextureShader->SetMat4("u_Transform", transform);
+		s_Data.QuadVertexArray->Bind();
+		RenderCommand::DrawIndexed(s_Data.QuadVertexArray);
+#endif
+
 	}
 
 	void Renderer2D::DrawQuad(const glm::vec2 & position, const glm::vec2 & size, const Ref<Texture2D> texture , float tilling, glm::vec4 tintcolor)
@@ -184,6 +217,57 @@ namespace Gart
 	{
 		GART_PROFILE_FUNCTION();
 
+		constexpr glm::vec4 color = { 1.0f,1.0f,1.0f,1.0f };
+		
+		float textureIndex = 0.0f;
+
+		for (uint32_t i = 1; i < s_Data.TextureSlotIndex; i++)
+		{
+			if (*s_Data.TextureSlots[i].get() == *texture.get())
+			{
+				textureIndex = float(i);
+				break;
+			}
+		}
+
+		if (textureIndex == 0.0f)
+		{
+			textureIndex = (float)s_Data.TextureSlotIndex;
+			s_Data.TextureSlots[textureIndex] = texture;
+			s_Data.TextureSlotIndex++;
+		}
+
+		s_Data.QuadVertexBufferPtr->Position = position;
+		s_Data.QuadVertexBufferPtr->Color = color;
+		s_Data.QuadVertexBufferPtr->TexCoord = { 0.0f,0.0f };
+		s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
+		s_Data.QuadVertexBufferPtr->TillingFactor = tilling;
+		s_Data.QuadVertexBufferPtr++;
+
+		s_Data.QuadVertexBufferPtr->Position = { position.x + size.x,position.y, 0.0f };
+		s_Data.QuadVertexBufferPtr->Color = color;
+		s_Data.QuadVertexBufferPtr->TexCoord = { 1.0f,0.0f };
+		s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
+		s_Data.QuadVertexBufferPtr->TillingFactor = tilling;
+		s_Data.QuadVertexBufferPtr++;
+
+		s_Data.QuadVertexBufferPtr->Position = { position.x + size.x,position.y + size.y, 0.0f };
+		s_Data.QuadVertexBufferPtr->Color = color;
+		s_Data.QuadVertexBufferPtr->TexCoord = { 1.0f,1.0f };
+		s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
+		s_Data.QuadVertexBufferPtr->TillingFactor = tilling;
+		s_Data.QuadVertexBufferPtr++;
+
+		s_Data.QuadVertexBufferPtr->Position = { position.x ,position.y + size.y, 0.0f };
+		s_Data.QuadVertexBufferPtr->Color = color;
+		s_Data.QuadVertexBufferPtr->TexCoord = { 0.0f,1.0f };
+		s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
+		s_Data.QuadVertexBufferPtr->TillingFactor = tilling;
+		s_Data.QuadVertexBufferPtr++;
+
+		s_Data.QuadindexCount += 6;
+
+#if OLD_CODE
 		s_Data.TextureShader->Bind();
 		s_Data.TextureShader->SetFloat4("u_Color", tintcolor);
 		s_Data.TextureShader->SetFloat("u_Tilling", tilling);
@@ -195,6 +279,7 @@ namespace Gart
 		texture->Bind();
 		s_Data.QuadVertexArray->Bind();
 		RenderCommand::DrawIndexed(s_Data.QuadVertexArray);
+#endif
 	}
 	void Renderer2D::DrawRotateQuad(const glm::vec2& position, float rotation, const glm::vec2& size, const glm::vec4& color)
 	{
