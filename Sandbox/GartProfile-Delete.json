@@ -1,1 +1,1 @@
-{"otherData": {},"traceEvents":[{"cat":"function","dur":1,"name":"__cdecl BSS::Application::~Application(void)","ph":"X","pid":0,"tid":1813199712,"ts":71584358389}]}
+{"otherData": {},"traceEvents":[{"cat":"function","dur":1,"name":"__cdecl BSS::Application::~Application(void)","ph":"X","pid":0,"tid":248446390,"ts":79404921794}]}

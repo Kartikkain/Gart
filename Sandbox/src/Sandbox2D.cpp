@@ -27,6 +27,7 @@ void Sandbox2D::OnUpdate(Gart::TimeStep ts)
 {
 	GART_PROFILE_FUNCTION();
 
+	Gart::Renderer2D::ResetStats();
 
 	m_OrthoCamera.OnUpdate(ts);
 
@@ -54,6 +55,15 @@ void Sandbox2D::OnImGuiRender()
 	GART_PROFILE_FUNCTION();
 
 	ImGui::Begin("Setting");
+	
+	auto l_stats = Gart::Renderer2D::GetStats();
+
+	ImGui::Text("Renderer2D stats:");
+	ImGui::Text("Draw Calls: %d", l_stats.DrawCalls);
+	ImGui::Text("Quad Counts: %d", l_stats.QuadCounts);
+	ImGui::Text("Number Of Vertices: %d", l_stats.GetNumbersOfVertices());
+	ImGui::Text("Number Of Indicies: %d", l_stats.GetNumbersOfIndices());
+
 	ImGui::ColorEdit3("Triangle Color", glm::value_ptr(m_TriangleColor));
 	ImGui::End();
 }

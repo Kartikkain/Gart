@@ -18,9 +18,9 @@ namespace Gart
 
 	struct Renderer2DStorage
 	{
-		const uint32_t MaxQuads = 10000;
-		const uint32_t MaxVertices = MaxQuads * 4;
-		const uint32_t MaxIndices = MaxQuads * 6;
+		static const uint32_t MaxQuads = 1000;
+		static const uint32_t MaxVertices = MaxQuads * 4;
+		static const uint32_t MaxIndices = MaxQuads * 6;
 		static const uint32_t MaxTexureSlots = 32;
 
 		Ref<VertexArray> QuadVertexArray;
@@ -36,6 +36,7 @@ namespace Gart
 		uint32_t TextureSlotIndex = 1;
 
 		glm::vec4 QuadVertexPosition[4];
+		Renderer2D::Statistics Stats;
 	};
 
 	
@@ -125,9 +126,7 @@ namespace Gart
 	{
 		GART_PROFILE_FUNCTION();
 
-		/*s_Data.FlatColorShader->Bind();
-		s_Data.FlatColorShader->SetMat4("u_ViewProjectionMatrix", camera.GetViewProjectionMatrix());
-		*/
+		
 
 		s_Data.TextureShader->Bind();
 		s_Data.TextureShader->SetMat4("u_ViewProjectionMatrix", camera.GetViewProjectionMatrix());
@@ -152,6 +151,7 @@ namespace Gart
 			s_Data.TextureSlots[i]->Bind(i);
 		}
 		RenderCommand::DrawIndexed(s_Data.QuadVertexArray, s_Data.QuadindexCount);
+		s_Data.Stats.DrawCalls++;
 	}
 	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color)
 	{
@@ -162,6 +162,9 @@ namespace Gart
 	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color)
 	{
 		GART_PROFILE_FUNCTION();
+
+		if (s_Data.QuadindexCount >= Renderer2DStorage::MaxIndices)
+			FlushAndRestart();
 
 		float textureIndex = 0.0f;
 		float tilling = 1.0f;
@@ -198,6 +201,8 @@ namespace Gart
 
 		s_Data.QuadindexCount += 6;
 
+		s_Data.Stats.QuadCounts++;
+
 	}
 
 	void Renderer2D::DrawQuad(const glm::vec2 & position, const glm::vec2 & size, const Ref<Texture2D> texture , float tilling, glm::vec4 tintcolor)
@@ -209,6 +214,9 @@ namespace Gart
 	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D> texture , float tilling, glm::vec4 tintcolor)
 	{
 		GART_PROFILE_FUNCTION();
+
+		if (s_Data.QuadindexCount >= Renderer2DStorage::MaxIndices)
+			FlushAndRestart();
 
 		constexpr glm::vec4 color = { 1.0f,1.0f,1.0f,1.0f };
 		
@@ -263,6 +271,8 @@ namespace Gart
 
 		s_Data.QuadindexCount += 6;
 
+		s_Data.Stats.QuadCounts++;
+
 	}
 	void Renderer2D::DrawRotateQuad(const glm::vec2& position, float rotation, const glm::vec2& size, const glm::vec4& color)
 	{
@@ -271,6 +281,9 @@ namespace Gart
 	void Renderer2D::DrawRotateQuad(const glm::vec3& position, float rotation, const glm::vec2& size, const glm::vec4& color)
 	{
 		GART_PROFILE_FUNCTION();
+
+		if (s_Data.QuadindexCount >= Renderer2DStorage::MaxIndices)
+			FlushAndRestart();
 
 		float textureIndex = 0.0f;
 		float tilling = 1.0f;
@@ -309,22 +322,8 @@ namespace Gart
 
 		s_Data.QuadindexCount += 6;
 
-#if OLD_PATH
-		s_Data.TextureShader->Bind();
-		s_Data.TextureShader->SetFloat4("u_Color", glm::vec4(color));
-		s_Data.TextureShader->SetFloat("u_Tilling", 1.0f);
+		s_Data.Stats.QuadCounts++;
 
-		// Bind White Texture.
-
-		s_Data.WhiteTexture->Bind();
-
-		// POV : Transform matrix caluclation should be like translate * rotation * scaling.
-
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::rotate(glm::mat4(1.0f), rotation, glm::vec3(0.0f, 0.0f, 1.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(size.x, size.y, 1.0f));
-		s_Data.TextureShader->SetMat4("u_Transform", transform);
-		s_Data.QuadVertexArray->Bind();
-		RenderCommand::DrawIndexed(s_Data.QuadVertexArray);
-#endif
 	}
 	void Renderer2D::DrawRotateQuad(const glm::vec2& position, float rotation, const glm::vec2& size, const Ref<Texture2D> texture, float tilling, glm::vec4 tintcolor)
 	{
@@ -333,6 +332,9 @@ namespace Gart
 	void Renderer2D::DrawRotateQuad(const glm::vec3& position, float rotation, const glm::vec2& size, const Ref<Texture2D> texture, float tilling, glm::vec4 tintcolor)
 	{
 		GART_PROFILE_FUNCTION();
+
+		if (s_Data.QuadindexCount >= Renderer2DStorage::MaxIndices)
+			FlushAndRestart();
 
 		constexpr glm::vec4 color = { 1.0f,1.0f,1.0f,1.0f };
 
@@ -387,5 +389,25 @@ namespace Gart
 		s_Data.QuadVertexBufferPtr++;
 
 		s_Data.QuadindexCount += 6;
+
+		s_Data.Stats.QuadCounts++;
+	}
+	
+	void Renderer2D::ResetStats()
+	{
+		memset(&s_Data.Stats, 0, sizeof(Renderer2D::Statistics));
+	}
+	
+	Renderer2D::Statistics Renderer2D::GetStats()
+	{
+		return s_Data.Stats;
+	}
+	void Renderer2D::FlushAndRestart()
+	{
+		EndScene();
+
+		s_Data.QuadindexCount = 0;
+		s_Data.TextureSlotIndex = 1;
+		s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
 	}
 }
