@@ -1,6 +1,7 @@
 #pragma once
 
 #include "BSS.h"
+#include "ParticlesSystem.h"
 
 class Sandbox2D : public BSS::Layer
 {
@@ -22,5 +23,7 @@ private:
 	Gart::Ref<Gart::Texture2D> m_Texture;
 	glm::vec3 m_TriangleColor = { 1.0f,0.0f,0.0f };
 
+	ParticleSystem m_ParticleSystem;
+	ParticleProps m_Particle;
 	
 };

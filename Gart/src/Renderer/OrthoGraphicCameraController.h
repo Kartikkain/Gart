@@ -7,6 +7,15 @@
 
 namespace Gart
 {
+	struct OrthographicCameraBounds
+	{
+		float Left, Right;
+		float Bottom, Top;
+
+		float GetWidth() { return Right - Left; }
+		float GetHeight() { return Top - Bottom; }
+	};
+
 	class OrthoGraphicCameraController 
 	{
 	public :
@@ -15,12 +24,14 @@ namespace Gart
 		void OnEvent(BSS::Event& e);
 		OrthoGraphicCamera& GetCamera() { return m_Camera; }
 		const OrthoGraphicCamera& GetCamera() const { return m_Camera; }
+		const OrthographicCameraBounds& GetBounds() const { return m_Bounds; }
 	private:
 		bool OnMouseScrolled(BSS::MouseScrollEvent& e);
 		bool OnWindowResized(BSS::WindowResizeEvent& e);
 	private:
 		float m_AspectRatio;
 		float m_ZoomLevel = 1.0f;
+		OrthographicCameraBounds m_Bounds;
 		OrthoGraphicCamera m_Camera;
 		glm::vec3 m_CameraPosition = { 0.0f,0.0f, 0.0f};
 
