@@ -21,6 +21,9 @@ private:
 	Gart::Ref<Gart::Shader> m_Shader;
 	Gart::Ref<Gart::VertexArray> m_VertexArray;
 	Gart::Ref<Gart::Texture2D> m_Texture;
+	Gart::Ref<Gart::Texture2D> m_SpriteSheet;
+	Gart::Ref<Gart::SubTexture2D> m_Tree;
+	Gart::Ref<Gart::SubTexture2D> m_Stairs;
 	glm::vec3 m_TriangleColor = { 1.0f,0.0f,0.0f };
 
 	ParticleSystem m_ParticleSystem;

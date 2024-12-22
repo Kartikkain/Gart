@@ -15,6 +15,9 @@ void Sandbox2D::OnAttach()
 	GART_PROFILE_FUNCTION();
 
 	m_Texture = Gart::Texture2D::Create("assets/textures/smile.png");
+	m_SpriteSheet = Gart::Texture2D::Create("assets/game/textures/RPG.png");
+	m_Tree = Gart::SubTexture2D::CreateFromCoords(m_SpriteSheet, { 2,1 }, { 128,128 },{1,2});
+	m_Stairs = Gart::SubTexture2D::CreateFromCoords(m_SpriteSheet, { 7,6 }, { 128,128 },{1,1});
 
 	// Init here
 	m_Particle.ColorBegin = { 254 / 255.0f, 212 / 255.0f, 123 / 255.0f, 1.0f };
@@ -45,19 +48,20 @@ void Sandbox2D::OnUpdate(Gart::TimeStep ts)
 
 	Gart::Renderer2D::BeginScene(m_OrthoCamera.GetCamera());
 
-	Gart::Renderer2D::DrawQuad({ 0.0f,0.0f }, { 2.0f,2.0f }, m_Texture,10.0f);
-	//Gart::Renderer2D::DrawQuad({ -1.0f,0.0f }, { 1.0f,1.0f }, m_Texture,10.0f);
+	/*Gart::Renderer2D::DrawQuad({ 0.0f,0.0f }, { 2.0f,2.0f }, m_Texture,10.0f);
 	Gart::Renderer2D::DrawRotateQuad({ -0.5f,0.0f }, glm::radians(- 45.0f), {1.0f,1.0f}, m_Texture, 10.0f);
 	Gart::Renderer2D::DrawRotateQuad({ -0.5f,0.0f },glm::radians(45.0f),{ 0.3f,0.3f }, {0.0f,0.0f,1.0f,1.0f});
-	//Gart::Renderer2D::DrawRotateQuad({ 0.0f,0.0f }, 45 ,{ 10.0f,10.0f }, m_Texture,10.0f,{1.0f,0.0f,0.0f,1.0f});
 	Gart::Renderer2D::DrawQuad({ 0.0f,-1.0f }, { 0.5f,0.8f }, { 1.0f,1.0f,1.0f,1.0f });
-	Gart::Renderer2D::DrawQuad({ -0.5f,0.4f }, { 0.2f,0.2f }, { 1.0f,0.0f,0.0f,1.0f });
+	Gart::Renderer2D::DrawQuad({ -0.5f,0.4f }, { 0.2f,0.2f }, { 1.0f,0.0f,0.0f,1.0f });*/
+
+	Gart::Renderer2D::DrawQuad({ 0.0f,0.0f }, { 1.0f,2.0f }, m_Tree);
+	Gart::Renderer2D::DrawQuad({ 1.5f,0.0f }, { -1.0f,1.0f }, m_Stairs);
 	
 
 	Gart::Renderer2D::EndScene();
 
 
-	if (BSS::Input::IsMouseButtonPressed(BSS_MOUSE_BUTTON_LEFT))
+	/*if (BSS::Input::IsMouseButtonPressed(BSS_MOUSE_BUTTON_LEFT))
 	{
 		auto [x, y] = BSS::Input::GetMousePosition();
 		auto width = BSS::Application::Get().GetWindow().GetWidth();
@@ -73,7 +77,7 @@ void Sandbox2D::OnUpdate(Gart::TimeStep ts)
 	}
 
 	m_ParticleSystem.OnUpdate(ts);
-	m_ParticleSystem.OnRender(m_OrthoCamera.GetCamera());
+	m_ParticleSystem.OnRender(m_OrthoCamera.GetCamera());*/
 
 	
 }
