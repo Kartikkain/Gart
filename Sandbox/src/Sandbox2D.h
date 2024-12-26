@@ -28,5 +28,6 @@ private:
 
 	ParticleSystem m_ParticleSystem;
 	ParticleProps m_Particle;
-	
+	std::unordered_map<char, Gart::Ref<Gart::SubTexture2D>> m_TileSet;
+	uint32_t m_MapWidth, m_MapHeight;
 };

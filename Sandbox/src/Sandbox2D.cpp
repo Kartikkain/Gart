@@ -3,6 +3,14 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <chrono>
 
+static const uint32_t s_MapWidth = 10;
+static const char* s_MapTiles =
+"WWWWWWWWWW"
+"WWWDDDDWWW"
+"WWDDDCDDWW"
+"WWWDDDDWWW"
+"WWWWWWWWWW"
+;
 
 Sandbox2D::Sandbox2D()
 	:Layer("Sandbox2D"), m_OrthoCamera(1280.0f / 720.0f)
@@ -14,10 +22,17 @@ void Sandbox2D::OnAttach()
 {
 	GART_PROFILE_FUNCTION();
 
+	m_OrthoCamera.SetZoomLevel(7.0f);
+
 	m_Texture = Gart::Texture2D::Create("assets/textures/smile.png");
 	m_SpriteSheet = Gart::Texture2D::Create("assets/game/textures/RPG.png");
 	m_Tree = Gart::SubTexture2D::CreateFromCoords(m_SpriteSheet, { 2,1 }, { 128,128 },{1,2});
 	m_Stairs = Gart::SubTexture2D::CreateFromCoords(m_SpriteSheet, { 7,6 }, { 128,128 },{1,1});
+	m_TileSet['D'] = Gart::SubTexture2D::CreateFromCoords(m_SpriteSheet, {1,11}, {128,128}, {1,1});
+	m_TileSet['W'] = Gart::SubTexture2D::CreateFromCoords(m_SpriteSheet, {11,11}, {128,128}, {1,1});
+
+	m_MapWidth = s_MapWidth;
+	m_MapHeight = strlen(s_MapTiles) / s_MapWidth;
 
 	// Init here
 	m_Particle.ColorBegin = { 254 / 255.0f, 212 / 255.0f, 123 / 255.0f, 1.0f };
@@ -54,8 +69,25 @@ void Sandbox2D::OnUpdate(Gart::TimeStep ts)
 	Gart::Renderer2D::DrawQuad({ 0.0f,-1.0f }, { 0.5f,0.8f }, { 1.0f,1.0f,1.0f,1.0f });
 	Gart::Renderer2D::DrawQuad({ -0.5f,0.4f }, { 0.2f,0.2f }, { 1.0f,0.0f,0.0f,1.0f });*/
 
-	Gart::Renderer2D::DrawQuad({ 0.0f,0.0f }, { 1.0f,2.0f }, m_Tree);
-	Gart::Renderer2D::DrawQuad({ 1.5f,0.0f }, { -1.0f,1.0f }, m_Stairs);
+	for (uint32_t y = 0; y < m_MapHeight; y++)
+	{
+		for (uint32_t x = 0;x < m_MapWidth;x++)
+		{
+			char l_tileName = s_MapTiles[x + y * m_MapWidth];
+			Gart::Ref<Gart::SubTexture2D> l_texture;
+			if (m_TileSet.find(l_tileName) != m_TileSet.end())
+				l_texture = m_TileSet[l_tileName];
+			else
+				l_texture = m_Tree;
+
+			Gart::Renderer2D::DrawQuad({ x - m_MapWidth / 2.0f,y - m_MapHeight / 2.0f }, { 1.0f,1.0f }, l_texture);
+
+		}
+	}
+
+
+	//Gart::Renderer2D::DrawQuad({ 0.0f,0.0f }, { 1.0f,2.0f }, m_Tree);
+	//Gart::Renderer2D::DrawQuad({ 1.5f,0.0f }, { -1.0f,1.0f }, m_Stairs);
 	
 
 	Gart::Renderer2D::EndScene();

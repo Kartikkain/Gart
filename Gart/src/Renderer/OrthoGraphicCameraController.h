@@ -25,9 +25,12 @@ namespace Gart
 		OrthoGraphicCamera& GetCamera() { return m_Camera; }
 		const OrthoGraphicCamera& GetCamera() const { return m_Camera; }
 		const OrthographicCameraBounds& GetBounds() const { return m_Bounds; }
+		const float GetZoomLevel() const { return m_ZoomLevel; }
+		void SetZoomLevel(float zoomLevel) { m_ZoomLevel = zoomLevel; CalculateView(); }
 	private:
 		bool OnMouseScrolled(BSS::MouseScrollEvent& e);
 		bool OnWindowResized(BSS::WindowResizeEvent& e);
+		void CalculateView();
 	private:
 		float m_AspectRatio;
 		float m_ZoomLevel = 1.0f;
