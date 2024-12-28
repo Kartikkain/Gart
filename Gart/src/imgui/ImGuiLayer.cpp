@@ -63,9 +63,6 @@ namespace BSS
 	{
 		GART_PROFILE_FUNCTION();
 
-		static bool show = true;
-		ImGui::ShowDemoWindow(&show);
-
 	}
 
 	void ImGuiLayer::Begin()

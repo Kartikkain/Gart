@@ -19,6 +19,7 @@ namespace BSS
 		Application();
 		virtual ~Application();
 		void Run();
+		void Close();
 		void OnEvent(Event& e);
 
 		void PushLayer(Layer* layer);

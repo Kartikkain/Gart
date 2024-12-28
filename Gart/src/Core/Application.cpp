@@ -98,6 +98,11 @@ namespace BSS
 			m_Window->OnUpdate();
 		}
 	}
+	
+	void Application::Close()
+	{
+		m_Running = false;
+	}
 
 	void Application::PushLayer(Layer* layer)
 	{
