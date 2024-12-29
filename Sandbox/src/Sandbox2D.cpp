@@ -34,6 +34,13 @@ void Sandbox2D::OnAttach()
 	m_MapWidth = s_MapWidth;
 	m_MapHeight = strlen(s_MapTiles) / s_MapWidth;
 
+	Gart::FrameBufferSpecification SceneViewFrameBuffer;
+
+	SceneViewFrameBuffer.Width = 1280;
+	SceneViewFrameBuffer.Height = 720;
+
+	m_framebuffer = Gart::FrameBuffer::Create(SceneViewFrameBuffer);
+
 	// Init here
 	m_Particle.ColorBegin = { 254 / 255.0f, 212 / 255.0f, 123 / 255.0f, 1.0f };
 	m_Particle.ColorEnd = { 254 / 255.0f, 109 / 255.0f, 41 / 255.0f, 1.0f };
@@ -42,6 +49,7 @@ void Sandbox2D::OnAttach()
 	m_Particle.Velocity = { 0.0f, 0.0f };
 	m_Particle.VelocityVariation = { 3.0f, 1.0f };
 	m_Particle.Position = { 0.0f, 0.0f };
+
 }
 
 void Sandbox2D::OnDitach()
@@ -53,6 +61,8 @@ void Sandbox2D::OnDitach()
 void Sandbox2D::OnUpdate(Gart::TimeStep ts)
 {
 	GART_PROFILE_FUNCTION();
+
+	m_framebuffer->Bind();
 
 	Gart::Renderer2D::ResetStats();
 
@@ -111,7 +121,7 @@ void Sandbox2D::OnUpdate(Gart::TimeStep ts)
 	m_ParticleSystem.OnUpdate(ts);
 	m_ParticleSystem.OnRender(m_OrthoCamera.GetCamera());*/
 
-	
+	m_framebuffer->Unbind();
 }
 
 void Sandbox2D::OnImGuiRender()
@@ -198,11 +208,22 @@ void Sandbox2D::OnImGuiRender()
 	ImGui::Text("Number Of Indicies: %d", l_stats.GetNumbersOfIndices());
 
 	ImGui::ColorEdit3("Triangle Color", glm::value_ptr(m_TriangleColor));
-	uint32_t texture = m_Texture->GetRenderID();
-	ImGui::Image((void*)texture, { 64.0f,64.0f });
+	
 	ImGui::End();
 
+
+	ImGui::Begin("Scene");
+
+	//uint32_t texture = m_Texture->GetRenderID();
+	uint32_t texture = m_framebuffer->GetColorAttachmetID();
+	ImGui::Image((void*)texture, { 1280.0f,720.0f });
+
 	ImGui::End();
+
+
+	ImGui::End();
+
+	
 }
 
 void Sandbox2D::OnEvent(BSS::Event& e)

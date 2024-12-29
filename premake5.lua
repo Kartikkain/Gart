@@ -1,5 +1,6 @@
 workspace "Gart"
 	architecture "x64"
+	startproject "Sandbox"
 
 	configurations
 	{
@@ -94,8 +95,8 @@ project "Gart"
 		optimize "on"
 
 
-project "Sandbox"
-	location "Sandbox"
+project "Gart-Editor"
+	location "Gart-Editor"
 	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++17"

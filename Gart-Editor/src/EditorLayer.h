@@ -1,0 +1,37 @@
+#pragma once
+
+#include "BSS.h"
+//#include "ParticlesSystem.h"
+
+namespace Gart
+{
+	class EditorLayer : public BSS::Layer
+	{
+	public:
+		EditorLayer();
+		virtual ~EditorLayer() = default;
+		virtual void OnAttach() override;
+		virtual void OnDitach() override;
+		void OnUpdate(Gart::TimeStep ts) override;
+		virtual void OnImGuiRender() override;
+		void OnEvent(BSS::Event& e) override;
+	private:
+
+		Gart::OrthoGraphicCameraController m_OrthoCamera;
+
+		// Temporary 
+		Gart::Ref<Gart::Shader> m_Shader;
+		Gart::Ref<Gart::VertexArray> m_VertexArray;
+		Gart::Ref<Gart::Texture2D> m_Texture;
+		Gart::Ref<Gart::Texture2D> m_SpriteSheet;
+		Gart::Ref<Gart::SubTexture2D> m_Tree;
+		Gart::Ref<Gart::SubTexture2D> m_Stairs;
+		Gart::Ref<Gart::FrameBuffer> m_framebuffer;
+		glm::vec3 m_TriangleColor = { 1.0f,0.0f,0.0f };
+
+		//ParticleSystem m_ParticleSystem;
+		//ParticleProps m_Particle;
+		std::unordered_map<char, Gart::Ref<Gart::SubTexture2D>> m_TileSet;
+		uint32_t m_MapWidth, m_MapHeight;
+	};
+}

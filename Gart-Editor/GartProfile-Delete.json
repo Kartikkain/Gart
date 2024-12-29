@@ -1,0 +1,1 @@
+{"otherData": {},"traceEvents":[{"cat":"function","dur":2,"name":"__cdecl BSS::Application::~Application(void)","ph":"X","pid":0,"tid":3764847890,"ts":1679827636},{"cat":"function","dur":67,"name":"__cdecl Gart::OpenGlTexture::~OpenGlTexture(void)","ph":"X","pid":0,"tid":3764847890,"ts":1679828089}]}

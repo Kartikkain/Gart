@@ -32,12 +32,12 @@ namespace BSS
 		return 0;
 	}
 
-	Application::Application()
+	Application::Application(const std::string& name)
 	{
 		GART_PROFILE_FUNCTION();
 
 		s_Instance = this;
-		m_Window = std::unique_ptr<Window>(Window::Create());
+		m_Window = std::unique_ptr<Window>(Window::Create(WindowProps(name)));
 		m_Window->SetEventCallback(BSS_EVENT_FN(OnEvent));
 
 		Gart::Renderer::Init();

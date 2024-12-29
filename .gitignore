@@ -2,3 +2,6 @@
 bin/
 bin-int/
 *.user
+Sandbox/GartProfile-Delete.json
+Sandbox/GartProfile-Runtime.json
+Sandbox/GartProfile-StartUp.json

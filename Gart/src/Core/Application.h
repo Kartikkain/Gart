@@ -16,7 +16,7 @@ namespace BSS
 	class BSS_API Application
 	{
 	public:
-		Application();
+		Application(const std::string& name = "Gart App");
 		virtual ~Application();
 		void Run();
 		void Close();

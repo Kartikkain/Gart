@@ -7,10 +7,10 @@ namespace BSS
 	struct WindowProps
 	{
 		std::string Title;
-		unsigned int Width;
-		unsigned int Height;
+		uint32_t Width;
+		uint32_t Height;
 
-		WindowProps(std::string title = "BSS", unsigned int width=1920, unsigned int height=1080)
+		WindowProps(std::string title = "BSS", uint32_t width=1920, uint32_t height=1080)
 			:Title(title), Width(width), Height(height){}
 	};
 
@@ -23,8 +23,8 @@ namespace BSS
 		virtual ~Window() {}
 		virtual void OnUpdate() = 0;
 
-		virtual unsigned int GetWidth() const = 0;
-		virtual unsigned int GetHeight() const = 0;
+		virtual uint32_t GetWidth() const = 0;
+		virtual uint32_t GetHeight() const = 0;
 
 		virtual void SetEventCallback(const EventCallBackFn& callback) = 0;
 		virtual void SetVSync(bool enabled) = 0;
