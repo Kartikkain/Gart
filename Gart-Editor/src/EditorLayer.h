@@ -28,7 +28,7 @@ namespace Gart
 		Gart::Ref<Gart::SubTexture2D> m_Stairs;
 		Gart::Ref<Gart::FrameBuffer> m_framebuffer;
 		glm::vec3 m_TriangleColor = { 1.0f,0.0f,0.0f };
-
+		glm::vec2 m_ViewPortSize = { 0.0f,0.0f };
 		//ParticleSystem m_ParticleSystem;
 		//ParticleProps m_Particle;
 		std::unordered_map<char, Gart::Ref<Gart::SubTexture2D>> m_TileSet;

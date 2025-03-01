@@ -215,13 +215,23 @@ namespace Gart
 		ImGui::End();
 
 
-		ImGui::Begin("Scene");
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+		ImGui::Begin("Scene View");
 
-		//uint32_t texture = m_Texture->GetRenderID();
+		ImVec2 l_ViewPortSize = ImGui::GetContentRegionAvail();
+		if (m_ViewPortSize != *((glm::vec2*)&l_ViewPortSize))
+		{
+			m_framebuffer->Resize((uint32_t)l_ViewPortSize.x,(uint32_t)l_ViewPortSize.y);
+			m_ViewPortSize = { l_ViewPortSize.x,l_ViewPortSize.y };
+			m_OrthoCamera.OnResize(l_ViewPortSize.x, l_ViewPortSize.y);
+		}
+		BSS_CORE_INFO("Scene View port Size : {0}, {1}", l_ViewPortSize.x, l_ViewPortSize.y);
 		uint32_t texture = m_framebuffer->GetColorAttachmetID();
-		ImGui::Image((void*)texture, { 1280.0f,720.0f },ImVec2(0,1),ImVec2(1,0));
+		ImGui::Image((void*)texture, { m_ViewPortSize.x,m_ViewPortSize.y },ImVec2(0,1),ImVec2(1,0));
 
 		ImGui::End();
+
+		ImGui::PopStyleVar();
 
 
 		ImGui::End();

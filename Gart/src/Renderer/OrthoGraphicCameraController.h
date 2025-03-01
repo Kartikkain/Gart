@@ -22,6 +22,7 @@ namespace Gart
 		OrthoGraphicCameraController(float aspectRatio);
 		void OnUpdate(TimeStep ts);
 		void OnEvent(BSS::Event& e);
+		void OnResize(float width, float height);
 		OrthoGraphicCamera& GetCamera() { return m_Camera; }
 		const OrthoGraphicCamera& GetCamera() const { return m_Camera; }
 		const OrthographicCameraBounds& GetBounds() const { return m_Bounds; }

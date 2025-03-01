@@ -13,10 +13,19 @@ namespace Gart
 	OpenGLFrameBuffer::~OpenGLFrameBuffer()
 	{
 		glDeleteFramebuffers(1, &m_RendererID);
+		glDeleteTextures(1, &m_colorAttachment);
+		glDeleteTextures(1, &m_depthAttachment);
 	}
 
 	void OpenGLFrameBuffer::Invalidate()
 	{
+		if (m_RendererID)
+		{
+			glDeleteFramebuffers(1, &m_RendererID);
+			glDeleteTextures(1, &m_colorAttachment);
+			glDeleteTextures(1, &m_depthAttachment);
+		}
+
 		glCreateFramebuffers(1,&m_RendererID);
 		glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
 
@@ -40,11 +49,20 @@ namespace Gart
 	void OpenGLFrameBuffer::Bind()
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
+		glViewport(0, 0, m_specification.Width, m_specification.Height);
 	}
 
 	void OpenGLFrameBuffer::Unbind()
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
+
+	void OpenGLFrameBuffer::Resize(uint32_t width, uint32_t height)
+	{
+		m_specification.Width = width;
+		m_specification.Height = height;
+
+		Invalidate();
 	}
 
 }

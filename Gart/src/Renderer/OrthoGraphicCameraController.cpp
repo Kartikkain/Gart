@@ -34,6 +34,12 @@ namespace Gart
 		dispatcher.Dispatch<BSS::WindowResizeEvent>(BSS_EVENT_BIND_FN(OrthoGraphicCameraController::OnWindowResized));
 	}
 
+	void OrthoGraphicCameraController::OnResize(float width, float height)
+	{
+		m_AspectRatio = width/height;
+		CalculateView();
+	}
+
 	bool OrthoGraphicCameraController::OnMouseScrolled(BSS::MouseScrollEvent& e)
 	{
 		GART_PROFILE_FUNCTION();
@@ -46,8 +52,7 @@ namespace Gart
 
 	bool OrthoGraphicCameraController::OnWindowResized(BSS::WindowResizeEvent& e)
 	{
-		m_AspectRatio = (float)e.GetWidth() / (float)e.GetHeight();
-		CalculateView();
+		OnResize((float)e.GetWidth(), (float)e.GetHeight());
 		return false;
 	}
 

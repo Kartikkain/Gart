@@ -14,11 +14,12 @@ namespace Gart
 		virtual void Unbind() override;
 		virtual const uint32_t GetColorAttachmetID() const override { return m_colorAttachment; }
 		virtual const FrameBufferSpecification& GetFrameBufferSpecifier() const override { return m_specification; }
+		virtual void Resize(uint32_t width, uint32_t height) override;
 	private:
 
 		
 
-		uint32_t m_RendererID, m_colorAttachment, m_depthAttachment;
+		uint32_t m_RendererID = 0, m_colorAttachment = 0, m_depthAttachment = 0;
 
 		FrameBufferSpecification m_specification;
 	};
