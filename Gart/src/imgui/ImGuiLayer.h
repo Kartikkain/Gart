@@ -14,9 +14,12 @@ namespace BSS {
 		virtual void OnAttach() override;
 		virtual void OnDitach() override;
 		virtual void OnImGuiRender() override;
+		virtual void OnEvent(Event& event) override;
 		void Begin();
 		void End();
+		void BlockEvent(bool block) { m_blockEvent = block; }
 	private:
 		float m_Time;
+		bool m_blockEvent = true;
 	};
 }

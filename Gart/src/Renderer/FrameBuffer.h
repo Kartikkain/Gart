@@ -16,6 +16,7 @@ namespace Gart
 	class FrameBuffer
 	{
 	public :
+		virtual ~FrameBuffer() = default;
 		virtual void Bind() = 0;
 		virtual void Unbind() = 0;
 		virtual const uint32_t GetColorAttachmetID() const = 0;

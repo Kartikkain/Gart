@@ -65,6 +65,16 @@ namespace BSS
 
 	}
 
+	void ImGuiLayer::OnEvent(Event& event)
+	{
+		if (m_blockEvent)
+		{
+			ImGuiIO& io = ImGui::GetIO();
+			event.m_Handled |= event.IsInCategory(EventCategoryMouse) & io.WantCaptureMouse;
+			event.m_Handled |= event.IsInCategory(EventCategoryKeyboard) & io.WantCaptureKeyboard;
+		}
+	}
+
 	void ImGuiLayer::Begin()
 	{
 		GART_PROFILE_FUNCTION();

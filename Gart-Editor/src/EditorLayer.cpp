@@ -69,7 +69,7 @@ namespace Gart
 
 		Gart::Renderer2D::ResetStats();
 
-		m_OrthoCamera.OnUpdate(ts);
+		if(m_ViewPortFocus) m_OrthoCamera.OnUpdate(ts);
 
 		Gart::RenderCommand::SetClearColor({ 0.1f,0.1f,0.1f,1 });
 		Gart::RenderCommand::Clear();
@@ -218,6 +218,9 @@ namespace Gart
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 		ImGui::Begin("Scene View");
 
+		m_ViewPortFocus = ImGui::IsWindowFocused();
+		m_ViewPortHover = ImGui::IsWindowHovered();
+		BSS::Application::Get().GetImGuiLayer()->BlockEvent(!m_ViewPortFocus || !m_ViewPortHover);
 		ImVec2 l_ViewPortSize = ImGui::GetContentRegionAvail();
 		if (m_ViewPortSize != *((glm::vec2*)&l_ViewPortSize))
 		{
@@ -225,7 +228,9 @@ namespace Gart
 			m_ViewPortSize = { l_ViewPortSize.x,l_ViewPortSize.y };
 			m_OrthoCamera.OnResize(l_ViewPortSize.x, l_ViewPortSize.y);
 		}
-		BSS_CORE_INFO("Scene View port Size : {0}, {1}", l_ViewPortSize.x, l_ViewPortSize.y);
+		
+		if(m_ViewPortFocus) BSS_CORE_INFO("Scene View port Size : ({0}, {1}) Focused", l_ViewPortSize.x, l_ViewPortSize.y);
+		else BSS_CORE_INFO("Scene View port Size : ({0}, {1})", l_ViewPortSize.x, l_ViewPortSize.y);
 		uint32_t texture = m_framebuffer->GetColorAttachmetID();
 		ImGui::Image((void*)texture, { m_ViewPortSize.x,m_ViewPortSize.y },ImVec2(0,1),ImVec2(1,0));
 
