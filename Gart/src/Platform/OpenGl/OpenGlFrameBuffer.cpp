@@ -3,7 +3,7 @@
 #include <glad/glad.h>
 namespace Gart 
 {
-
+	static const uint32_t s_MaxBufferSize = 8192;
 	OpenGLFrameBuffer::OpenGLFrameBuffer(const FrameBufferSpecification& spec)
 		:m_specification(spec)
 	{
@@ -59,6 +59,10 @@ namespace Gart
 
 	void OpenGLFrameBuffer::Resize(uint32_t width, uint32_t height)
 	{
+		if (width == 0 || height == 0 || width > s_MaxBufferSize || height > s_MaxBufferSize)
+		{
+			return;
+		}
 		m_specification.Width = width;
 		m_specification.Height = height;
 

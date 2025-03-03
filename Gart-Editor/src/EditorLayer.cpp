@@ -222,7 +222,7 @@ namespace Gart
 		m_ViewPortHover = ImGui::IsWindowHovered();
 		BSS::Application::Get().GetImGuiLayer()->BlockEvent(!m_ViewPortFocus || !m_ViewPortHover);
 		ImVec2 l_ViewPortSize = ImGui::GetContentRegionAvail();
-		if (m_ViewPortSize != *((glm::vec2*)&l_ViewPortSize))
+		if (m_ViewPortSize != *((glm::vec2*)&l_ViewPortSize) && l_ViewPortSize.x > 0 && l_ViewPortSize.y > 0)
 		{
 			m_framebuffer->Resize((uint32_t)l_ViewPortSize.x,(uint32_t)l_ViewPortSize.y);
 			m_ViewPortSize = { l_ViewPortSize.x,l_ViewPortSize.y };
