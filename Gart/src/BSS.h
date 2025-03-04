@@ -25,3 +25,7 @@
 #include "Renderer/OrthoGraphicCamera.h"
 #include "Renderer/OrthoGraphicCameraController.h"
 
+//--------------------Scene-------------------------//
+#include "Scene/Scene.h"
+#include "Scene/Components.h"
+

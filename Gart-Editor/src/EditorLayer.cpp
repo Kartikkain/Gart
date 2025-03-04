@@ -53,6 +53,11 @@ namespace Gart
 		m_Particle.VelocityVariation = { 3.0f, 1.0f };
 		m_Particle.Position = { 0.0f, 0.0f };*/
 
+		m_ActiveScene = std::make_shared<Scene>();
+		auto Square = m_ActiveScene->CreateEntity();
+		m_ActiveScene->GetReg().emplace<TransformComponent>(Square);
+		m_ActiveScene->GetReg().emplace<SpriteRenderer>(Square, glm::vec4{ 1.0f,0.0f,0.0f,1.0f });
+		m_SquareEntity = Square;
 	}
 
 	void EditorLayer::OnDitach()
@@ -76,12 +81,6 @@ namespace Gart
 
 		Gart::Renderer2D::BeginScene(m_OrthoCamera.GetCamera());
 
-		/*Gart::Renderer2D::DrawQuad({ 0.0f,0.0f }, { 2.0f,2.0f }, m_Texture,10.0f);
-		Gart::Renderer2D::DrawRotateQuad({ -0.5f,0.0f }, glm::radians(- 45.0f), {1.0f,1.0f}, m_Texture, 10.0f);
-		Gart::Renderer2D::DrawRotateQuad({ -0.5f,0.0f },glm::radians(45.0f),{ 0.3f,0.3f }, {0.0f,0.0f,1.0f,1.0f});
-		Gart::Renderer2D::DrawQuad({ 0.0f,-1.0f }, { 0.5f,0.8f }, { 1.0f,1.0f,1.0f,1.0f });
-		Gart::Renderer2D::DrawQuad({ -0.5f,0.4f }, { 0.2f,0.2f }, { 1.0f,0.0f,0.0f,1.0f });*/
-
 		for (uint32_t y = 0; y < m_MapHeight; y++)
 		{
 			for (uint32_t x = 0;x < m_MapWidth;x++)
@@ -99,8 +98,7 @@ namespace Gart
 		}
 
 
-		//Gart::Renderer2D::DrawQuad({ 0.0f,0.0f }, { 1.0f,2.0f }, m_Tree);
-		//Gart::Renderer2D::DrawQuad({ 1.5f,0.0f }, { -1.0f,1.0f }, m_Stairs);
+		m_ActiveScene->OnUpdate(ts);
 
 
 		Gart::Renderer2D::EndScene();
@@ -203,14 +201,14 @@ namespace Gart
 		ImGui::Begin("Setting");
 
 		auto l_stats = Gart::Renderer2D::GetStats();
-
+		auto& m_SqaureColor = m_ActiveScene->GetReg().get<SpriteRenderer>(m_SquareEntity).Color;
 		ImGui::Text("Renderer2D stats:");
 		ImGui::Text("Draw Calls: %d", l_stats.DrawCalls);
 		ImGui::Text("Quad Counts: %d", l_stats.QuadCounts);
 		ImGui::Text("Number Of Vertices: %d", l_stats.GetNumbersOfVertices());
 		ImGui::Text("Number Of Indicies: %d", l_stats.GetNumbersOfIndices());
 
-		ImGui::ColorEdit3("Triangle Color", glm::value_ptr(m_TriangleColor));
+		ImGui::ColorEdit3("Triangle Color", glm::value_ptr(m_SqaureColor));
 
 		ImGui::End();
 

@@ -14,6 +14,8 @@
 
 #include "Debug/Instrumentor.h"
 
+#define NOMINMAX
+
 #ifdef BSS_PLATFORM_WINDOW
 	#include<Windows.h>
 #endif // BSS_PLATFORM_WINDOW
