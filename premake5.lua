@@ -18,6 +18,7 @@ IncludeDir["Glad"] = "Gart/vendor/Glad/include"
 IncludeDir["ImGui"] = "Gart/vendor/imgui"
 IncludeDir["glm"] = "Gart/vendor/glm"
 IncludeDir["stb_image"] = "Gart/vendor/stb_image"
+IncludeDir["entt"] = "Gart/vendor/entt/include"
 
 
 include "Gart/vendor/GLFW"
@@ -55,7 +56,8 @@ project "Gart"
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.glm}",
-		"%{IncludeDir.stb_image}"
+		"%{IncludeDir.stb_image}",
+		"%{IncludeDir.entt}"
 	}
 
 	links
@@ -116,7 +118,8 @@ project "Gart-Editor"
 		"Gart/vendor/spdlog/include",
 		"Gart/src",
 		"%{IncludeDir.glm}",
-		"%{IncludeDir.ImGui}"
+		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.entt}"
 	}
 
 	links
