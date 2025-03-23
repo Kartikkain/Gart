@@ -2,6 +2,17 @@
 #include<glm/glm.hpp>
 namespace Gart
 {
+
+	struct TagComponent
+	{
+		std::string m_Tag;
+
+		TagComponent() = default;
+		TagComponent(const TagComponent&) = default;
+		TagComponent(const std::string& tag)
+			:m_Tag(tag) {}
+	};
+
 	struct TransformComponent
 	{
 		glm::mat4 Transform = glm::mat4(1.0f);

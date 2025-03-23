@@ -54,9 +54,9 @@ namespace Gart
 		m_Particle.Position = { 0.0f, 0.0f };*/
 
 		m_ActiveScene = std::make_shared<Scene>();
-		auto Square = m_ActiveScene->CreateEntity();
-		m_ActiveScene->GetReg().emplace<TransformComponent>(Square);
-		m_ActiveScene->GetReg().emplace<SpriteRenderer>(Square, glm::vec4{ 1.0f,0.0f,0.0f,1.0f });
+		auto Square = m_ActiveScene->CreateEntity("Square");
+
+		Square.AddComponent<SpriteRenderer>(glm::vec4{ 1.0f,0.0f,0.0f,1.0f });
 		m_SquareEntity = Square;
 	}
 
@@ -201,7 +201,7 @@ namespace Gart
 		ImGui::Begin("Setting");
 
 		auto l_stats = Gart::Renderer2D::GetStats();
-		auto& m_SqaureColor = m_ActiveScene->GetReg().get<SpriteRenderer>(m_SquareEntity).Color;
+		auto& m_SqaureColor = m_SquareEntity.GetComponent<SpriteRenderer>().Color;
 		ImGui::Text("Renderer2D stats:");
 		ImGui::Text("Draw Calls: %d", l_stats.DrawCalls);
 		ImGui::Text("Quad Counts: %d", l_stats.QuadCounts);

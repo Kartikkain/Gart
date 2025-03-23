@@ -5,3 +5,6 @@ bin-int/
 Sandbox/GartProfile-Delete.json
 Sandbox/GartProfile-Runtime.json
 Sandbox/GartProfile-StartUp.json
+Gart-Editor/GartProfile-Delete.json
+Gart-Editor/GartProfile-Runtime.json
+Gart-Editor/GartProfile-StartUp.json

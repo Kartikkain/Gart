@@ -19,7 +19,7 @@ namespace Gart
 
 		Gart::OrthoGraphicCameraController m_OrthoCamera;
 		Ref<Scene> m_ActiveScene;
-		entt::entity m_SquareEntity;
+		Entity m_SquareEntity;
 		// Temporary 
 		Gart::Ref<Gart::Shader> m_Shader;
 		Gart::Ref<Gart::VertexArray> m_VertexArray;

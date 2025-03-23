@@ -2,6 +2,7 @@
 #include "Scene.h"
 #include "Components.h"
 #include "Renderer/Renderer2D.h"
+#include "Entity.h"
 #include<glm/gtc/matrix_transform.hpp>
 
 namespace Gart
@@ -14,9 +15,13 @@ namespace Gart
 	Scene::~Scene()
 	{
 	}
-	entt::entity Scene::CreateEntity()
+	Entity Scene::CreateEntity(const std::string& name)
 	{
-		return m_Registery.create();
+		Entity entity = { m_Registery.create(), this };
+		entity.AddComponent<TransformComponent>();
+		auto& tag = entity.AddComponent<TagComponent>();
+		tag.m_Tag = name.empty() ? "Entity" : name;
+		return entity;
 	}
 	void Scene::OnUpdate(TimeStep ts)
 	{
