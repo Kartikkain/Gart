@@ -25,11 +25,35 @@ namespace Gart
 	}
 	void Scene::OnUpdate(TimeStep ts)
 	{
-		auto group = m_Registery.group<TransformComponent>(entt::get<SpriteRenderer>);
-		for (auto entity : group)
+
+		Camera* maincamera = nullptr;
+		glm::mat4* mainCameraTransform = nullptr;
+		
+		auto l_group = m_Registery.view<TransformComponent, CameraComponent>();
+		for (auto entity : l_group)
 		{
-			auto& [transform,sprite] = group.get<TransformComponent,SpriteRenderer>(entity);
-			Renderer2D::DrawQuad(transform.Transform, sprite.Color);
+			auto& [transform, camera] = l_group.get<TransformComponent, CameraComponent>(entity);
+			
+			if (camera.Primary)
+			{
+				maincamera = &camera.camera;
+				mainCameraTransform = &transform.Transform;
+				break;
+			}
+			
+		}
+
+
+		if (maincamera )
+		{
+			Renderer2D::BeginScene(maincamera->GetProjection(), *mainCameraTransform);
+			auto group = m_Registery.group<TransformComponent>(entt::get<SpriteRenderer>);
+			for (auto entity : group)
+			{
+				auto& [transform, sprite] = group.get<TransformComponent, SpriteRenderer>(entity);
+				Renderer2D::DrawQuad(transform.Transform, sprite.Color);
+			}
+			Renderer2D::EndScene();
 		}
 	}
 }

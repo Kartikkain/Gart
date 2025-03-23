@@ -3,6 +3,7 @@
 #include "OrthoGraphicCamera.h"
 #include "Texture.h"
 #include "SubTexture2D.h"
+#include "Renderer/Camera.h"
 
 namespace Gart
 {
@@ -12,6 +13,7 @@ namespace Gart
 		static void init();
 		static void Shutdown();
 
+		static void BeginScene(const Camera& camera,const glm::mat4& transform);
 		static void BeginScene(const OrthoGraphicCamera& camera);
 		static void EndScene();
 

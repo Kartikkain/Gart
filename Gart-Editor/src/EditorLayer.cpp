@@ -58,6 +58,15 @@ namespace Gart
 
 		Square.AddComponent<SpriteRenderer>(glm::vec4{ 1.0f,0.0f,0.0f,1.0f });
 		m_SquareEntity = Square;
+
+		m_CameraComponent = m_ActiveScene->CreateEntity("Main Camera");
+		m_CameraComponent.AddComponent<CameraComponent>(glm::ortho(-16.0f, 16.0f, -9.0f, 9.0f, -1.0f, 1.0f));
+
+		if (m_CameraComponent.HasComponent<CameraComponent>())
+		{
+			BSS_CLIENT_INFO("Has Camera Component");
+		}
+
 	}
 
 	void EditorLayer::OnDitach()
@@ -79,7 +88,7 @@ namespace Gart
 		Gart::RenderCommand::SetClearColor({ 0.1f,0.1f,0.1f,1 });
 		Gart::RenderCommand::Clear();
 
-		Gart::Renderer2D::BeginScene(m_OrthoCamera.GetCamera());
+		/*Gart::Renderer2D::BeginScene(m_OrthoCamera.GetCamera());
 
 		for (uint32_t y = 0; y < m_MapHeight; y++)
 		{
@@ -95,13 +104,13 @@ namespace Gart
 				Gart::Renderer2D::DrawQuad({ x - m_MapWidth / 2.0f,y - m_MapHeight / 2.0f }, { 1.0f,1.0f }, l_texture);
 
 			}
-		}
+		}*/
 
 
 		m_ActiveScene->OnUpdate(ts);
 
 
-		Gart::Renderer2D::EndScene();
+		//Gart::Renderer2D::EndScene();
 
 
 		/*if (BSS::Input::IsMouseButtonPressed(BSS_MOUSE_BUTTON_LEFT))

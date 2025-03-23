@@ -1,5 +1,6 @@
 #pragma once
 #include<glm/glm.hpp>
+#include "Renderer/Camera.h"
 namespace Gart
 {
 
@@ -32,6 +33,16 @@ namespace Gart
 		SpriteRenderer(const SpriteRenderer&) = default;
 		SpriteRenderer(const glm::vec4& color)
 			:Color(color){ }
+	};
+
+	struct CameraComponent
+	{
+		Camera camera;
+		bool Primary = true; // To do after for the scene.
+		CameraComponent() = default;
+		CameraComponent(const CameraComponent&) = default;
+		CameraComponent(const glm::mat4& projection)
+			:camera(projection) { }
 	};
 
 }

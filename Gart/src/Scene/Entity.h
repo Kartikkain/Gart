@@ -36,11 +36,11 @@ namespace Gart
 			m_Scene->m_Registery.remove<T>(m_EntityHandler);
 		}
 
-		//operator bool() const { return m_EntityHandler != 0; }
+		operator bool() const { return m_EntityHandler != entt::null; }
 
 	private:
 
-		entt::entity m_EntityHandler{ 0 };
+		entt::entity m_EntityHandler{ entt::null };
 		Scene* m_Scene = nullptr;
 
 	};
