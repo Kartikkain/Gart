@@ -61,6 +61,10 @@ namespace Gart
 
 		m_CameraComponent = m_ActiveScene->CreateEntity("Main Camera");
 		m_CameraComponent.AddComponent<CameraComponent>(glm::ortho(-16.0f, 16.0f, -9.0f, 9.0f, -1.0f, 1.0f));
+		
+		m_SecondaryCameraComponent = m_ActiveScene->CreateEntity("Clipping-Space Camera");
+		auto l_SecondayCam = m_SecondaryCameraComponent.AddComponent<CameraComponent>(glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f));
+		l_SecondayCam.Primary = false;
 
 		if (m_CameraComponent.HasComponent<CameraComponent>())
 		{
@@ -218,6 +222,12 @@ namespace Gart
 		ImGui::Text("Number Of Indicies: %d", l_stats.GetNumbersOfIndices());
 
 		ImGui::ColorEdit3("Triangle Color", glm::value_ptr(m_SqaureColor));
+		if (ImGui::Checkbox("PrimaryCamera", &m_PrimaryCamera))
+		{
+			m_SecondaryCameraComponent.GetComponent<CameraComponent>().Primary = m_PrimaryCamera;
+			m_CameraComponent.GetComponent<CameraComponent>().Primary = !m_PrimaryCamera;
+		}
+
 
 		ImGui::End();
 

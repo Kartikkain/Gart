@@ -21,6 +21,9 @@ namespace Gart
 		Ref<Scene> m_ActiveScene;
 		Entity m_SquareEntity;
 		Entity m_CameraComponent;
+		Entity m_SecondaryCameraComponent;
+
+		bool m_PrimaryCamera = false;
 		// Temporary 
 		Gart::Ref<Gart::Shader> m_Shader;
 		Gart::Ref<Gart::VertexArray> m_VertexArray;
