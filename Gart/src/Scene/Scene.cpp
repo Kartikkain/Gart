@@ -56,4 +56,21 @@ namespace Gart
 			Renderer2D::EndScene();
 		}
 	}
+
+	void Scene::OnViewportResize(uint32_t width, uint32_t height)
+	{
+		m_ViewportWidth = width;
+		m_ViewportHeight = height;
+		auto view = m_Registery.view<CameraComponent>();
+
+		for (auto entity : view)
+		{
+			auto& cameraComponent = view.get<CameraComponent>(entity);
+			
+			if (!cameraComponent.FixedAspectRatio)
+			{
+				cameraComponent.camera.SetViewportSize(width, height);
+			}
+		}
+	}
 }

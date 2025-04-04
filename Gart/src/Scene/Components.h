@@ -1,6 +1,7 @@
 #pragma once
 #include<glm/glm.hpp>
 #include "Renderer/Camera.h"
+#include "SceneCamera.h"
 namespace Gart
 {
 
@@ -37,12 +38,12 @@ namespace Gart
 
 	struct CameraComponent
 	{
-		Camera camera;
+		SceneCamera camera;
 		bool Primary = true; // To do after for the scene.
+		bool FixedAspectRatio = false;
 		CameraComponent() = default;
 		CameraComponent(const CameraComponent&) = default;
-		CameraComponent(const glm::mat4& projection)
-			:camera(projection) { }
+		
 	};
 
 }

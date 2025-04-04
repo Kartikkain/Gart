@@ -60,10 +60,10 @@ namespace Gart
 		m_SquareEntity = Square;
 
 		m_CameraComponent = m_ActiveScene->CreateEntity("Main Camera");
-		m_CameraComponent.AddComponent<CameraComponent>(glm::ortho(-16.0f, 16.0f, -9.0f, 9.0f, -1.0f, 1.0f));
+		m_CameraComponent.AddComponent<CameraComponent>();
 		
 		m_SecondaryCameraComponent = m_ActiveScene->CreateEntity("Clipping-Space Camera");
-		auto l_SecondayCam = m_SecondaryCameraComponent.AddComponent<CameraComponent>(glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f));
+		auto l_SecondayCam = m_SecondaryCameraComponent.AddComponent<CameraComponent>();
 		l_SecondayCam.Primary = false;
 
 		if (m_CameraComponent.HasComponent<CameraComponent>())
@@ -228,6 +228,13 @@ namespace Gart
 			m_CameraComponent.GetComponent<CameraComponent>().Primary = !m_PrimaryCamera;
 		}
 
+		auto& l_cam = m_SecondaryCameraComponent.GetComponent<CameraComponent>().camera;
+		float orthoSize = l_cam.GetOrthographicSize();
+
+		if (ImGui::DragFloat("Secondary Camera Size", &orthoSize))
+		{
+			l_cam.SetOrthographicSize(orthoSize);
+		}
 
 		ImGui::End();
 
@@ -244,6 +251,8 @@ namespace Gart
 			m_framebuffer->Resize((uint32_t)l_ViewPortSize.x,(uint32_t)l_ViewPortSize.y);
 			m_ViewPortSize = { l_ViewPortSize.x,l_ViewPortSize.y };
 			m_OrthoCamera.OnResize(l_ViewPortSize.x, l_ViewPortSize.y);
+			
+			m_ActiveScene->OnViewportResize(l_ViewPortSize.x, l_ViewPortSize.y);
 		}
 		
 		if(m_ViewPortFocus) BSS_CORE_INFO("Scene View port Size : ({0}, {1}) Focused", l_ViewPortSize.x, l_ViewPortSize.y);
