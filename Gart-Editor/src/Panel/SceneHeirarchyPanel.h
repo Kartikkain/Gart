@@ -1,6 +1,7 @@
 #pragma once
 #include "Scene/Scene.h"
 #include "Core/Core.h"
+#include "Scene/Entity.h"
 namespace Gart
 {
 	class SceneHeirarchyPanel
@@ -8,13 +9,12 @@ namespace Gart
 	public:
 
 		SceneHeirarchyPanel() = default;
-		SceneHeirarchyPanel(Ref<Scene> context);
-		void SetContext(Ref<Scene> context);
+		SceneHeirarchyPanel(const Ref<Scene>& context);
+		void SetContext(const Ref<Scene>& context);
 
 		void OnGUIRender();
 
 	private:
-		Ref<Scene> m_Context;
-		
+		Ref<Scene> m_Context = nullptr;
 	};
 }

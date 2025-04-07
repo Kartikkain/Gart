@@ -105,7 +105,7 @@ namespace Gart
 		};
 
 		m_SecondaryCameraComponent.AddComponent<NativeScriptComponent>().Bind<CameraController>();
-
+		m_HierarchyPanel.SetContext(m_ActiveScene);
 	}
 
 	void EditorLayer::OnDitach()
@@ -245,6 +245,8 @@ namespace Gart
 		static bool show = true;
 
 		ImGui::ShowDemoWindow(&show);
+
+		m_HierarchyPanel.OnGUIRender();
 
 		ImGui::Begin("Setting");
 

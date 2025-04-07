@@ -1,6 +1,7 @@
 #pragma once
 
 #include "BSS.h"
+#include "Panel/SceneHeirarchyPanel.h"
 //#include "ParticlesSystem.h"
 
 namespace Gart
@@ -40,5 +41,6 @@ namespace Gart
 		//ParticleProps m_Particle;
 		std::unordered_map<char, Gart::Ref<Gart::SubTexture2D>> m_TileSet;
 		uint32_t m_MapWidth, m_MapHeight;
+		SceneHeirarchyPanel m_HierarchyPanel;
 	};
 }
