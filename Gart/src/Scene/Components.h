@@ -2,6 +2,7 @@
 #include<glm/glm.hpp>
 #include "Renderer/Camera.h"
 #include "SceneCamera.h"
+#include "ScriptableEntity.h"
 namespace Gart
 {
 
@@ -43,6 +44,31 @@ namespace Gart
 		bool FixedAspectRatio = false;
 		CameraComponent() = default;
 		CameraComponent(const CameraComponent&) = default;
+		
+	};
+
+	struct NativeScriptComponent {
+
+		ScriptableEntity* Instance = nullptr;
+
+		std::function<void()>  InstanceFunction;
+		std::function<void()>  DeleteInstanceFunction;
+
+		std::function<void(ScriptableEntity*)> OnCreateFunction;
+		std::function<void(ScriptableEntity* ,TimeStep)> OnUpdateFunction;
+		std::function<void(ScriptableEntity*)> OnDestroyFunction;
+
+
+		template<typename T>
+		void Bind()
+		{
+			InstanceFunction = [&]() {Instance = new T(); };
+			DeleteInstanceFunction = [&]() {delete (T*)Instance; };
+				
+			OnCreateFunction = [](ScriptableEntity* instance) { ((T*)instance)->OnCreate(); };
+			OnUpdateFunction = [](ScriptableEntity* instance, TimeStep ts) { ((T*)instance)->OnUpdate(ts); };
+			OnDestroyFunction = [](ScriptableEntity* instance) { ((T*)instance)->OnDestroy(); };
+		}
 		
 	};
 

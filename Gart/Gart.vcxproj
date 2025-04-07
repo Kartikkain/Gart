@@ -191,6 +191,7 @@
     <ClInclude Include="src\Scene\Entity.h" />
     <ClInclude Include="src\Scene\Scene.h" />
     <ClInclude Include="src\Scene\SceneCamera.h" />
+    <ClInclude Include="src\Scene\ScriptableEntity.h" />
     <ClInclude Include="vendor\glm\glm\common.hpp" />
     <ClInclude Include="vendor\glm\glm\detail\_features.hpp" />
     <ClInclude Include="vendor\glm\glm\detail\_fixes.hpp" />

@@ -71,6 +71,41 @@ namespace Gart
 			BSS_CLIENT_INFO("Has Camera Component");
 		}
 
+		class  CameraController : public ScriptableEntity
+		{
+		public:
+
+			void OnCreate()
+			{
+				std::cout << "Created Camera Controller" << std::endl;
+			}
+
+			void OnUpdate(TimeStep ts)
+			{
+				auto& transform = GetComponent<TransformComponent>().Transform;
+				float Speed = 5.0f;
+
+				if (BSS::Input::IsKeyPressed(BSS_KEY_A))
+					transform[3][0] -= Speed * ts;
+
+				if (BSS::Input::IsKeyPressed(BSS_KEY_D))
+					transform[3][0] += Speed * ts;
+
+				if (BSS::Input::IsKeyPressed(BSS_KEY_W))
+					transform[3][1] += Speed * ts;
+
+				if (BSS::Input::IsKeyPressed(BSS_KEY_S))
+					transform[3][1] -= Speed * ts;
+			}
+
+			void OnDestroy()
+			{
+
+			}
+		};
+
+		m_SecondaryCameraComponent.AddComponent<NativeScriptComponent>().Bind<CameraController>();
+
 	}
 
 	void EditorLayer::OnDitach()

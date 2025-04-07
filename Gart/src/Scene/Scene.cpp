@@ -25,6 +25,19 @@ namespace Gart
 	}
 	void Scene::OnUpdate(TimeStep ts)
 	{
+		m_Registery.view<NativeScriptComponent>().each([=](auto entity, auto& nsc)
+		{
+
+				if (!nsc.Instance)
+				{
+					nsc.InstanceFunction();
+					nsc.Instance->m_entity = Entity{ entity,this };
+					nsc.OnCreateFunction(nsc.Instance);
+				}
+
+				nsc.OnUpdateFunction(nsc.Instance, ts);
+
+		});
 
 		Camera* maincamera = nullptr;
 		glm::mat4* mainCameraTransform = nullptr;
