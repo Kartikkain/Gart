@@ -51,23 +51,17 @@ namespace Gart
 
 		ScriptableEntity* Instance = nullptr;
 
-		std::function<void()>  InstanceFunction;
-		std::function<void()>  DeleteInstanceFunction;
+		ScriptableEntity* (*InstanciateScript)();
+		void (*DestroyScript)(NativeScriptComponent*);
 
-		std::function<void(ScriptableEntity*)> OnCreateFunction;
-		std::function<void(ScriptableEntity* ,TimeStep)> OnUpdateFunction;
-		std::function<void(ScriptableEntity*)> OnDestroyFunction;
+		
 
 
 		template<typename T>
 		void Bind()
 		{
-			InstanceFunction = [&]() {Instance = new T(); };
-			DeleteInstanceFunction = [&]() {delete (T*)Instance; };
-				
-			OnCreateFunction = [](ScriptableEntity* instance) { ((T*)instance)->OnCreate(); };
-			OnUpdateFunction = [](ScriptableEntity* instance, TimeStep ts) { ((T*)instance)->OnUpdate(ts); };
-			OnDestroyFunction = [](ScriptableEntity* instance) { ((T*)instance)->OnDestroy(); };
+			InstanciateScript = []() { return static_cast<ScriptableEntity*>(new T()); };
+			DestroyScript = [](NativeScriptComponent* nsc) {delete nsc->Instance; nsc->Instance = nullptr; };
 		}
 		
 	};

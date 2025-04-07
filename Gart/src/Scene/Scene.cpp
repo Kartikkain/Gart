@@ -30,12 +30,12 @@ namespace Gart
 
 				if (!nsc.Instance)
 				{
-					nsc.InstanceFunction();
+					nsc.Instance = nsc.InstanciateScript();
 					nsc.Instance->m_entity = Entity{ entity,this };
-					nsc.OnCreateFunction(nsc.Instance);
+					nsc.Instance->OnCreate();
 				}
 
-				nsc.OnUpdateFunction(nsc.Instance, ts);
+				nsc.Instance->OnUpdate(ts);
 
 		});
 
@@ -45,7 +45,7 @@ namespace Gart
 		auto l_group = m_Registery.view<TransformComponent, CameraComponent>();
 		for (auto entity : l_group)
 		{
-			auto& [transform, camera] = l_group.get<TransformComponent, CameraComponent>(entity);
+			auto [transform, camera] = l_group.get<TransformComponent, CameraComponent>(entity);
 			
 			if (camera.Primary)
 			{
@@ -63,7 +63,7 @@ namespace Gart
 			auto group = m_Registery.group<TransformComponent>(entt::get<SpriteRenderer>);
 			for (auto entity : group)
 			{
-				auto& [transform, sprite] = group.get<TransformComponent, SpriteRenderer>(entity);
+				auto [transform, sprite] = group.get<TransformComponent, SpriteRenderer>(entity);
 				Renderer2D::DrawQuad(transform.Transform, sprite.Color);
 			}
 			Renderer2D::EndScene();

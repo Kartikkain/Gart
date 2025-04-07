@@ -13,6 +13,12 @@ namespace Gart {
 			return m_entity.GetComponent<T>();
 		}
 
+	protected:
+
+		virtual void OnCreate() {}
+		virtual void OnUpdate(TimeStep ts){}
+		virtual void OnDestroy() {}
+
 	private:
 		Entity m_entity;
 		friend class Scene;
