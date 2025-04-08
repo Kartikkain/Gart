@@ -21,10 +21,27 @@ namespace Gart
 		m_Context->m_Registery.each([&](auto entityID)
 		{
 			Entity entity{ entityID, m_Context.get() };
-			auto& tc = entity.GetComponent<TagComponent>();
-			ImGui::Text("%s", tc.m_Tag.c_str());
+			DrawEntityNode(entity);
 		});
 		
 		ImGui::End();
+	}
+
+	void SceneHeirarchyPanel::DrawEntityNode(Entity entity)
+	{
+		auto& tag = entity.GetComponent<TagComponent>().m_Tag;
+		ImGuiTreeNodeFlags flags = (m_SelectedEntity == entity ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
+		bool open = ImGui::TreeNodeEx((void*)(uint32_t)entity, flags, tag.c_str());
+
+		if (ImGui::IsItemClicked())
+		{
+			m_SelectedEntity = entity;
+		}
+
+
+		if (open)
+		{
+			ImGui::TreePop();
+		}
 	}
 }

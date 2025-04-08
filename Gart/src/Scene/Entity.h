@@ -37,6 +37,9 @@ namespace Gart
 		}
 
 		operator bool() const { return m_EntityHandler != entt::null; }
+		operator uint32_t() const { return (uint32_t)m_EntityHandler; }
+		bool operator==(const Entity& other) const { return m_EntityHandler == other.m_EntityHandler && m_Scene == other.m_Scene; }
+		bool operator!=(const Entity& other) const { return !(*this == other); }
 
 	private:
 

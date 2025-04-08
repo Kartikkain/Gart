@@ -13,8 +13,10 @@ namespace Gart
 		void SetContext(const Ref<Scene>& context);
 
 		void OnGUIRender();
+		void DrawEntityNode(Entity entity);
 
 	private:
 		Ref<Scene> m_Context = nullptr;
+		Entity m_SelectedEntity;
 	};
 }
