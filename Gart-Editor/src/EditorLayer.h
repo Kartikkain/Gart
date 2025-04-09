@@ -21,6 +21,7 @@ namespace Gart
 		Gart::OrthoGraphicCameraController m_OrthoCamera;
 		Ref<Scene> m_ActiveScene;
 		Entity m_SquareEntity;
+		Entity m_SquareEntityGreen;
 		Entity m_CameraComponent;
 		Entity m_SecondaryCameraComponent;
 

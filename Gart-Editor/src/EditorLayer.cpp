@@ -55,9 +55,14 @@ namespace Gart
 
 		m_ActiveScene = std::make_shared<Scene>();
 		auto Square = m_ActiveScene->CreateEntity("Square");
+		auto GreenSquare = m_ActiveScene->CreateEntity("Green Square");
+
 
 		Square.AddComponent<SpriteRenderer>(glm::vec4{ 1.0f,0.0f,0.0f,1.0f });
 		m_SquareEntity = Square;
+
+		GreenSquare.AddComponent<SpriteRenderer>(glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+		m_SquareEntityGreen = GreenSquare;
 
 		m_CameraComponent = m_ActiveScene->CreateEntity("Main Camera");
 		m_CameraComponent.AddComponent<CameraComponent>();
