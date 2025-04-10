@@ -50,7 +50,7 @@ namespace Gart
 			if (camera.Primary)
 			{
 				maincamera = &camera.camera;
-				mainCameraTransform = &transform.Transform;
+				mainCameraTransform = &transform.GetTransform();
 				break;
 			}
 			
@@ -64,7 +64,7 @@ namespace Gart
 			for (auto entity : group)
 			{
 				auto [transform, sprite] = group.get<TransformComponent, SpriteRenderer>(entity);
-				Renderer2D::DrawQuad(transform.Transform, sprite.Color);
+				Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color);
 			}
 			Renderer2D::EndScene();
 		}

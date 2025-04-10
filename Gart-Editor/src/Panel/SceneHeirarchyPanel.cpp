@@ -2,6 +2,7 @@
 #include "SceneHeirarchyPanel.h"
 #include "Scene/Components.h"
 #include  "imgui.h"
+#include <imgui_internal.h>
 #include <glm/gtc/type_ptr.hpp>
 namespace Gart
 {
@@ -55,6 +56,67 @@ namespace Gart
 		}
 	}
 
+	static void DrawVec3Control(const std::string& label, glm::vec3& value, float resetvalue = 0.0f, float columnWidth = 100.0f)
+	{
+		ImGui::PushID(label.c_str());
+
+		ImGui::Columns(2);
+		ImGui::SetColumnWidth(0, columnWidth);
+		ImGui::Text(label.c_str());
+		ImGui::NextColumn();
+		ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
+		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0,0 });
+
+		float lineheight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
+		ImVec2 buttonSize = { lineheight + 3.0f,  lineheight };
+
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.8f,0.1f,0.15f,1.0f });
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.9f,0.2f,0.2f,1.0f });
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.8f,0.1f,0.15f,1.0f });
+
+		if (ImGui::Button("X", buttonSize))
+			value.x = resetvalue;
+		ImGui::PopStyleColor(3);
+
+		ImGui::SameLine();
+		ImGui::DragFloat("##X", &value.x, 0.1f);
+		ImGui::PopItemWidth();
+		ImGui::SameLine();
+
+
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.1f,0.8f,0.3f,1.0f });
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.2f,0.9f,0.4f,1.0f });
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.1f,0.8f,0.3f,1.0f });
+
+		if (ImGui::Button("Y", buttonSize))
+			value.y = resetvalue;
+
+		ImGui::PopStyleColor(3);
+
+		ImGui::SameLine();
+		ImGui::DragFloat("##Y", &value.y, 0.1f);
+		ImGui::PopItemWidth();
+		ImGui::SameLine();
+
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.1f,0.25f,0.8f,1.0f });
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.2f,0.35f,0.9f,1.0f });
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.1f,0.25f,0.8f,1.0f });
+
+		if (ImGui::Button("Z", buttonSize))
+			value.z = resetvalue;
+
+		ImGui::PopStyleColor(3);
+
+		ImGui::SameLine();
+		ImGui::DragFloat("##Z", &value.z, 0.1f);
+		ImGui::PopItemWidth();
+		
+		ImGui::PopStyleVar();
+		
+		ImGui::Columns(1);
+
+		ImGui::PopID();
+	}
 	void SceneHeirarchyPanel::DrawComponents(Entity entity)
 	{
 		if (entity.HasComponent<TagComponent>())
@@ -74,8 +136,15 @@ namespace Gart
 		{
 			if (ImGui::TreeNodeEx((void*)typeid(TransformComponent).hash_code(), ImGuiTreeNodeFlags_DefaultOpen, "Transform")) 
 			{
-				auto& transform = entity.GetComponent<TransformComponent>().Transform;
-				ImGui::DragFloat3("Poition", glm::value_ptr(transform[3]), 0.5f);
+				auto& transform = entity.GetComponent<TransformComponent>();
+				auto& translate = transform.Translate;
+				auto& rotation = glm::degrees(transform.Rotation);
+				auto& scale = transform.Scale;
+				DrawVec3Control("Position", translate);
+				DrawVec3Control("Rotation", rotation);
+				transform.Rotation = glm::radians(rotation);
+				DrawVec3Control("Scale", scale,1.0f);
+				
 				ImGui::TreePop();
 			}
 			
@@ -89,6 +158,9 @@ namespace Gart
 				auto& l_camera = cameraComponent.camera;
 				const char* ProjectionTypeString[] = { "Prespective","Orthographic" };
 				const char* currentProjectionTypeString = ProjectionTypeString[(int)l_camera.GetProjectionType()];
+
+				ImGui::Checkbox("Primary", &cameraComponent.Primary);
+
 				if (ImGui::BeginCombo("Projection", currentProjectionTypeString))
 				{
 					for (int i = 0; i < 2; i++)
@@ -136,6 +208,8 @@ namespace Gart
 					if (ImGui::DragFloat("Far Clip", &OrthoFarClip))
 						l_camera.SetOrthographicFarClip(OrthoFarClip);
 
+
+					ImGui::Checkbox("Fixed Aspect Ratio", &cameraComponent.FixedAspectRatio);
 					
 				}
 
@@ -145,5 +219,17 @@ namespace Gart
 			}
 
 		}
+		
+		if (entity.HasComponent<SpriteRenderer>())
+		{
+			if (ImGui::TreeNodeEx((void*)typeid(SpriteRenderer).hash_code(), ImGuiTreeNodeFlags_DefaultOpen, "Sprite Renderer"))
+			{
+				auto& spriteRennderer = entity.GetComponent<SpriteRenderer>();
+				ImGui::ColorEdit4("Color", glm::value_ptr(spriteRennderer.Color));
+				ImGui::TreePop();
+			}
+
+		}
+	
 	}
 }

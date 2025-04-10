@@ -87,20 +87,20 @@ namespace Gart
 
 			void OnUpdate(TimeStep ts)
 			{
-				auto& transform = GetComponent<TransformComponent>().Transform;
+				auto& translate = GetComponent<TransformComponent>().Translate;
 				float Speed = 5.0f;
 
 				if (BSS::Input::IsKeyPressed(BSS_KEY_A))
-					transform[3][0] -= Speed * ts;
+					translate.x -= Speed * ts;
 
 				if (BSS::Input::IsKeyPressed(BSS_KEY_D))
-					transform[3][0] += Speed * ts;
+					translate.x += Speed * ts;
 
 				if (BSS::Input::IsKeyPressed(BSS_KEY_W))
-					transform[3][1] += Speed * ts;
+					translate.y += Speed * ts;
 
 				if (BSS::Input::IsKeyPressed(BSS_KEY_S))
-					transform[3][1] -= Speed * ts;
+					translate.y -= Speed * ts;
 			}
 
 			void OnDestroy()
