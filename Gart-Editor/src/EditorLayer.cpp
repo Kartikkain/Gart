@@ -247,9 +247,9 @@ namespace Gart
 			ImGui::EndMenuBar();
 		}
 
-		static bool show = true;
+		/*static bool show = true;
 
-		ImGui::ShowDemoWindow(&show);
+		ImGui::ShowDemoWindow(&show);*/
 
 		m_HierarchyPanel.OnGUIRender();
 
@@ -262,21 +262,6 @@ namespace Gart
 		ImGui::Text("Quad Counts: %d", l_stats.QuadCounts);
 		ImGui::Text("Number Of Vertices: %d", l_stats.GetNumbersOfVertices());
 		ImGui::Text("Number Of Indicies: %d", l_stats.GetNumbersOfIndices());
-
-		ImGui::ColorEdit3("Triangle Color", glm::value_ptr(m_SqaureColor));
-		if (ImGui::Checkbox("PrimaryCamera", &m_PrimaryCamera))
-		{
-			m_SecondaryCameraComponent.GetComponent<CameraComponent>().Primary = m_PrimaryCamera;
-			m_CameraComponent.GetComponent<CameraComponent>().Primary = !m_PrimaryCamera;
-		}
-
-		auto& l_cam = m_SecondaryCameraComponent.GetComponent<CameraComponent>().camera;
-		float orthoSize = l_cam.GetOrthographicSize();
-
-		if (ImGui::DragFloat("Secondary Camera Size", &orthoSize))
-		{
-			l_cam.SetOrthographicSize(orthoSize);
-		}
 
 		ImGui::End();
 
