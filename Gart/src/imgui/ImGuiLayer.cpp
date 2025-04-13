@@ -33,6 +33,8 @@ namespace BSS
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
+		io.Fonts->AddFontFromFileTTF("assets/Fonts/Roboto_Condensed/static/RobotoCondensed-Bold.ttf", 18.0f);
+		io.FontDefault = io.Fonts->AddFontFromFileTTF("assets/Fonts/Roboto_Condensed/static/RobotoCondensed-Regular.ttf", 18.0f);
 		ImGui::StyleColorsDark();
 
 		ImGuiStyle& style = ImGui::GetStyle();
@@ -42,6 +44,7 @@ namespace BSS
 			style.Colors[ImGuiCol_WindowBg].w = 1.0f;
 		}
 		
+		SetDarkThemeColors();
 		Application& app = Application::Get();
 		GLFWwindow* window = static_cast<GLFWwindow*>(app.GetWindow().GetNativeWindow());
 
@@ -101,5 +104,39 @@ namespace BSS
 			glfwMakeContextCurrent(backup_current_context);
 		}
 	}
-	
+
+
+	void ImGuiLayer::SetDarkThemeColors()
+	{
+		auto& color = ImGui::GetStyle().Colors;
+
+		color[ImGuiCol_WindowBg] = ImVec4{ 0.1f,0.105f,0.11f,1.0f };
+
+		//Header
+		color[ImGuiCol_Header] = ImVec4{0.2f,0.205f,0.21f,1.0f};
+		color[ImGuiCol_HeaderHovered] = ImVec4{0.3f,0.305f,0.31f,1.0f};
+		color[ImGuiCol_HeaderActive] = ImVec4{0.15f,0.1505f,0.151f,1.0f};
+
+		//Button
+		color[ImGuiCol_Button] = ImVec4{ 0.2f,0.205f,0.21f,1.0f };
+		color[ImGuiCol_ButtonHovered] = ImVec4{ 0.3f,0.305f,0.31f,1.0f };
+		color[ImGuiCol_ButtonActive] = ImVec4{ 0.15f,0.1505f,0.151f,1.0f };
+
+		//Frame
+		color[ImGuiCol_FrameBg] = ImVec4{ 0.2f,0.205f,0.21f,1.0f };
+		color[ImGuiCol_FrameBgHovered] = ImVec4{ 0.3f,0.305f,0.31f,1.0f };
+		color[ImGuiCol_FrameBgActive] = ImVec4{ 0.15f,0.1505f,0.151f,1.0f };
+
+		//Tabs
+		color[ImGuiCol_Tab] = ImVec4{ 0.15f,0.1505f,0.151f,1.0f };
+		color[ImGuiCol_TabHovered] = ImVec4{ 0.3f,0.305f,0.31f,1.0f };
+		color[ImGuiCol_TabActive] = ImVec4{ 0.2f,0.205f,0.21f,1.0f };
+		color[ImGuiCol_TabUnfocused] = ImVec4{ 0.15f,0.1505f,0.151f,1.0f };
+		color[ImGuiCol_TabUnfocusedActive] = ImVec4{ 0.2f,0.205f,0.21f,1.0f };
+
+		//TitleBar
+		color[ImGuiCol_TitleBg] = ImVec4{ 0.15f,0.1505f,0.151f,1.0f };
+		color[ImGuiCol_TitleBgActive] = ImVec4{ 0.15f,0.1505f,0.151f,1.0f };
+		color[ImGuiCol_TitleBgCollapsed] = ImVec4{ 0.95f,0.1505f,0.951f,1.0f };
+	}
 }

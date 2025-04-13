@@ -48,27 +48,6 @@ namespace Gart
 		if (m_SelectedEntity)
 		{
 			DrawComponents(m_SelectedEntity);
-
-			if (ImGui::Button("Add Component"))
-				ImGui::OpenPopup("AddComponent");
-
-			if (ImGui::BeginPopup("AddComponent"))
-			{
-				if (ImGui::MenuItem("Camera"))
-				{
-					m_SelectedEntity.AddComponent<CameraComponent>();
-					ImGui::CloseCurrentPopup();
-				}
-
-				if (ImGui::MenuItem("Sprite Renderer"))
-				{
-					m_SelectedEntity.AddComponent<SpriteRenderer>();
-					ImGui::CloseCurrentPopup();
-				}
-
-				ImGui::EndPopup();
-
-			}
 		}
 
 		ImGui::End();
@@ -78,6 +57,7 @@ namespace Gart
 	{
 		auto& tag = entity.GetComponent<TagComponent>().m_Tag;
 		ImGuiTreeNodeFlags flags = (m_SelectedEntity == entity ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
+		flags |= ImGuiTreeNodeFlags_SpanAvailWidth;
 		bool open = ImGui::TreeNodeEx((void*)(uint32_t)entity, flags, tag.c_str());
 
 		if (ImGui::IsItemClicked())
@@ -109,8 +89,59 @@ namespace Gart
 		}
 	}
 
+	template<typename T, typename UIFunction>
+	static void DrawComponent(const std::string& name,bool removeable ,Entity entity, UIFunction uiFunction)
+	{
+		const ImGuiTreeNodeFlags treenodeflags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_Framed |ImGuiTreeNodeFlags_FramePadding ;
+		if (entity.HasComponent<T>())
+		{
+			auto& component = entity.GetComponent<T>();
+			ImVec2 contentregionAvail = ImGui::GetContentRegionAvail();
+
+			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 4,4 });
+			float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
+			ImGui::Separator();
+			bool tree = ImGui::TreeNodeEx((void*)typeid(T).hash_code(), treenodeflags, name.c_str());
+			ImGui::PopStyleVar();
+
+			bool IsComponentRemove = false;
+			if (removeable)
+			{
+				ImGui::SameLine(contentregionAvail.x - lineHeight * 0.5f);
+				if (ImGui::Button("+", ImVec2{ lineHeight,lineHeight }))
+				{
+					ImGui::OpenPopup("ComponentSettng");
+				}
+			}
+
+
+			if (ImGui::BeginPopup("ComponentSettng"))
+			{
+				if (ImGui::MenuItem("RemmoveComponent"))
+					IsComponentRemove = true;
+
+				ImGui::EndPopup();
+			}
+
+			if (tree)
+			{
+				
+				uiFunction(component);
+				ImGui::TreePop();
+			}
+
+			if (IsComponentRemove)
+				entity.RemoveComponent<T>();
+
+		}
+	}
+
+
 	static void DrawVec3Control(const std::string& label, glm::vec3& value, float resetvalue = 0.0f, float columnWidth = 100.0f)
 	{
+		ImGuiIO& io = ImGui::GetIO();
+		auto boldFont = io.Fonts->Fonts[0];
+
 		ImGui::PushID(label.c_str());
 
 		ImGui::Columns(2);
@@ -127,8 +158,11 @@ namespace Gart
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.9f,0.2f,0.2f,1.0f });
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.8f,0.1f,0.15f,1.0f });
 
+		ImGui::PushFont(boldFont);
 		if (ImGui::Button("X", buttonSize))
 			value.x = resetvalue;
+		ImGui::PopFont();
+
 		ImGui::PopStyleColor(3);
 
 		ImGui::SameLine();
@@ -141,8 +175,10 @@ namespace Gart
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.2f,0.9f,0.4f,1.0f });
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.1f,0.8f,0.3f,1.0f });
 
+		ImGui::PushFont(boldFont);
 		if (ImGui::Button("Y", buttonSize))
 			value.y = resetvalue;
+		ImGui::PopFont();
 
 		ImGui::PopStyleColor(3);
 
@@ -155,8 +191,10 @@ namespace Gart
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.2f,0.35f,0.9f,1.0f });
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.1f,0.25f,0.8f,1.0f });
 
+		ImGui::PushFont(boldFont);
 		if (ImGui::Button("Z", buttonSize))
 			value.z = resetvalue;
+		ImGui::PopFont();
 
 		ImGui::PopStyleColor(3);
 
@@ -170,6 +208,8 @@ namespace Gart
 
 		ImGui::PopID();
 	}
+	
+	
 	void SceneHeirarchyPanel::DrawComponents(Entity entity)
 	{
 		if (entity.HasComponent<TagComponent>())
@@ -179,62 +219,55 @@ namespace Gart
 			char buffer[256];
 			memset(buffer, 0, sizeof(buffer));
 			strcpy_s(buffer, sizeof(buffer), tag.c_str());
-			if (ImGui::InputText("Tag", buffer, sizeof(buffer)))
+			if (ImGui::InputText("##Tag", buffer, sizeof(buffer)))
 			{
 				tag = std::string(buffer);
 			}
+			ImGui::SameLine();
+			ImGui::PushItemWidth(-1);
+			if (ImGui::Button("Add Component"))
+				ImGui::OpenPopup("AddComponent");
+
+			if (ImGui::BeginPopup("AddComponent"))
+			{
+				if (ImGui::MenuItem("Camera"))
+				{
+					m_SelectedEntity.AddComponent<CameraComponent>();
+					ImGui::CloseCurrentPopup();
+				}
+
+				if (ImGui::MenuItem("Sprite Renderer"))
+				{
+					m_SelectedEntity.AddComponent<SpriteRenderer>();
+					ImGui::CloseCurrentPopup();
+				}
+
+				ImGui::EndPopup();
+
+			}
+
+			ImGui::PopItemWidth();
+
 		}
 
-		const ImGuiTreeNodeFlags treenodeflags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowItemOverlap;
-
-		if (entity.HasComponent<TransformComponent>())
+		DrawComponent<TransformComponent>("Transform", false, entity, [](auto& component)
 		{
-			if (ImGui::TreeNodeEx((void*)typeid(TransformComponent).hash_code(), treenodeflags, "Transform"))
-			{
-				auto& transform = entity.GetComponent<TransformComponent>();
-				auto& translate = transform.Translate;
-				auto& rotation = glm::degrees(transform.Rotation);
-				auto& scale = transform.Scale;
+				auto& translate = component.Translate;
+				auto& rotation = glm::degrees(component.Rotation);
+				auto& scale = component.Scale;
 				DrawVec3Control("Position", translate);
 				DrawVec3Control("Rotation", rotation);
-				transform.Rotation = glm::radians(rotation);
+				component.Rotation = glm::radians(rotation);
 				DrawVec3Control("Scale", scale, 1.0f);
-
-				ImGui::TreePop();
-			}
-
-		}
-
-		if (entity.HasComponent<CameraComponent>())
+		});
+		
+		DrawComponent<CameraComponent>("Camera Component", true, entity, [](auto& component)
 		{
-			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 4,4 });
-			bool tree = ImGui::TreeNodeEx((void*)typeid(CameraComponent).hash_code(), treenodeflags, "Camera");
-			ImGui::SameLine(ImGui::GetWindowWidth() - 20.0f);
-			if (ImGui::Button("+",ImVec2{20,20}))
-			{
-				ImGui::OpenPopup("ComponentSettng");
-			}
-
-			ImGui::PopStyleVar();
-
-			bool IsComponentRemove = false;
-
-			if (ImGui::BeginPopup("ComponentSettng"))
-			{
-				if (ImGui::MenuItem("RemmoveComponent"))
-					IsComponentRemove = true;
-				
-				ImGui::EndPopup();
-			}
-
-			if (tree)
-			{
-				auto& cameraComponent = entity.GetComponent<CameraComponent>();
-				auto& l_camera = cameraComponent.camera;
+				auto& l_camera = component.camera;
 				const char* ProjectionTypeString[] = { "Prespective","Orthographic" };
 				const char* currentProjectionTypeString = ProjectionTypeString[(int)l_camera.GetProjectionType()];
 
-				ImGui::Checkbox("Primary", &cameraComponent.Primary);
+				ImGui::Checkbox("Primary", &component.Primary);
 
 				if (ImGui::BeginCombo("Projection", currentProjectionTypeString))
 				{
@@ -244,7 +277,7 @@ namespace Gart
 						if (ImGui::Selectable(ProjectionTypeString[i], IsSelected))
 						{
 							currentProjectionTypeString = ProjectionTypeString[i];
-							cameraComponent.camera.SetProjectionType((SceneCamera::ProjectionType)i);
+							l_camera.SetProjectionType((SceneCamera::ProjectionType)i);
 						}
 
 						if (IsSelected)
@@ -284,50 +317,15 @@ namespace Gart
 						l_camera.SetOrthographicFarClip(OrthoFarClip);
 
 
-					ImGui::Checkbox("Fixed Aspect Ratio", &cameraComponent.FixedAspectRatio);
-
+					ImGui::Checkbox("Fixed Aspect Ratio", &component.FixedAspectRatio);
 				}
 
+		});
 
-
-				ImGui::TreePop();
-			}
-
-			if (IsComponentRemove)
-				entity.RemoveComponent<CameraComponent>();
-		}
-
-		if (entity.HasComponent<SpriteRenderer>())
+		DrawComponent<SpriteRenderer>("Sprite Renderer", true, entity, [](auto& component)
 		{
-			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 4,4 });
-			bool tree = ImGui::TreeNodeEx((void*)typeid(SpriteRenderer).hash_code(), treenodeflags, "Sprite Renderer");
-			ImGui::SameLine(ImGui::GetWindowWidth() - 20.0f);
-			if (ImGui::Button("+", ImVec2{ 20,20 }))
-			{
-				ImGui::OpenPopup("ComponentSettng");
-			}
-			ImGui::PopStyleVar();
-
-			bool IsComponentRemove = false;
-
-			if (ImGui::BeginPopup("ComponentSettng"))
-			{
-				if (ImGui::MenuItem("RemmoveComponent"))
-					IsComponentRemove = true;
-
-				ImGui::EndPopup();
-			}
-			if (tree)
-			{
-				auto& spriteRennderer = entity.GetComponent<SpriteRenderer>();
-				ImGui::ColorEdit4("Color", glm::value_ptr(spriteRennderer.Color));
-				ImGui::TreePop();
-			}
-
-			if (IsComponentRemove)
-				entity.RemoveComponent<SpriteRenderer>();
-
-		}
+				ImGui::ColorEdit4("Color", glm::value_ptr(component.Color));
+		});	
 
 	}
 }
