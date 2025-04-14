@@ -2,6 +2,7 @@
 #include "imgui.h"
 #include <glm/gtc/type_ptr.hpp>
 #include <chrono>
+#include "Scene/SceneSerialization.h"
 
 static const uint32_t s_MapWidth = 10;
 static const char* s_MapTiles =
@@ -54,6 +55,7 @@ namespace Gart
 		m_Particle.Position = { 0.0f, 0.0f };*/
 
 		m_ActiveScene = std::make_shared<Scene>();
+#if 0
 		auto Square = m_ActiveScene->CreateEntity("Square");
 		auto GreenSquare = m_ActiveScene->CreateEntity("Green Square");
 
@@ -110,7 +112,11 @@ namespace Gart
 		};
 
 		m_SecondaryCameraComponent.AddComponent<NativeScriptComponent>().Bind<CameraController>();
+#endif
 		m_HierarchyPanel.SetContext(m_ActiveScene);
+		SceneSerialization l_Serializer(m_ActiveScene);
+		l_Serializer.DeSerialize("assets/Scenes/Example.gart");
+		//l_Serializer.Serialize("assets/Scenes/Example.gart");
 	}
 
 	void EditorLayer::OnDitach()
@@ -260,7 +266,6 @@ namespace Gart
 		ImGui::Begin("Setting");
 
 		auto l_stats = Gart::Renderer2D::GetStats();
-		auto& m_SqaureColor = m_SquareEntity.GetComponent<SpriteRenderer>().Color;
 		ImGui::Text("Renderer2D stats:");
 		ImGui::Text("Draw Calls: %d", l_stats.DrawCalls);
 		ImGui::Text("Quad Counts: %d", l_stats.QuadCounts);

@@ -19,11 +19,13 @@ IncludeDir["ImGui"] = "Gart/vendor/imgui"
 IncludeDir["glm"] = "Gart/vendor/glm"
 IncludeDir["stb_image"] = "Gart/vendor/stb_image"
 IncludeDir["entt"] = "Gart/vendor/entt/include"
+IncludeDir["yaml_cpp"] = "Gart/vendor/yaml-cpp/include"
 
 
 include "Gart/vendor/GLFW"
 include "Gart/vendor/Glad"
 include "Gart/vendor/ImGui"
+include "Gart/vendor/yaml-cpp"
 
 project "Gart"
 	location "Gart"
@@ -57,7 +59,8 @@ project "Gart"
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.stb_image}",
-		"%{IncludeDir.entt}"
+		"%{IncludeDir.entt}",
+		"%{IncludeDir.yaml_cpp}"
 	}
 
 	links
@@ -65,7 +68,13 @@ project "Gart"
 		"GLFW",
 		"Glad",
 		"imgui",
+		"yaml-cpp",
 		"opengl32.lib"
+	}
+
+	defines
+	{
+		"YAML_CPP_STATIC_DEFINE"
 	}
 
 	filter "system.windows"
