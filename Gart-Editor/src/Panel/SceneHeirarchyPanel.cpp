@@ -14,6 +14,7 @@ namespace Gart
 	void SceneHeirarchyPanel::SetContext(const Ref<Scene>& context)
 	{
 		m_Context = context;
+		m_SelectedEntity = {};
 	}
 
 	void SceneHeirarchyPanel::OnGUIRender()

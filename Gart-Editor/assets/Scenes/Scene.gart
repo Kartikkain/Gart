@@ -40,9 +40,9 @@ Entities:
     TagComponent:
       Tag: Green Square
     TransformComponent:
-      Position: [0, 0, 0]
+      Position: [-3.20000005, 0, 0]
       Rotation: [0, 0, 0]
-      Scale: [1.00999999, 1, 1]
+      Scale: [2.30999994, 2.5, 1]
     SpriteRenderer:
       Color: [0, 1, 0, 1]
   - Entity: 12223144324345
@@ -53,5 +53,4 @@ Entities:
       Rotation: [0, 0, 0]
       Scale: [1.00999999, 1, 1]
     SpriteRenderer:
-      Color: [1, 0, 0, 1]
-  
+      Color: [1, 1, 1, 1]

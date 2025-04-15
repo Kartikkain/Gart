@@ -3,7 +3,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <chrono>
 #include "Scene/SceneSerialization.h"
-
+#include "Utils/PlatformUtils.h"
 static const uint32_t s_MapWidth = 10;
 static const char* s_MapTiles =
 "WWWWWWWWWW"
@@ -249,9 +249,12 @@ namespace Gart
 
 		if (ImGui::BeginMenuBar())
 		{
-			if (ImGui::BeginMenu("Options"))
+			if (ImGui::BeginMenu("File"))
 			{
-				if (ImGui::MenuItem("Close")) BSS::Application::Get().Close();
+				if (ImGui::MenuItem("New", "Ctrl+N")) NewScene();
+				if (ImGui::MenuItem("Open...", "Ctrl+O")) OpenDialog();
+				if (ImGui::MenuItem("Save as...", "Ctrl+Shift+S")) SaveScene();
+				if (ImGui::MenuItem("Exit")) BSS::Application::Get().Close();
 				ImGui::EndMenu();
 			}
 			ImGui::EndMenuBar();
@@ -311,6 +314,67 @@ namespace Gart
 		GART_PROFILE_FUNCTION();
 
 		m_OrthoCamera.OnEvent(e);
+		BSS::EventDispatcher dispatcher(e);
+		dispatcher.Dispatch<BSS::KeyPressedEvent>(BSS_EVENT_BIND_FN(EditorLayer::OnKeyPressed));
+	}
+	bool EditorLayer::OnKeyPressed(BSS::KeyPressedEvent& e)
+	{
+		if (e.GetRepeatCount() > 0) return false;
+
+		bool control = BSS::Input::IsKeyPressed(BSS_KEY_LEFT_CONTROL) || BSS::Input::IsKeyPressed(BSS_KEY_RIGHT_CONTROL);
+		bool shift = BSS::Input::IsKeyPressed(BSS_KEY_LEFT_SHIFT) || BSS::Input::IsKeyPressed(BSS_KEY_RIGHT_SHIFT);
+
+		switch (e.GetKeyCode())
+		{
+		case BSS_KEY_N:
+			
+			if (control) NewScene();
+			break;
+
+		case BSS_KEY_O:
+			
+			if (control) OpenDialog();
+			break;
+
+		case BSS_KEY_S:
+			
+			if (control && shift) SaveScene();
+			break;
+
+		default:
+			break;
+		}
+	}
+
+	void EditorLayer::OpenDialog()
+	{
+		std::string filepath = FileDialogs::OpenFile("Gart Scenes (*.gart)\0*.gart\0");
+		if (!filepath.empty())
+		{
+			m_ActiveScene = std::make_shared<Scene>();
+			m_ActiveScene->OnViewportResize((uint32_t)m_ViewPortSize.x, (uint32_t)m_ViewPortSize.y);
+			m_HierarchyPanel.SetContext(m_ActiveScene);
+
+			SceneSerialization l_Serializer(m_ActiveScene);
+			l_Serializer.DeSerialize(filepath);
+		}
+	}
+
+	void EditorLayer::NewScene()
+	{
+		m_ActiveScene = std::make_shared<Scene>();
+		m_ActiveScene->OnViewportResize((uint32_t)m_ViewPortSize.x, (uint32_t)m_ViewPortSize.y);
+		m_HierarchyPanel.SetContext(m_ActiveScene);
+	}
+
+	void EditorLayer::SaveScene()
+	{
+		std::string filepath = FileDialogs::SaveFile("Gart Scenes (*.gart)\0*.gart\0");
+		if (!filepath.empty())
+		{
+			SceneSerialization l_Serializer(m_ActiveScene);
+			l_Serializer.Serialize(filepath);
+		}
 	}
 
 }

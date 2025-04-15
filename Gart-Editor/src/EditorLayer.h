@@ -16,8 +16,12 @@ namespace Gart
 		void OnUpdate(Gart::TimeStep ts) override;
 		virtual void OnImGuiRender() override;
 		void OnEvent(BSS::Event& e) override;
+		bool OnKeyPressed(BSS::KeyPressedEvent& e);
 	private:
-
+		void OpenDialog();
+		void NewScene();
+		void SaveScene();
+	private:
 		Gart::OrthoGraphicCameraController m_OrthoCamera;
 		Ref<Scene> m_ActiveScene;
 		Entity m_SquareEntity;
