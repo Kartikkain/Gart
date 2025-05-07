@@ -42,6 +42,7 @@ namespace Gart
 		glm::vec2 m_ViewPortSize = { 0.0f,0.0f };
 		bool m_ViewPortFocus;
 		bool m_ViewPortHover;
+		int m_GizmoType = -1;
 		//ParticleSystem m_ParticleSystem;
 		//ParticleProps m_Particle;
 		std::unordered_map<char, Gart::Ref<Gart::SubTexture2D>> m_TileSet;

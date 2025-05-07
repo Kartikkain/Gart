@@ -13,3 +13,6 @@
 [submodule "Gart/vendor/yaml-cpp"]
 	path = Gart/vendor/yaml-cpp
 	url = https://github.com/Kartikkain/yaml-cpp.git
+[submodule "Gart/vendor/ImGuizmo"]
+	path = Gart/vendor/ImGuizmo
+	url = https://github.com/Kartikkain/ImGuizmo.git

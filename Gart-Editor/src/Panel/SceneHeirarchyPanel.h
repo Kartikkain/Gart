@@ -16,6 +16,8 @@ namespace Gart
 		void DrawEntityNode(Entity entity);
 		void DrawComponents(Entity entity);
 
+		Entity GetSelectedEntity() { return m_SelectedEntity; }
+
 	private:
 		Ref<Scene> m_Context = nullptr;
 		Entity m_SelectedEntity;

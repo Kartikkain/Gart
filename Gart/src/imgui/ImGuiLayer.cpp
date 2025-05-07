@@ -1,4 +1,4 @@
-
+ 
 #include "bsspch.h"
 #include "ImGuiLayer.h"
 #include "imgui.h"
@@ -11,6 +11,7 @@
 // temperory
 #include <GLFW/glfw3.h>
 
+#include "ImGuizmo.h"
 
 namespace BSS
 {
@@ -85,6 +86,7 @@ namespace BSS
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
+		ImGuizmo::BeginFrame();
 	}
 
 	void ImGuiLayer::End()

@@ -20,6 +20,7 @@ IncludeDir["glm"] = "Gart/vendor/glm"
 IncludeDir["stb_image"] = "Gart/vendor/stb_image"
 IncludeDir["entt"] = "Gart/vendor/entt/include"
 IncludeDir["yaml_cpp"] = "Gart/vendor/yaml-cpp/include"
+IncludeDir["ImGuizmo"] = "Gart/vendor/ImGuizmo"
 
 
 include "Gart/vendor/GLFW"
@@ -47,7 +48,10 @@ project "Gart"
 		"%{prj.name}/vendor/stb_image/**.cpp",
 		"%{prj.name}/vendor/stb_image/**.h",
 		"%{prj.name}/vendor/glm/glm/**.hpp",
-		"%{prj.name}/vendor/glm/glm/**.inl"
+		"%{prj.name}/vendor/glm/glm/**.inl",
+		"%{prj.name}/vendor/ImGuizmo/ImGuizmo.h",
+		"%{prj.name}/vendor/ImGuizmo/ImGuizmo.cpp"
+		
 	}
 
 	includedirs
@@ -60,7 +64,8 @@ project "Gart"
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.stb_image}",
 		"%{IncludeDir.entt}",
-		"%{IncludeDir.yaml_cpp}"
+		"%{IncludeDir.yaml_cpp}",
+		"%{IncludeDir.ImGuizmo}"
 	}
 
 	links
@@ -76,6 +81,9 @@ project "Gart"
 	{
 		"YAML_CPP_STATIC_DEFINE"
 	}
+
+	filter "files:vendor/ImGuizmo/**.cpp"
+	flags { "NoPCH" }
 
 	filter "system.windows"
 		
@@ -128,7 +136,8 @@ project "Gart-Editor"
 		"Gart/src",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.ImGui}",
-		"%{IncludeDir.entt}"
+		"%{IncludeDir.entt}",
+		"%{IncludeDir.ImGuizmo}"
 	}
 
 	links

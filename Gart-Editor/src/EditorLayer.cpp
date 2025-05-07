@@ -4,6 +4,8 @@
 #include <chrono>
 #include "Scene/SceneSerialization.h"
 #include "Utils/PlatformUtils.h"
+#include "ImGuizmo.h"
+#include "Math/Math.h"
 static const uint32_t s_MapWidth = 10;
 static const char* s_MapTiles =
 "WWWWWWWWWW"
@@ -116,6 +118,7 @@ namespace Gart
 		m_HierarchyPanel.SetContext(m_ActiveScene);
 		SceneSerialization l_Serializer(m_ActiveScene);
 		l_Serializer.DeSerialize("assets/Scenes/Example.gart");
+		m_GizmoType = ImGuizmo::OPERATION::TRANSLATE;
 		//l_Serializer.Serialize("assets/Scenes/Example.gart");
 	}
 
@@ -299,6 +302,46 @@ namespace Gart
 		uint32_t texture = m_framebuffer->GetColorAttachmetID();
 		ImGui::Image((void*)texture, { m_ViewPortSize.x,m_ViewPortSize.y },ImVec2(0,1),ImVec2(1,0));
 
+		//Gizmos
+
+		Entity m_SelectedEntity = m_HierarchyPanel.GetSelectedEntity();
+
+		if (m_SelectedEntity && m_GizmoType != -1)
+		{
+			ImGuizmo::SetOrthographic(false);
+			ImGuizmo::SetDrawlist();
+			float windowWidth = (float)ImGui::GetWindowWidth();
+			float windowHeight = (float)ImGui::GetWindowHeight();
+			ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
+
+			// Camera
+			auto cameraEntity = m_ActiveScene->GetPrimaryCamera();
+			const auto& camera = cameraEntity.GetComponent<CameraComponent>().camera;
+			const glm::mat4& cameraProjection = camera.GetProjection();
+			glm::mat4 cameraView = glm::inverse(cameraEntity.GetComponent<TransformComponent>().GetTransform());
+			
+			// Entity transform
+
+			auto& tc = m_SelectedEntity.GetComponent<TransformComponent>();
+			glm::mat4 transform = tc.GetTransform();
+
+
+			ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection), (ImGuizmo::OPERATION)m_GizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform));
+
+			if (ImGuizmo::IsUsing())
+			{
+				glm::vec3 translate, rotation, scale;
+				Math::DecomposeTransform(transform, translate, rotation, scale);
+				glm::vec3 deltaRotation = rotation - tc.Rotation;
+				tc.Translate = translate;
+				tc.Rotation += deltaRotation; 
+				tc.Scale = scale;
+			}
+
+
+		}
+
+
 		ImGui::End();
 
 		ImGui::PopStyleVar();
@@ -340,6 +383,24 @@ namespace Gart
 			
 			if (control && shift) SaveScene();
 			break;
+
+		case BSS_KEY_Q:
+
+			m_GizmoType = -1;
+			break;
+
+		case BSS_KEY_W:
+			m_GizmoType = ImGuizmo::OPERATION::TRANSLATE;
+			break;
+
+		case BSS_KEY_E:
+			m_GizmoType = ImGuizmo::OPERATION::ROTATE;
+			break;
+
+		case BSS_KEY_R:
+			m_GizmoType = ImGuizmo::OPERATION::SCALE;
+			break;
+
 
 		default:
 			break;
