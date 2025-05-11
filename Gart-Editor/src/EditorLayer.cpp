@@ -286,7 +286,7 @@ namespace Gart
 
 		m_ViewPortFocus = ImGui::IsWindowFocused();
 		m_ViewPortHover = ImGui::IsWindowHovered();
-		BSS::Application::Get().GetImGuiLayer()->BlockEvent(!m_ViewPortFocus || !m_ViewPortHover);
+		BSS::Application::Get().GetImGuiLayer()->BlockEvent(!m_ViewPortFocus && !m_ViewPortHover);
 		ImVec2 l_ViewPortSize = ImGui::GetContentRegionAvail();
 		if (m_ViewPortSize != *((glm::vec2*)&l_ViewPortSize) && l_ViewPortSize.x > 0 && l_ViewPortSize.y > 0)
 		{
@@ -325,8 +325,15 @@ namespace Gart
 			auto& tc = m_SelectedEntity.GetComponent<TransformComponent>();
 			glm::mat4 transform = tc.GetTransform();
 
+			bool snap = BSS::Input::IsKeyPressed(BSS_KEY_LEFT_CONTROL);
 
-			ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection), (ImGuizmo::OPERATION)m_GizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform));
+			float snapValue = 0.5f;
+			if (m_GizmoType == ImGuizmo::OPERATION::ROTATE)
+				snapValue = 45.0f;
+
+			float snapValues[3] = { snapValue,snapValue,snapValue };
+
+			ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection), (ImGuizmo::OPERATION)m_GizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform),nullptr,snap?snapValues:nullptr);
 
 			if (ImGuizmo::IsUsing())
 			{
