@@ -2,6 +2,7 @@
 
 #include<entt.hpp>
 #include"Core/TimeStep.h"
+#include "Renderer/EditorCamera.h"
 
 namespace Gart
 {
@@ -16,7 +17,8 @@ namespace Gart
 			Entity CreateEntity(const std::string& name = std::string());
 			void DestroyEntity(Entity entity);
 			/*entt::registry& GetReg() { return m_Registery; }*/
-			void OnUpdate(TimeStep ts);
+			void OnUpdateEditor(TimeStep ts,const EditorCamera& camera);
+			void OnUpdateRuntime(TimeStep ts);
 			void OnViewportResize(uint32_t width, uint32_t height);
 
 			Entity GetPrimaryCamera();

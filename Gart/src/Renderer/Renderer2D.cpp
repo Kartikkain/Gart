@@ -137,6 +137,21 @@ namespace Gart
 		s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
 	}
 
+	void Renderer2D::BeginScene(const EditorCamera& camera)
+	{
+
+		GART_PROFILE_FUNCTION();
+
+		glm::mat4 viewProj = camera.GetViewProjection();
+
+		s_Data.TextureShader->Bind();
+		s_Data.TextureShader->SetMat4("u_ViewProjectionMatrix", viewProj);
+
+		s_Data.QuadindexCount = 0;
+		s_Data.TextureSlotIndex = 1;
+		s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
+	}
+
 	void Renderer2D::BeginScene(const OrthoGraphicCamera& camera)
 	{
 		GART_PROFILE_FUNCTION();

@@ -28,7 +28,7 @@ namespace Gart
 	{
 		m_Registery.destroy(entity);
 	}
-	void Scene::OnUpdate(TimeStep ts)
+	void Scene::OnUpdateRuntime(TimeStep ts)
 	{
 		m_Registery.view<NativeScriptComponent>().each([=](auto entity, auto& nsc)
 		{
@@ -73,6 +73,18 @@ namespace Gart
 			}
 			Renderer2D::EndScene();
 		}
+	}
+
+	void Scene::OnUpdateEditor(TimeStep ts, const EditorCamera& camera)
+	{
+		Renderer2D::BeginScene(camera);
+		auto group = m_Registery.group<TransformComponent>(entt::get<SpriteRenderer>);
+		for (auto entity : group)
+		{
+			auto [transform, sprite] = group.get<TransformComponent, SpriteRenderer>(entity);
+			Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color);
+		}
+		Renderer2D::EndScene();
 	}
 
 	void Scene::OnViewportResize(uint32_t width, uint32_t height)

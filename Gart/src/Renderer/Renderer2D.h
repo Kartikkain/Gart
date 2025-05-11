@@ -4,6 +4,7 @@
 #include "Texture.h"
 #include "SubTexture2D.h"
 #include "Renderer/Camera.h"
+#include "EditorCamera.h"
 
 namespace Gart
 {
@@ -14,6 +15,7 @@ namespace Gart
 		static void Shutdown();
 
 		static void BeginScene(const Camera& camera,const glm::mat4& transform);
+		static void BeginScene(const EditorCamera& camera);
 		static void BeginScene(const OrthoGraphicCamera& camera);
 		static void EndScene();
 

@@ -2,6 +2,7 @@
 
 #include "BSS.h"
 #include "Panel/SceneHeirarchyPanel.h"
+#include "Renderer/EditorCamera.h"
 //#include "ParticlesSystem.h"
 
 namespace Gart
@@ -23,6 +24,7 @@ namespace Gart
 		void SaveScene();
 	private:
 		Gart::OrthoGraphicCameraController m_OrthoCamera;
+		Gart::EditorCamera m_EditorCamera;
 		Ref<Scene> m_ActiveScene;
 		Entity m_SquareEntity;
 		Entity m_SquareEntityGreen;

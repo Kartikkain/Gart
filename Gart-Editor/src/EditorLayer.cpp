@@ -44,7 +44,7 @@ namespace Gart
 
 		SceneViewFrameBuffer.Width = 1280;
 		SceneViewFrameBuffer.Height = 720;
-
+		m_EditorCamera = EditorCamera(30.0f, 1.77, 0.1f, 1000.0f);
 		m_framebuffer = Gart::FrameBuffer::Create(SceneViewFrameBuffer);
 
 		// Init here
@@ -117,7 +117,7 @@ namespace Gart
 #endif
 		m_HierarchyPanel.SetContext(m_ActiveScene);
 		SceneSerialization l_Serializer(m_ActiveScene);
-		l_Serializer.DeSerialize("assets/Scenes/Example.gart");
+		//l_Serializer.DeSerialize("assets/Scenes/Example.gart");
 		m_GizmoType = ImGuizmo::OPERATION::TRANSLATE;
 		//l_Serializer.Serialize("assets/Scenes/Example.gart");
 	}
@@ -136,7 +136,11 @@ namespace Gart
 
 		Gart::Renderer2D::ResetStats();
 
-		if(m_ViewPortFocus) m_OrthoCamera.OnUpdate(ts);
+		if (m_ViewPortFocus)
+		{
+			m_OrthoCamera.OnUpdate(ts);
+			m_EditorCamera.OnUpdate(ts);
+		}
 
 		Gart::RenderCommand::SetClearColor({ 0.1f,0.1f,0.1f,1 });
 		Gart::RenderCommand::Clear();
@@ -160,7 +164,7 @@ namespace Gart
 		}*/
 
 
-		m_ActiveScene->OnUpdate(ts);
+		m_ActiveScene->OnUpdateEditor(ts,m_EditorCamera);
 
 
 		//Gart::Renderer2D::EndScene();
@@ -292,6 +296,7 @@ namespace Gart
 		{
 			m_framebuffer->Resize((uint32_t)l_ViewPortSize.x,(uint32_t)l_ViewPortSize.y);
 			m_ViewPortSize = { l_ViewPortSize.x,l_ViewPortSize.y };
+			m_EditorCamera.SetViewportSize(l_ViewPortSize.x, l_ViewPortSize.y);
 			m_OrthoCamera.OnResize(l_ViewPortSize.x, l_ViewPortSize.y);
 			
 			m_ActiveScene->OnViewportResize(l_ViewPortSize.x, l_ViewPortSize.y);
@@ -314,12 +319,17 @@ namespace Gart
 			float windowHeight = (float)ImGui::GetWindowHeight();
 			ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
 
-			// Camera
-			auto cameraEntity = m_ActiveScene->GetPrimaryCamera();
+			// RunTime Camera
+			/*auto cameraEntity = m_ActiveScene->GetPrimaryCamera();
 			const auto& camera = cameraEntity.GetComponent<CameraComponent>().camera;
 			const glm::mat4& cameraProjection = camera.GetProjection();
-			glm::mat4 cameraView = glm::inverse(cameraEntity.GetComponent<TransformComponent>().GetTransform());
+			glm::mat4 cameraView = glm::inverse(cameraEntity.GetComponent<TransformComponent>().GetTransform());*/
 			
+			//Editor Camera
+
+			const glm::mat4& cameraProjection = m_EditorCamera.GetProjection();
+			glm::mat4 cameraView = m_EditorCamera.GetViewMatrix();
+
 			// Entity transform
 
 			auto& tc = m_SelectedEntity.GetComponent<TransformComponent>();
@@ -362,7 +372,7 @@ namespace Gart
 	void EditorLayer::OnEvent(BSS::Event& e)
 	{
 		GART_PROFILE_FUNCTION();
-
+		m_EditorCamera.OnEvent(e);
 		m_OrthoCamera.OnEvent(e);
 		BSS::EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<BSS::KeyPressedEvent>(BSS_EVENT_BIND_FN(EditorLayer::OnKeyPressed));
