@@ -42,6 +42,7 @@ namespace Gart
 
 		Gart::FrameBufferSpecification SceneViewFrameBuffer;
 
+		SceneViewFrameBuffer.Attachments = { FrameBufferTextureFormat::RGBA8,FrameBufferTextureFormat::RGBA8,FrameBufferTextureFormat::Depth };
 		SceneViewFrameBuffer.Width = 1280;
 		SceneViewFrameBuffer.Height = 720;
 		m_EditorCamera = EditorCamera(30.0f, 1.77, 0.1f, 1000.0f);
@@ -117,9 +118,9 @@ namespace Gart
 #endif
 		m_HierarchyPanel.SetContext(m_ActiveScene);
 		SceneSerialization l_Serializer(m_ActiveScene);
-		//l_Serializer.DeSerialize("assets/Scenes/Example.gart");
+		//l_Serializer.DeSerialize("assets/Scenes/Gizmo.gart");
 		m_GizmoType = ImGuizmo::OPERATION::TRANSLATE;
-		//l_Serializer.Serialize("assets/Scenes/Example.gart");
+		//l_Serializer.Serialize("assets/Scenes/Gizmo.gart");
 	}
 
 	void EditorLayer::OnDitach()
@@ -304,7 +305,7 @@ namespace Gart
 		
 		if(m_ViewPortFocus) BSS_CORE_INFO("Scene View port Size : ({0}, {1}) Focused", l_ViewPortSize.x, l_ViewPortSize.y);
 		else BSS_CORE_INFO("Scene View port Size : ({0}, {1})", l_ViewPortSize.x, l_ViewPortSize.y);
-		uint32_t texture = m_framebuffer->GetColorAttachmetID();
+		uint32_t texture = m_framebuffer->GetColorAttachmetID(0);
 		ImGui::Image((void*)texture, { m_ViewPortSize.x,m_ViewPortSize.y },ImVec2(0,1),ImVec2(1,0));
 
 		//Gizmos

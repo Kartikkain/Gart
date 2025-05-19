@@ -34,5 +34,6 @@ namespace Gart
 	private:
 		uint32_t m_RenderID;
 		uint32_t m_Count;
+		
 	};
 }
