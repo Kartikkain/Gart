@@ -29,7 +29,7 @@ void main()
 #version 330 core
 			
 layout(location = 0) out vec4 fragColor;
-layout(Location = 1) out vec4 fragColor2;
+layout(Location = 1) out int fragColor2;
 			
 in vec2 v_Texture;
 in vec4 v_Color;
@@ -43,6 +43,6 @@ uniform sampler2D u_Texture[32];
 void main()
 {
 	fragColor = texture(u_Texture[int(v_TexIndex)],v_Texture * v_TillingFactor) * v_Color;
-	fragColor2 = vec4(0.9,0.2,0.3,1.0);
+	fragColor2 = 50;
 	//fragColor = v_Color;
 }

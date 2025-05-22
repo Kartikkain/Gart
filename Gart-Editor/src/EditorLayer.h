@@ -42,6 +42,7 @@ namespace Gart
 		Gart::Ref<Gart::FrameBuffer> m_framebuffer;
 		glm::vec3 m_TriangleColor = { 1.0f,0.0f,0.0f };
 		glm::vec2 m_ViewPortSize = { 0.0f,0.0f };
+		glm::vec2 m_ViewportBound[2];
 		bool m_ViewPortFocus;
 		bool m_ViewPortHover;
 		int m_GizmoType = -1;

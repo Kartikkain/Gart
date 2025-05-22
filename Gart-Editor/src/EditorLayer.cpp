@@ -42,7 +42,7 @@ namespace Gart
 
 		Gart::FrameBufferSpecification SceneViewFrameBuffer;
 
-		SceneViewFrameBuffer.Attachments = { FrameBufferTextureFormat::RGBA8,FrameBufferTextureFormat::RGBA8,FrameBufferTextureFormat::Depth };
+		SceneViewFrameBuffer.Attachments = { FrameBufferTextureFormat::RGBA8,FrameBufferTextureFormat::RED_INTEGER,FrameBufferTextureFormat::Depth };
 		SceneViewFrameBuffer.Width = 1280;
 		SceneViewFrameBuffer.Height = 720;
 		m_EditorCamera = EditorCamera(30.0f, 1.77, 0.1f, 1000.0f);
@@ -189,6 +189,19 @@ namespace Gart
 		m_ParticleSystem.OnUpdate(ts);
 		m_ParticleSystem.OnRender(m_OrthoCamera.GetCamera());*/
 
+		auto[mx,my] = ImGui::GetMousePos();
+		mx -= m_ViewportBound[0].x;
+		my -= m_ViewportBound[0].y;
+		glm::vec2 l_viewPortSize = m_ViewportBound[1] - m_ViewportBound[0];
+		my = l_viewPortSize.y - my;
+		int mousex = (int)mx;
+		int mousey = (int)my;
+		if (mousex >= 0 && mousey >= 0 && mousex <= (int)l_viewPortSize.x && mousey < (int)l_viewPortSize.y)
+		{
+			int pixel = m_framebuffer->ReadPixel(1, mousex, mousey);
+			BSS_CLIENT_INFO("pixel {0}", pixel);
+		}
+		
 		m_framebuffer->Unbind();
 	}
 
@@ -289,6 +302,10 @@ namespace Gart
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 		ImGui::Begin("Scene View");
 
+		auto m_ViewPortOffset = ImGui::GetCursorPos();
+
+		
+
 		m_ViewPortFocus = ImGui::IsWindowFocused();
 		m_ViewPortHover = ImGui::IsWindowHovered();
 		BSS::Application::Get().GetImGuiLayer()->BlockEvent(!m_ViewPortFocus && !m_ViewPortHover);
@@ -309,7 +326,18 @@ namespace Gart
 		ImGui::Image((void*)texture, { m_ViewPortSize.x,m_ViewPortSize.y },ImVec2(0,1),ImVec2(1,0));
 
 		//Gizmos
+		auto m_windowSize = ImGui::GetWindowSize();
+		auto minBound = ImGui::GetWindowPos();
 
+		minBound.x += m_ViewPortOffset.x;
+		minBound.y += m_ViewPortOffset.y;
+
+		glm::vec2 maxBound = { minBound.x + m_windowSize.x,minBound.y + m_windowSize.y };
+
+		m_ViewportBound[0] = { minBound.x,minBound.y };
+		m_ViewportBound[1] = { maxBound.x,maxBound.y };
+
+		
 		Entity m_SelectedEntity = m_HierarchyPanel.GetSelectedEntity();
 
 		if (m_SelectedEntity && m_GizmoType != -1)

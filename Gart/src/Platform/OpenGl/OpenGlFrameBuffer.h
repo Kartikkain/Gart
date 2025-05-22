@@ -13,6 +13,7 @@ namespace Gart
 		virtual void Bind() override;
 		virtual void Unbind() override;
 		virtual const uint32_t GetColorAttachmetID(uint32_t index) const override { return  m_ColorAttachments[index]; }
+		virtual int ReadPixel(uint32_t attachment, int x, int y) override;
 		virtual const FrameBufferSpecification& GetFrameBufferSpecifier() const override { return m_specification; }
 		virtual void Resize(uint32_t width, uint32_t height) override;
 	private:

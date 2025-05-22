@@ -30,17 +30,17 @@ namespace Gart
 			return false;
 		}
 
-		static void AttachTexture(uint32_t id, int samples, GLenum format, uint32_t width, uint32_t height, int index)
+		static void AttachTexture(uint32_t id, int samples, GLenum Internalformat, GLenum format, uint32_t width, uint32_t height, int index)
 		{
 			bool multisample = samples > 1;
 
 			if (multisample)
 			{
-				glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, format, width, height, GL_FALSE);
+				glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, Internalformat, width, height, GL_FALSE);
 			}
 			else
 			{
-				glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+				glTexImage2D(GL_TEXTURE_2D, 0, Internalformat, width, height, 0, format, GL_UNSIGNED_BYTE, nullptr);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
@@ -125,7 +125,11 @@ namespace Gart
 				switch (m_ColorAttachmentSpecification[i].TextureFormat)
 				{
 					case FrameBufferTextureFormat::RGBA8:
-						Utils::AttachTexture(m_ColorAttachments[i], m_specification.Samples, GL_RGBA8, m_specification.Width, m_specification.Height, i);
+						Utils::AttachTexture(m_ColorAttachments[i], m_specification.Samples, GL_RGBA8,GL_RGBA, m_specification.Width, m_specification.Height, i);
+						break;
+
+					case FrameBufferTextureFormat::RED_INTEGER:
+						Utils::AttachTexture(m_ColorAttachments[i], m_specification.Samples, GL_R32I, GL_RED_INTEGER, m_specification.Width, m_specification.Height, i);
 						break;
 				}
 
@@ -182,6 +186,14 @@ namespace Gart
 	void OpenGLFrameBuffer::Unbind()
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
+
+	int OpenGLFrameBuffer::ReadPixel(uint32_t attachment, int x, int y)
+	{
+		glReadBuffer(GL_COLOR_ATTACHMENT0 + attachment);
+		int pixel;
+		glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &pixel);
+		return pixel;
 	}
 
 	void OpenGLFrameBuffer::Resize(uint32_t width, uint32_t height)
