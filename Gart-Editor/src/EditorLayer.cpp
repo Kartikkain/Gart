@@ -164,7 +164,7 @@ namespace Gart
 			}
 		}*/
 
-
+		m_framebuffer->ClearColorAttachment(1, -1);
 		m_ActiveScene->OnUpdateEditor(ts,m_EditorCamera);
 
 

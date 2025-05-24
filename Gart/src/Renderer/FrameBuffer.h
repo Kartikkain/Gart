@@ -48,6 +48,7 @@ namespace Gart
 		virtual ~FrameBuffer() = default;
 		virtual void Bind() = 0;
 		virtual void Unbind() = 0;
+		virtual void ClearColorAttachment(uint32_t attachment, int value) = 0;
 		virtual const uint32_t GetColorAttachmetID(uint32_t index = 0) const = 0;
 		virtual int ReadPixel(uint32_t attachment, int x, int y) = 0;
 		virtual const FrameBufferSpecification& GetFrameBufferSpecifier() const = 0;

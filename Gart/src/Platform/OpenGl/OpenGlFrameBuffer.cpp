@@ -70,6 +70,29 @@ namespace Gart
 			}
 			glFramebufferTexture2D(GL_FRAMEBUFFER, AttachmentType, TextureTarget(multisample), id, 0);
 		}
+		
+		static GLenum GartFBTextureFormatToGL(FrameBufferTextureFormat format)
+		{
+			switch (format)
+			{
+			case FrameBufferTextureFormat::RGBA8: return GL_RGBA8;
+			case FrameBufferTextureFormat::RED_INTEGER: return GL_RED_INTEGER;
+			}
+
+			return 0;
+		}
+
+		static GLenum GLDataType(FrameBufferTextureFormat format)
+		{
+			switch (format)
+			{
+			case FrameBufferTextureFormat::RGBA8: return GL_UNSIGNED_BYTE;
+			case FrameBufferTextureFormat::RED_INTEGER: return GL_INT;
+			}
+
+			return 0;
+		}
+	
 	}
 	OpenGLFrameBuffer::OpenGLFrameBuffer(const FrameBufferSpecification& spec)
 		:m_specification(spec)
@@ -186,6 +209,13 @@ namespace Gart
 	void OpenGLFrameBuffer::Unbind()
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
+
+	void OpenGLFrameBuffer::ClearColorAttachment(uint32_t attachment, int value)
+	{
+		auto& spec = m_ColorAttachmentSpecification[attachment];
+
+		glClearTexImage(m_ColorAttachments[attachment], 0, Utils::GartFBTextureFormatToGL(spec.TextureFormat), Utils::GLDataType(spec.TextureFormat), &value);
 	}
 
 	int OpenGLFrameBuffer::ReadPixel(uint32_t attachment, int x, int y)
