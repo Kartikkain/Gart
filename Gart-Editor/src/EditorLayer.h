@@ -18,6 +18,7 @@ namespace Gart
 		virtual void OnImGuiRender() override;
 		void OnEvent(BSS::Event& e) override;
 		bool OnKeyPressed(BSS::KeyPressedEvent& e);
+		bool OnMouseButtonPressed(BSS::MouseButtonPressedEvent& e);
 	private:
 		void OpenDialog();
 		void NewScene();

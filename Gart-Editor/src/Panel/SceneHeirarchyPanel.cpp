@@ -329,4 +329,8 @@ namespace Gart
 		});	
 
 	}
+	void SceneHeirarchyPanel::SetSelectedEntity(Entity& entity)
+	{
+		m_SelectedEntity = entity;
+	}
 }

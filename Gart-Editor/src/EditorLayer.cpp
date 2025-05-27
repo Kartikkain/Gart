@@ -308,9 +308,12 @@ namespace Gart
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 		ImGui::Begin("Scene View");
 
-		auto m_ViewPortOffset = ImGui::GetCursorPos();
+		auto m_ViewPortminRegion = ImGui::GetWindowContentRegionMin();
+		auto m_ViewPortmaxRegion = ImGui::GetWindowContentRegionMax();
+		auto m_ViewPortOffset = ImGui::GetWindowPos();
 
-		
+		m_ViewportBound[0] = { m_ViewPortminRegion.x + m_ViewPortOffset.x, m_ViewPortminRegion.y + m_ViewPortOffset.y };
+		m_ViewportBound[1] = { m_ViewPortmaxRegion.x + m_ViewPortOffset.x, m_ViewPortmaxRegion.y + m_ViewPortOffset.y };
 
 		m_ViewPortFocus = ImGui::IsWindowFocused();
 		m_ViewPortHover = ImGui::IsWindowHovered();
@@ -331,34 +334,19 @@ namespace Gart
 		uint32_t texture = m_framebuffer->GetColorAttachmetID(0);
 		ImGui::Image((void*)texture, { m_ViewPortSize.x,m_ViewPortSize.y },ImVec2(0,1),ImVec2(1,0));
 
-		//Gizmos
-		auto m_windowSize = ImGui::GetWindowSize();
-		auto minBound = ImGui::GetWindowPos();
 
-		minBound.x += m_ViewPortOffset.x;
-		minBound.y += m_ViewPortOffset.y;
-
-		glm::vec2 maxBound = { minBound.x + m_windowSize.x,minBound.y + m_windowSize.y };
-
-		m_ViewportBound[0] = { minBound.x,minBound.y };
-		m_ViewportBound[1] = { maxBound.x,maxBound.y };
-
-		
 		Entity m_SelectedEntity = m_HierarchyPanel.GetSelectedEntity();
 
 		if (m_SelectedEntity && m_GizmoType != -1)
 		{
 			ImGuizmo::SetOrthographic(false);
 			ImGuizmo::SetDrawlist();
-			float windowWidth = (float)ImGui::GetWindowWidth();
-			float windowHeight = (float)ImGui::GetWindowHeight();
-			ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
+			
 
-			// RunTime Camera
-			/*auto cameraEntity = m_ActiveScene->GetPrimaryCamera();
-			const auto& camera = cameraEntity.GetComponent<CameraComponent>().camera;
-			const glm::mat4& cameraProjection = camera.GetProjection();
-			glm::mat4 cameraView = glm::inverse(cameraEntity.GetComponent<TransformComponent>().GetTransform());*/
+			ImGuizmo::SetRect(m_ViewportBound[0].x, m_ViewportBound[0].y,
+				m_ViewportBound[1].x - m_ViewportBound[0].x,
+				m_ViewportBound[1].y - m_ViewportBound[0].y);
+
 			
 			//Editor Camera
 
@@ -411,6 +399,7 @@ namespace Gart
 		m_OrthoCamera.OnEvent(e);
 		BSS::EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<BSS::KeyPressedEvent>(BSS_EVENT_BIND_FN(EditorLayer::OnKeyPressed));
+		dispatcher.Dispatch<BSS::MouseButtonPressedEvent>(BSS_EVENT_BIND_FN(EditorLayer::OnMouseButtonPressed));
 	}
 	bool EditorLayer::OnKeyPressed(BSS::KeyPressedEvent& e)
 	{
@@ -457,6 +446,17 @@ namespace Gart
 		default:
 			break;
 		}
+	}
+
+	bool EditorLayer::OnMouseButtonPressed(BSS::MouseButtonPressedEvent& e)
+	{
+		if (e.GetButton() == BSS_MOUSE_BUTTON_LEFT)
+		{
+			if(m_ViewPortHover && !ImGuizmo::IsOver() && !BSS::Input::IsKeyPressed(BSS_KEY_LEFT_ALT))
+				m_HierarchyPanel.SetSelectedEntity(m_HoveredEntity);
+		}
+
+		return false;
 	}
 
 	void EditorLayer::OpenDialog()
