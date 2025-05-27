@@ -30,6 +30,7 @@ namespace Gart
 		Entity m_SquareEntityGreen;
 		Entity m_CameraComponent;
 		Entity m_SecondaryCameraComponent;
+		Entity m_HoveredEntity;
 
 		bool m_PrimaryCamera = false;
 		// Temporary 

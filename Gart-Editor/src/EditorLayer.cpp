@@ -199,6 +199,7 @@ namespace Gart
 		if (mousex >= 0 && mousey >= 0 && mousex <= (int)l_viewPortSize.x && mousey < (int)l_viewPortSize.y)
 		{
 			int pixel = m_framebuffer->ReadPixel(1, mousex, mousey);
+			m_HoveredEntity = pixel == -1 && pixel < -1 ? Entity() : Entity((entt::entity)pixel, m_ActiveScene.get());
 			BSS_CLIENT_INFO("pixel {0}", pixel);
 		}
 		
@@ -290,7 +291,12 @@ namespace Gart
 		ImGui::Begin("Setting");
 
 		auto l_stats = Gart::Renderer2D::GetStats();
+		std::string EntityName = "None";
 		ImGui::Text("Renderer2D stats:");
+		if (m_HoveredEntity)
+			EntityName = m_HoveredEntity.GetComponent<TagComponent>().m_Tag;
+
+		ImGui::Text("Hovered Entity : %s", EntityName.c_str());
 		ImGui::Text("Draw Calls: %d", l_stats.DrawCalls);
 		ImGui::Text("Quad Counts: %d", l_stats.QuadCounts);
 		ImGui::Text("Number Of Vertices: %d", l_stats.GetNumbersOfVertices());

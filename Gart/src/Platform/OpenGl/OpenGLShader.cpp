@@ -1,4 +1,5 @@
 #include "bsspch.h"
+#include "Core/Log.h"
 #include "OpenGLShader.h"
 #include <glad/glad.h>
 #include <fstream>
@@ -9,6 +10,7 @@ namespace Gart {
 	{
 		if (type == "vertex") return GL_VERTEX_SHADER;
 		if (type == "fragment" || type == "pixel") return GL_FRAGMENT_SHADER;
+		BSS_CORE_ASSERT(false, "Unknown Shader type!`");
 		return 0;
 	}
 	OpenGLShader::OpenGLShader(const std::string& filepath)
@@ -160,6 +162,10 @@ namespace Gart {
 			in.read(&result[0], result.size());
 			in.close();
 		}
+		else
+		{
+			BSS_CORE_ERROR("Could not open file {0}", filePath);
+		}
 		return result;
 	}
 
@@ -175,9 +181,13 @@ namespace Gart {
 		while (pos != std::string::npos)
 		{
 			size_t eol = source.find_first_of("\r\n", pos);
+			BSS_CORE_ASSERT(eol != std::string::npos, "Syntax error");
 			size_t begin = pos + typeTokenLenght + 1;
 			std::string type = source.substr(begin, eol - begin);
+			BSS_CORE_ASSERT(ShaderTypeFromString(type), "Inavlid shader type specified");
+
 			size_t nextLinePos = source.find_first_not_of("\r\n", eol);
+			BSS_CORE_ASSERT(nextLinePos != std::string::npos, "Syntax error");
 			pos = source.find(typeToken, nextLinePos);
 			shaderSource[ShaderTypeFromString(type)] = source.substr(nextLinePos, pos - (nextLinePos == std::string::npos ? source.size() - 1 : nextLinePos));
 		}
@@ -222,7 +232,8 @@ namespace Gart {
 				glDeleteShader(shader);
 
 				// Use the infoLog as you see fit.
-
+				BSS_CORE_ERROR("{0}", infoLog.data());
+				BSS_CORE_ASSERT(false, "Shader Compilation Failure!");
 				// In this simple program, we'll just leave
 				break;
 			}
@@ -256,6 +267,8 @@ namespace Gart {
 				glDeleteShader(id);
 			}
 
+			BSS_CORE_ERROR("{0}", infoLog.data());
+			BSS_CORE_ASSERT(false, "Shader Link Failure!");
 			// Use the infoLog as you see fit.
 
 			// In this simple program, we'll just leave

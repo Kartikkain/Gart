@@ -5,6 +5,7 @@
 #include "SubTexture2D.h"
 #include "Renderer/Camera.h"
 #include "EditorCamera.h"
+#include "Scene/Components.h"
 
 namespace Gart
 {
@@ -21,6 +22,8 @@ namespace Gart
 
 		static void Flush();
 
+		static void DrawSprite(const glm::mat4& transform,SpriteRenderer& str, int entityID = -1);
+
 		static void DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color);
 		static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color);
 
@@ -30,7 +33,7 @@ namespace Gart
 		static void DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<SubTexture2D> subTexture, float tilling = 1.0f, glm::vec4 tintcolor = glm::vec4(1.0f));
 		static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<SubTexture2D> subTexture, float tilling = 1.0f, glm::vec4 tintcolor = glm::vec4(1.0f));
 
-		static void DrawQuad(const glm::mat4& transform, const glm::vec4& color);
+		static void DrawQuad(const glm::mat4& transform, const glm::vec4& color,int entityID = -1);
 
 		static void DrawQuad(const glm::mat4& transform, const Ref<Texture2D> texture, float tilling = 1.0f, glm::vec4 tintcolor = glm::vec4(1.0f));
 

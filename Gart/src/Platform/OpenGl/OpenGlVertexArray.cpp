@@ -56,15 +56,41 @@ namespace Gart
 		uint32_t index = 0;
 		for (const auto& element : m_layout)
 		{
+			switch (element.Type)
+			{
+				case ShaderDataType::Float:
+				case ShaderDataType::Float2:
+				case ShaderDataType::Float3:
+				case ShaderDataType::Float4:
+				{
+					glEnableVertexAttribArray(index);
+					glVertexAttribPointer(index,
+						element.GetElementCount(),
+						ShaderDataTypeToOpenGlBaseType(element.Type),
+						element.Normalize ? GL_TRUE : GL_FALSE,
+						m_layout.GetStride(),
+						(const void*)element.Offset);
+					index++;
+					break;
+				}
 
-			glEnableVertexAttribArray(index);
-			glVertexAttribPointer(index,
-				element.GetElementCount(),
-				ShaderDataTypeToOpenGlBaseType(element.Type),
-				element.Normalize ? GL_TRUE : GL_FALSE,
-				m_layout.GetStride(),
-				(const void*)element.Offset);
-			index++;
+				case ShaderDataType::Int:
+				case ShaderDataType::Int2:
+				case ShaderDataType::Int3:
+				case ShaderDataType::Int4:
+				case ShaderDataType::Bool:
+				{
+					glEnableVertexAttribArray(index);
+					glVertexAttribIPointer(index,
+						element.GetElementCount(),
+						ShaderDataTypeToOpenGlBaseType(element.Type),
+						m_layout.GetStride(),
+						(const void*)element.Offset);
+					index++;
+					break;
+				}
+
+			}
 		}
 
 		m_VertexBuffers.push_back(vertexBuffer);
