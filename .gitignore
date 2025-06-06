@@ -8,3 +8,5 @@ Sandbox/GartProfile-StartUp.json
 Gart-Editor/GartProfile-Delete.json
 Gart-Editor/GartProfile-Runtime.json
 Gart-Editor/GartProfile-StartUp.json
+Gart/vendor/VulkanSDK
+Scripts/__pycache__

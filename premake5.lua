@@ -12,16 +12,7 @@ workspace "Gart"
 OutputDir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 
-IncludeDir = {}
-IncludeDir["GLFW"] = "Gart/vendor/GLFW/include"
-IncludeDir["Glad"] = "Gart/vendor/Glad/include"
-IncludeDir["ImGui"] = "Gart/vendor/imgui"
-IncludeDir["glm"] = "Gart/vendor/glm"
-IncludeDir["stb_image"] = "Gart/vendor/stb_image"
-IncludeDir["entt"] = "Gart/vendor/entt/include"
-IncludeDir["yaml_cpp"] = "Gart/vendor/yaml-cpp/include"
-IncludeDir["ImGuizmo"] = "Gart/vendor/ImGuizmo"
-
+include "Dependencies.lua"
 
 include "Gart/vendor/GLFW"
 include "Gart/vendor/Glad"
@@ -33,7 +24,7 @@ project "Gart"
 	kind "StaticLib"
 	language "C++"
 	cppdialect "C++17"
-	staticruntime "on"
+	staticruntime "off"
 
 	targetdir("bin/".. OutputDir .."/%{prj.name}")
 	objdir("bin-int/".. OutputDir .."/%{prj.name}")
@@ -65,7 +56,8 @@ project "Gart"
 		"%{IncludeDir.stb_image}",
 		"%{IncludeDir.entt}",
 		"%{IncludeDir.yaml_cpp}",
-		"%{IncludeDir.ImGuizmo}"
+		"%{IncludeDir.ImGuizmo}",
+		"%{IncludeDir.VulkanSDK}"
 	}
 
 	links
@@ -103,15 +95,36 @@ project "Gart"
 		buildoptions "/MDd"
 		symbols "on"
 
+		links
+		{
+			"%{Library.ShaderC_Debug}",
+			"%{Library.SPIRV_Cross_Debug}",
+			"%{Library.SPIRV_Cross_GLSL_Debug}"
+		}
+
 	filter "configurations:Release"
 		defines "BSS_RELEASE"
 		buildoptions "/MD"
 		optimize "on"
 
+		links 
+		{
+			"%{Library.ShaderC_Release}",
+			"%{Library.SPIRV_Cross_Release}",
+			"%{Library.SPIRV_Cross_GLSL_Release}"
+		}
+
 	filter "configurations:Dist"
 		defines "BSS_DIST"
 		buildoptions "/MD"
 		optimize "on"
+
+		links
+		{
+			"%{Library.ShaderC_Release}",
+			"%{Library.SPIRV_Cross_Release}",
+			"%{Library.SPIRV_Cross_GLSL_Release}"
+		}
 
 
 project "Gart-Editor"
@@ -119,7 +132,7 @@ project "Gart-Editor"
 	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++17"
-	staticruntime "on"
+	staticruntime "off"
 
 	targetdir("bin/".. OutputDir .."/%{prj.name}")
 	objdir("bin-int/".. OutputDir .."/%{prj.name}")
