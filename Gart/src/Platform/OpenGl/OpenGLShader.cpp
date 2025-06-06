@@ -3,9 +3,60 @@
 #include "OpenGLShader.h"
 #include <glad/glad.h>
 #include <fstream>
+#include <filesystem>
 #include <glm/gtc/type_ptr.hpp>
+#include <shaderc/shaderc.hpp>
+#include <spirv_cross/spirv_cross.hpp>
+#include <spirv_cross/spirv_glsl.hpp>
+#include "Core/Timer.h"
 
 namespace Gart {
+
+	namespace Utils
+	{
+		static GLenum ShaderTypeFromString(const std::string& type)
+		{
+			if (type == "vertex") return GL_VERTEX_SHADER;
+			if (type == "fragment" || type == "pixel") return GL_FRAGMENT_SHADER;
+			BSS_CORE_ASSERT(false, "Unknown Shader type!`");
+			return 0;
+		}
+
+		static shaderc_shader_kind GLShaderStageToShaderc(GLenum stage)
+		{
+			switch (stage)
+			{
+			case GL_VERTEX_SHADER: return shaderc_glsl_vertex_shader;
+			case GL_FRAGMENT_SHADER: return shaderc_glsl_fragment_shader;
+			}
+			BSS_CORE_ASSERT(false, "Could not retrieve the stage to shaderc");
+			return (shaderc_shader_kind)0;
+		}
+
+		static const char* GLShaderStageToString(GLenum stage)
+		{
+			switch (stage)
+			{
+			case GL_VERTEX_SHADER: return "GL_VERTEX_SHADER";
+			case GL_FRAGMENT_SHADER: return "GL_FRAGMENT_SHADER";
+			}
+			BSS_CORE_ASSERT(false, "Could not retrieve the stage to string");
+			return nullptr;
+		}
+
+		static const char* GetCacheDirectory()
+		{
+			return "assets/cache/shader/opengl";
+		}
+
+		static void CreateCacheDirectoryIfNeeded()
+		{
+			std::string cacheDirectory = GetCacheDirectory();
+			if (!std::filesystem::exists(cacheDirectory))
+				std::filesystem::create_directories(cacheDirectory);
+		}
+
+	}
 	static GLenum ShaderTypeFromString(const std::string& type)
 	{
 		if (type == "vertex") return GL_VERTEX_SHADER;
