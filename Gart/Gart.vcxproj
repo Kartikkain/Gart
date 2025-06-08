@@ -156,6 +156,7 @@
     <ClInclude Include="src\Core\Log.h" />
     <ClInclude Include="src\Core\MouseButtonCodes.h" />
     <ClInclude Include="src\Core\TimeStep.h" />
+    <ClInclude Include="src\Core\Timer.h" />
     <ClInclude Include="src\Core\Window.h" />
     <ClInclude Include="src\Debug\Instrumentor.h" />
     <ClInclude Include="src\Events\ApplicationEvent.h" />
@@ -169,6 +170,7 @@
     <ClInclude Include="src\Platform\OpenGl\OpenGlFrameBuffer.h" />
     <ClInclude Include="src\Platform\OpenGl\OpenGlRendererAPI.h" />
     <ClInclude Include="src\Platform\OpenGl\OpenGlTexture.h" />
+    <ClInclude Include="src\Platform\OpenGl\OpenGlUniformBuffer.h" />
     <ClInclude Include="src\Platform\OpenGl\OpenGlVertexArray.h" />
     <ClInclude Include="src\Platform\Windows\WindowInput.h" />
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h" />
@@ -186,6 +188,7 @@
     <ClInclude Include="src\Renderer\Shader.h" />
     <ClInclude Include="src\Renderer\SubTexture2D.h" />
     <ClInclude Include="src\Renderer\Texture.h" />
+    <ClInclude Include="src\Renderer\UniformBuffer.h" />
     <ClInclude Include="src\Renderer\VertexArray.h" />
     <ClInclude Include="src\Scene\Components.h" />
     <ClInclude Include="src\Scene\Entity.h" />
@@ -627,6 +630,7 @@
     <ClCompile Include="src\Platform\OpenGl\OpenGlFrameBuffer.cpp" />
     <ClCompile Include="src\Platform\OpenGl\OpenGlRendererAPI.cpp" />
     <ClCompile Include="src\Platform\OpenGl\OpenGlTexture.cpp" />
+    <ClCompile Include="src\Platform\OpenGl\OpenGlUniformBuffer.cpp" />
     <ClCompile Include="src\Platform\OpenGl\OpenGlVertexArray.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowInput.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsPlatformUtils.cpp" />
@@ -643,6 +647,7 @@
     <ClCompile Include="src\Renderer\Shader.cpp" />
     <ClCompile Include="src\Renderer\SubTexture2D.cpp" />
     <ClCompile Include="src\Renderer\Texture.cpp" />
+    <ClCompile Include="src\Renderer\UniformBuffer.cpp" />
     <ClCompile Include="src\Renderer\VertexArray.cpp" />
     <ClCompile Include="src\Scene\Entity.cpp" />
     <ClCompile Include="src\Scene\Scene.cpp" />
