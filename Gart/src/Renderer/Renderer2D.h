@@ -61,5 +61,6 @@ namespace Gart
 	private:
 
 		static void FlushAndRestart();
+		static void StartBach();
 	};
 }

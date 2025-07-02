@@ -38,6 +38,7 @@ namespace Gart
 
 	private:
 		std::string ReadFile(const std::string& filePath);
+
 		std::unordered_map<GLenum, std::string> PreProcess(const std::string& source);
 		void Compile(std::unordered_map<GLenum, std::string>& shaderSources);
 
@@ -45,6 +46,7 @@ namespace Gart
 		void CompileOrGetOpenGlBinaries();
 		void CreateProgram();
 		void Reflect(GLenum stage, const std::vector<uint32_t>& shaderData);
+		void ReflectInterfaceVariables(GLenum stage, const std::vector<uint32_t>& spirv);
 	private:
 		uint32_t m_RenderID;
 		std::string m_FilePath;

@@ -9,10 +9,10 @@ namespace Gart
 	{
 		switch (RendererAPI::GetAPI())
 		{
-			case RendererAPI::API::OpenGl: std::make_shared<OpenGlUniformBuffer>(size, binding);
+			case RendererAPI::API::OpenGl: return std::make_shared<OpenGlUniformBuffer>(size, binding);
 		}
 
-		BSS_CORE_ASSERT(false, "Unknown RenderAPI!");
+		//BSS_CORE_ASSERT(false, "Unknown RenderAPI!");
 		return nullptr;
 	}
 }

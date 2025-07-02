@@ -2,8 +2,10 @@
 #include "Renderer2D.h"
 #include "VertexArray.h"
 #include "Shader.h"
+#include "UniformBuffer.h"
 #include "Renderer/RenderCommand.h"
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 namespace Gart
 {
@@ -39,6 +41,13 @@ namespace Gart
 
 		glm::vec4 QuadVertexPosition[4];
 		Renderer2D::Statistics Stats;
+
+		struct CameraData
+		{
+			glm::mat4 ViewProjection;
+		};
+		CameraData CameraBuffer;
+		Ref<UniformBuffer> CameraUniformBuffer;
 	};
 
 	
@@ -106,8 +115,8 @@ namespace Gart
 		for (uint32_t i = 0; i < s_Data.MaxTexureSlots; i++)
 			samplers[i] = i;
 		s_Data.TextureShader = Shader::Create("assets/shaders/Texture.glsl");
-		s_Data.TextureShader->Bind();
-		s_Data.TextureShader->SetIntArray("u_Texture",samplers,s_Data.MaxTexureSlots);
+		/*s_Data.TextureShader->Bind();
+		s_Data.TextureShader->SetIntArray("u_Texture",samplers,s_Data.MaxTexureSlots);*/
 
 		s_Data.WhiteTexture = Texture2D::Create(1, 1);
 		uint32_t whitetexturedata = 0xffffffff;
@@ -120,24 +129,25 @@ namespace Gart
 		s_Data.QuadVertexPosition[1] = {  0.5f,-0.5f,0.0f,1.0f };
 		s_Data.QuadVertexPosition[2] = {  0.5f, 0.5f,0.0f,1.0f };
 		s_Data.QuadVertexPosition[3] = { -0.5f, 0.5f,0.0f,1.0f };
+
+		std::cout << "CameraData size = " << sizeof(Renderer2DStorage::CameraData) << std::endl;
+		
+		s_Data.CameraUniformBuffer = UniformBuffer::Create(sizeof(Renderer2DStorage::CameraData), 0);
 	}
 	void Renderer2D::Shutdown()
 	{
 		GART_PROFILE_FUNCTION();
+		delete[] s_Data.QuadVertexBufferBase;
 	}
 
 	void Renderer2D::BeginScene(const Camera& camera, const glm::mat4& transform)
 	{
 		GART_PROFILE_FUNCTION();
 
-		glm::mat4 viewProj = camera.GetProjection() * glm::inverse(transform);
+		s_Data.CameraBuffer.ViewProjection = camera.GetProjection() * glm::inverse(transform);
+		s_Data.CameraUniformBuffer->SetData(&s_Data.CameraBuffer, sizeof(Renderer2DStorage::CameraData));
 
-		s_Data.TextureShader->Bind();
-		s_Data.TextureShader->SetMat4("u_ViewProjectionMatrix", viewProj);
-
-		s_Data.QuadindexCount = 0;
-		s_Data.TextureSlotIndex = 1;
-		s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
+		StartBach();
 	}
 
 	void Renderer2D::BeginScene(const EditorCamera& camera)
@@ -145,14 +155,10 @@ namespace Gart
 
 		GART_PROFILE_FUNCTION();
 
-		glm::mat4 viewProj = camera.GetViewProjection();
+		s_Data.CameraBuffer.ViewProjection = camera.GetViewProjection();
+		s_Data.CameraUniformBuffer->SetData(&s_Data.CameraBuffer, sizeof(Renderer2DStorage::CameraData));
 
-		s_Data.TextureShader->Bind();
-		s_Data.TextureShader->SetMat4("u_ViewProjectionMatrix", viewProj);
-
-		s_Data.QuadindexCount = 0;
-		s_Data.TextureSlotIndex = 1;
-		s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
+		StartBach();
 	}
 
 	void Renderer2D::BeginScene(const OrthoGraphicCamera& camera)
@@ -164,9 +170,7 @@ namespace Gart
 		s_Data.TextureShader->Bind();
 		s_Data.TextureShader->SetMat4("u_ViewProjectionMatrix", camera.GetViewProjectionMatrix());
 
-		s_Data.QuadindexCount = 0;
-		s_Data.TextureSlotIndex = 1;
-		s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
+		StartBach();
 
 	}
 	void Renderer2D::EndScene()
@@ -183,6 +187,8 @@ namespace Gart
 		{
 			s_Data.TextureSlots[i]->Bind(i);
 		}
+
+		s_Data.TextureShader->Bind();
 		RenderCommand::DrawIndexed(s_Data.QuadVertexArray, s_Data.QuadindexCount);
 		s_Data.Stats.DrawCalls++;
 	}
@@ -703,6 +709,12 @@ namespace Gart
 	{
 		EndScene();
 
+		s_Data.QuadindexCount = 0;
+		s_Data.TextureSlotIndex = 1;
+		s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
+	}
+	void Renderer2D::StartBach()
+	{
 		s_Data.QuadindexCount = 0;
 		s_Data.TextureSlotIndex = 1;
 		s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;

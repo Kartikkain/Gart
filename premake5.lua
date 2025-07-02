@@ -147,6 +147,7 @@ project "Gart-Editor"
 	{
 		"Gart/vendor/spdlog/include",
 		"Gart/src",
+		"Gart/vendor",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.entt}",

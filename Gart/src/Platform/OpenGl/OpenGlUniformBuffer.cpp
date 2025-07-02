@@ -7,7 +7,7 @@ namespace Gart
 {
 	OpenGlUniformBuffer::OpenGlUniformBuffer(uint32_t size, uint32_t binding)
 	{
-		glCreateBuffers(GL_UNIFORM_BUFFER, &RenderID);
+		glCreateBuffers(1, &RenderID);
 		glNamedBufferData(RenderID, size, nullptr, GL_DYNAMIC_DRAW);
 		glBindBufferBase(GL_UNIFORM_BUFFER, binding, RenderID);
 	}

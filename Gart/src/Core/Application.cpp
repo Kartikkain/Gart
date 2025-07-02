@@ -32,7 +32,8 @@ namespace BSS
 		return 0;
 	}
 
-	Application::Application(const std::string& name)
+	Application::Application(const std::string& name, ApplicationCommandLineArgs args)
+		:m_CommandLineArgs(args)
 	{
 		GART_PROFILE_FUNCTION();
 

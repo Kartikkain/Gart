@@ -33,6 +33,27 @@ namespace Gart {
 			return (shaderc_shader_kind)0;
 		}
 
+		static const char* ShaderCToString(shaderc_shader_kind shadercKind)
+		{
+			switch (shadercKind)
+			{
+			case shaderc_glsl_vertex_shader: return "Vertex";
+			case shaderc_glsl_fragment_shader: return "Fragement";
+			}
+			BSS_CORE_ASSERT(false, "Could not retrieve the stage to shaderc");
+			return nullptr;
+		}
+
+		static const char* GLShaderStageToShaderType(GLenum stage)
+		{
+			switch (stage)
+			{
+			case GL_VERTEX_SHADER: return "VERTEX_SHADER";
+			case GL_FRAGMENT_SHADER: return "FRAGMENT_SHADER";
+			}
+			BSS_CORE_ASSERT(false, "Could not retrieve the stage to string");
+			return nullptr;
+		}
 		static const char* GLShaderStageToString(GLenum stage)
 		{
 			switch (stage)
@@ -61,7 +82,7 @@ namespace Gart {
 			switch (stage)
 			{
 			case GL_VERTEX_SHADER: return ".cached_opengl.vert";
-			case GL_FRAGMENT_SHADER: return "cached_opengl.frag";
+			case GL_FRAGMENT_SHADER: return ".cached_opengl.frag";
 			}
 			BSS_CORE_ASSERT(false, "Could not retrieved opengl cache extention");
 
@@ -73,13 +94,29 @@ namespace Gart {
 			switch (stage)
 			{
 			case GL_VERTEX_SHADER: return ".cached_vulkan.vert";
-			case GL_FRAGMENT_SHADER: return "cached_vulkan.frag";
+			case GL_FRAGMENT_SHADER: return ".cached_vulkan.frag";
 			}
 			BSS_CORE_ASSERT(false, "Could not retrieved vulkan cache extention");
 
 			return "";
 		}
 
+		// Debug Functions
+		static size_t CheckForNullCharacters(const std::string& str)
+		{
+			size_t count = 0;
+			for (size_t i=0;i<str.size();++i)
+			{
+				if (str[i] == '\0') ++count;
+			}
+			return count;
+
+		}
+
+		static void RemoveNullCharacter(std::string& str)
+		{
+			str.erase(std::remove(str.begin(),str.end(),'\0'), str.end());
+		}
 	}
 	static GLenum ShaderTypeFromString(const std::string& type)
 	{
@@ -96,6 +133,8 @@ namespace Gart {
 		Utils::CreateCacheDirectoryIfNeeded();
 
 		std::string source = ReadFile(filepath);
+		if(Utils::CheckForNullCharacters(source) > 0) Utils::RemoveNullCharacter(source);
+
 		auto shaderSource = PreProcess(source);
 		
 		{
@@ -103,6 +142,7 @@ namespace Gart {
 			CompileOrGetVulkanBinaries(shaderSource);
 			CompileOrGetOpenGlBinaries();
 			CreateProgram();
+			
 			BSS_CORE_WARN("Shader creation took {0} ms", timer.ElapsedMillis());
 		}
 		// Get FileName.
@@ -267,15 +307,17 @@ namespace Gart {
 		while (pos != std::string::npos)
 		{
 			size_t eol = source.find_first_of("\r\n", pos);
-			BSS_CORE_ASSERT(eol != std::string::npos, "Syntax error");
+			BSS_CORE_ASSERT(eol != std::string::npos, "Syntax error: Missing end of line after #type");
 			size_t begin = pos + typeTokenLenght + 1;
 			std::string type = source.substr(begin, eol - begin);
 			BSS_CORE_ASSERT(Utils::ShaderTypeFromString(type), "Inavlid shader type specified");
 
 			size_t nextLinePos = source.find_first_not_of("\r\n", eol);
-			BSS_CORE_ASSERT(nextLinePos != std::string::npos, "Syntax error");
+			BSS_CORE_ASSERT(nextLinePos != std::string::npos, "Syntax error: No shader code found after #type");
 			pos = source.find(typeToken, nextLinePos);
-			shaderSource[Utils::ShaderTypeFromString(type)] = source.substr(nextLinePos, pos - (nextLinePos == std::string::npos ? source.size() - 1 : nextLinePos));
+			
+			BSS_CORE_ASSERT(pos == std::string::npos || pos > nextLinePos,"Shader parsing error: next #type found before previous block ended");
+			shaderSource[Utils::ShaderTypeFromString(type)] = (pos == std::string::npos) ? source.substr(nextLinePos) : source.substr(nextLinePos, pos - nextLinePos);
 		}
 
 		return shaderSource;
@@ -378,19 +420,22 @@ namespace Gart {
 		shaderc::Compiler compiler;
 		shaderc::CompileOptions options;
 
+
 		options.SetTargetEnvironment(shaderc_target_env_vulkan, shaderc_env_version_vulkan_1_3);
 
+		//options.SetGenerateDebugInfo();
 		const bool optimize = true;
 		if (optimize)
 			options.SetOptimizationLevel(shaderc_optimization_level_performance);
 		std::filesystem::path cachedir = Utils::GetCacheDirectory();
-
+		
 		auto& shaderData = m_VulkanSPIRV;
 		shaderData.clear();
 
 		for (auto&& [stage, source] : shaderSource)
 		{
 			std::filesystem::path shaderfilepath = m_FilePath;
+			
 			std::filesystem::path cachePath = cachedir / (shaderfilepath.filename().string() + Utils::GLShaderStageCachedVulkanFileExtension(stage));
 
 			std::ifstream in(cachePath, std::ios::in | std::ios::binary);
@@ -406,17 +451,18 @@ namespace Gart {
 			}
 			else
 			{
+				
 				shaderc::SpvCompilationResult module = compiler.CompileGlslToSpv(source, Utils::GLShaderStageToShaderc(stage), m_FilePath.c_str(), options);
 
 				if (module.GetCompilationStatus() != shaderc_compilation_status_success)
 				{
 					BSS_CORE_ERROR(module.GetErrorMessage());
-					BSS_CORE_ASSERT(false, "module compilation failed");
+					BSS_CORE_ASSERT(false, "compilation to vulkan binaries failed.");
 				}
 
 				shaderData[stage] = std::vector<uint32_t>(module.begin(), module.end());
 
-				std::ofstream out(cachedir, std::ios::out | std::ios::binary);
+				std::ofstream out(cachePath, std::ios::out | std::ios::binary);
 				if (out.is_open())
 				{
 					auto& data = shaderData[stage];
@@ -427,7 +473,8 @@ namespace Gart {
 				
 			}
 		}
-
+		
+		
 		for (auto&& [stage, data] : shaderData)
 			Reflect(stage, data);
 	}
@@ -439,9 +486,12 @@ namespace Gart {
 		shaderc::Compiler compiler;
 		shaderc::CompileOptions options;
 
+
 		options.SetTargetEnvironment(shaderc_target_env_opengl, shaderc_env_version_opengl_4_5);
 
-		bool optimize = true;
+		
+
+		const bool optimize = true;
 		if (optimize)
 			options.SetOptimizationLevel(shaderc_optimization_level_performance);
 
@@ -468,16 +518,22 @@ namespace Gart {
 			}
 			else
 			{
+				
 				spirv_cross::CompilerGLSL glslcompiler(spirv);
 				OpenGlShaderCode[stage] = glslcompiler.compile();
 				auto& source = OpenGlShaderCode[stage];
 
+				ReflectInterfaceVariables(stage, spirv);
+
 				shaderc::SpvCompilationResult module = compiler.CompileGlslToSpv(source, Utils::GLShaderStageToShaderc(stage), m_FilePath.c_str());
+				
 				if (module.GetCompilationStatus() != shaderc_compilation_status_success)
 				{
 					BSS_CORE_ERROR(module.GetErrorMessage());
 					BSS_CORE_ASSERT(false, "module compilation falied.");
 				}
+
+				shaderData[stage] = std::vector<uint32_t>(module.cbegin(), module.cend());
 
 				std::ofstream out(cachePath, std::ios::out | std::ios::binary);
 
@@ -510,6 +566,7 @@ namespace Gart {
 		glLinkProgram(program);
 		GLint isLinked;
 		glGetProgramiv(program, GL_LINK_STATUS, &isLinked);
+		
 		if (isLinked == GL_FALSE)
 		{
 			GLint maxlength;
@@ -523,6 +580,8 @@ namespace Gart {
 
 			for (auto id : shaderIDs)
 				glDeleteShader(id);
+
+			return;
 		}
 
 		for (auto id : shaderIDs)
@@ -534,6 +593,28 @@ namespace Gart {
 		m_RenderID = program;
 	}
 
+
+	auto GetGLSLTypeName = [&](const spirv_cross::SPIRType& type) -> std::string {
+		std::string base;
+		switch (type.basetype) {
+		case spirv_cross::SPIRType::Float: base = "float"; break;
+		case spirv_cross::SPIRType::Int: base = "int"; break;
+		case spirv_cross::SPIRType::UInt: base = "uint"; break;
+		case spirv_cross::SPIRType::Double: base = "double"; break;
+		case spirv_cross::SPIRType::Boolean: base = "bool"; break;
+		default: base = "unknown"; break;
+		}
+
+		if (type.columns > 1) {
+			return base + std::to_string(type.columns) + "x" + std::to_string(type.vecsize);
+		}
+		else if (type.vecsize > 1) {
+			return base + std::to_string(type.vecsize);
+		}
+		else {
+			return base;
+		}
+		};
 	void OpenGLShader::Reflect(GLenum stage, const std::vector<uint32_t>& shaderData)
 	{
 		spirv_cross::Compiler compiler(shaderData);
@@ -542,6 +623,29 @@ namespace Gart {
 		BSS_CORE_TRACE("OpenGLShader::Reflect - {0} {1}", Utils::GLShaderStageToString(stage), m_FilePath);
 		BSS_CORE_TRACE("    {0} uniform buffers", resources.uniform_buffers.size());
 		BSS_CORE_TRACE("    {0} resources", resources.sampled_images.size());
+		BSS_CORE_TRACE("    {0} Intputs from this stage", resources.stage_inputs.size());
+		BSS_CORE_TRACE("    {0} Outputs from this stage", resources.stage_outputs.size());
+
+		if (stage == GL_VERTEX_SHADER || stage == GL_FRAGMENT_SHADER)
+		{
+			std::string title = stage == GL_VERTEX_SHADER ? "Vertex output" : "Fragment input";
+
+			BSS_CORE_TRACE("-------- {0} --------", title);
+			BSS_CORE_TRACE(" | {0} | {1} | {2} |", "Loc", "Name", "Type");
+			BSS_CORE_TRACE("------------------------------------------------");
+
+			const auto& InterfaceVars = stage == GL_VERTEX_SHADER ? resources.stage_outputs : resources.stage_inputs;
+
+			for (const auto& var : InterfaceVars)
+			{
+				uint32_t location = compiler.get_decoration(var.id, spv::DecorationLocation);
+				spirv_cross::SPIRType type = compiler.get_type(var.type_id);
+				std::string typestr = GetGLSLTypeName(type);
+				BSS_CORE_TRACE(" | {0} | {1} | {2} |", location, var.name.c_str(), typestr.c_str());
+			}
+
+			BSS_CORE_TRACE("------------------------------------------------");
+		}
 
 		BSS_CORE_TRACE("Uniform buffers:");
 
@@ -559,5 +663,38 @@ namespace Gart {
 		}
 
 	}
+
+	void OpenGLShader::ReflectInterfaceVariables(GLenum stage, const std::vector<uint32_t>& spirv)
+	{
+
+		spirv_cross::CompilerGLSL compiler(spirv);
+		spirv_cross::ShaderResources resources = compiler.get_shader_resources();
+
+		auto stageStr = Utils::GLShaderStageToString(stage);
+		BSS_CORE_TRACE("== {0} Interface Reflection ==", stageStr);
+
+		if (!resources.stage_inputs.empty() && stage == GL_FRAGMENT_SHADER)
+		{
+			for (auto& input : resources.stage_inputs)
+			{
+				uint32_t location = compiler.get_decoration(input.id, spv::DecorationLocation);
+				BSS_CORE_TRACE(" {0} | {1} | {2}", location, input.name, compiler.get_name(input.id));
+			}
+		}
+
+		if (!resources.stage_outputs.empty() && stage == GL_VERTEX_SHADER)
+		{
+			for (auto& output : resources.stage_outputs)
+			{
+				uint32_t location = compiler.get_decoration(output.id, spv::DecorationLocation);
+				BSS_CORE_TRACE(" {0} | {1} | {2}", location, output.name, compiler.get_name(output.id));
+			}
+		}
+
+
+	}
+
+
+	
 
 }

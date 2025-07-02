@@ -3,6 +3,7 @@
 #include "BSS.h"
 #include "Panel/SceneHeirarchyPanel.h"
 #include "Renderer/EditorCamera.h"
+#include "Panel/ContentBrowserPanel.h"
 //#include "ParticlesSystem.h"
 
 namespace Gart
@@ -53,5 +54,6 @@ namespace Gart
 		std::unordered_map<char, Gart::Ref<Gart::SubTexture2D>> m_TileSet;
 		uint32_t m_MapWidth, m_MapHeight;
 		SceneHeirarchyPanel m_HierarchyPanel;
+		ContentBrowserPanel m_ContentBrowserPanel;
 	};
 }

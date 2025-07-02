@@ -287,6 +287,7 @@ namespace Gart
 		ImGui::ShowDemoWindow(&show);*/
 
 		m_HierarchyPanel.OnGUIRender();
+		m_ContentBrowserPanel.OnimGuiRender();
 
 		ImGui::Begin("Setting");
 

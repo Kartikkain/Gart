@@ -64,7 +64,7 @@ OutputDirectory = "Gart/vendor/VulkanSDK"
 
 
 def CheckVulkanSDKDebugLibs():
-    shadercdLib = Path(f"{OutputDirectory}/Lib/shaderc_shared.lib")
+    shadercdLib = Path(f"{OutputDirectory}/Lib/shaderc_sharedd.lib")
 
     if(not shadercdLib.exists()):
         print(f"No Vulkan SDK debug libs found. (Checked {shadercdLib})")

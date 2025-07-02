@@ -1,0 +1,19 @@
+#pragma once
+
+#include <filesystem>
+
+namespace Gart
+{
+	class ContentBrowserPanel
+	{
+	public:
+		ContentBrowserPanel();
+
+		void OnimGuiRender();
+
+	private:
+
+		std::filesystem::path m_currentDirectory;
+	};
+}
+
