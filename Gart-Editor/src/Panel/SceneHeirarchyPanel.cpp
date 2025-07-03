@@ -19,7 +19,7 @@ namespace Gart
 
 	void SceneHeirarchyPanel::OnGUIRender()
 	{
-		ImGui::Begin("Heirarchy");
+		ImGui::Begin("Hierarchy");
 
 		m_Context->m_Registery.each([&](auto entityID)
 			{

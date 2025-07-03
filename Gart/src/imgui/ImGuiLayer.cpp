@@ -34,8 +34,9 @@ namespace BSS
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
-		io.Fonts->AddFontFromFileTTF("assets/Fonts/Roboto_Condensed/static/RobotoCondensed-Bold.ttf", 18.0f);
-		io.FontDefault = io.Fonts->AddFontFromFileTTF("assets/Fonts/Roboto_Condensed/static/RobotoCondensed-Regular.ttf", 18.0f);
+		float fontSize = 18.0f;
+		io.Fonts->AddFontFromFileTTF("assets/Fonts/Roboto_Condensed/static/RobotoCondensed-Bold.ttf", fontSize);
+		io.FontDefault = io.Fonts->AddFontFromFileTTF("assets/Fonts/Roboto_Condensed/static/RobotoCondensed-Regular.ttf", fontSize);
 		ImGui::StyleColorsDark();
 
 		ImGuiStyle& style = ImGui::GetStyle();

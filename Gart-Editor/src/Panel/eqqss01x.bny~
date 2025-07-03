@@ -1,7 +1,7 @@
 #pragma once
 
 #include <filesystem>
-#include "Renderer/Texture.h"
+
 
 namespace Gart
 {
@@ -11,11 +11,10 @@ namespace Gart
 		ContentBrowserPanel();
 
 		void OnimGuiRender();
+
 	private:
+
 		std::filesystem::path m_currentDirectory;
-		Ref<Texture2D> m_DirectoryIcon;
-		Ref<Texture2D> m_FileIcon;
 	};
-
-
 }
+
