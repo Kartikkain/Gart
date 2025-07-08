@@ -22,6 +22,8 @@ namespace Gart
 		bool OnMouseButtonPressed(BSS::MouseButtonPressedEvent& e);
 	private:
 		void OpenDialog();
+
+		void OpenScene(const std::filesystem::path& filepath);
 		void NewScene();
 		void SaveScene();
 	private:

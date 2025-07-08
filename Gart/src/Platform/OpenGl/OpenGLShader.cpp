@@ -423,7 +423,7 @@ namespace Gart {
 
 		options.SetTargetEnvironment(shaderc_target_env_vulkan, shaderc_env_version_vulkan_1_3);
 
-		//options.SetGenerateDebugInfo();
+		options.SetGenerateDebugInfo();
 		const bool optimize = true;
 		if (optimize)
 			options.SetOptimizationLevel(shaderc_optimization_level_performance);

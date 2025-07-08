@@ -17,7 +17,7 @@ static const char* s_MapTiles =
 
 namespace Gart 
 {
-
+	const std::filesystem::path s_AssetPath = "assets";
 	EditorLayer::EditorLayer()
 		:Layer("Sandbox2D"), m_OrthoCamera(1280.0f / 720.0f)
 	{
@@ -335,6 +335,15 @@ namespace Gart
 		uint32_t texture = m_framebuffer->GetColorAttachmetID(0);
 		ImGui::Image((void*)texture, { m_ViewPortSize.x,m_ViewPortSize.y },ImVec2(0,1),ImVec2(1,0));
 
+		if (ImGui::BeginDragDropTarget())
+		{
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+			{
+				const wchar_t* path = (const wchar_t*)payload->Data;
+				OpenScene(std::filesystem::path(s_AssetPath) / path);
+			}
+			ImGui::EndDragDropTarget();
+		}
 
 		Entity m_SelectedEntity = m_HierarchyPanel.GetSelectedEntity();
 
@@ -471,6 +480,19 @@ namespace Gart
 
 			SceneSerialization l_Serializer(m_ActiveScene);
 			l_Serializer.DeSerialize(filepath);
+		}
+	}
+
+	void EditorLayer::OpenScene(const std::filesystem::path& filepath)
+	{
+		if (!filepath.empty())
+		{
+			m_ActiveScene = std::make_shared<Scene>();
+			m_ActiveScene->OnViewportResize((uint32_t)m_ViewPortSize.x, (uint32_t)m_ViewPortSize.y);
+			m_HierarchyPanel.SetContext(m_ActiveScene);
+
+			SceneSerialization l_Serializer(m_ActiveScene);
+			l_Serializer.DeSerialize(filepath.string());
 		}
 	}
 

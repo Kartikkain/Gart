@@ -175,7 +175,7 @@ namespace Gart
 
 		if(!data["Scene"])
 			return false;
-
+		
 		std::string name = data["Scene"].as<std::string>();
 
 		auto entities = data["Entities"];
@@ -222,6 +222,8 @@ namespace Gart
 					Sprite.Color = spriteRenderer["Color"].as<glm::vec4>();
 				}
 			}
+
+			
 			
 		}
 
