@@ -194,7 +194,8 @@ namespace Gart
 	}
 	void Renderer2D::DrawSprite(const glm::mat4& transform, SpriteRenderer& str, int entityID)
 	{
-		DrawQuad(transform, str.Color, entityID);
+		if (str.Texture) DrawQuad(transform, str.Texture, str.TillingFactor, str.Color, entityID);
+		else DrawQuad(transform, str.Color, entityID);
 	}
 	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color)
 	{
@@ -634,7 +635,7 @@ namespace Gart
 		s_Data.Stats.QuadCounts++;
 	}
 
-	void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<Texture2D> texture, float tilling , glm::vec4 tintcolor)
+	void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<Texture2D> texture, float tilling , glm::vec4 tintcolor, int entityID)
 	{
 		GART_PROFILE_FUNCTION();
 
@@ -668,6 +669,7 @@ namespace Gart
 		s_Data.QuadVertexBufferPtr->TexCoord = { 0.0f,0.0f };
 		s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
 		s_Data.QuadVertexBufferPtr->TillingFactor = tilling;
+		s_Data.QuadVertexBufferPtr->EntityID = entityID;
 		s_Data.QuadVertexBufferPtr++;
 
 		s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPosition[1];
@@ -675,6 +677,7 @@ namespace Gart
 		s_Data.QuadVertexBufferPtr->TexCoord = { 1.0f,0.0f };
 		s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
 		s_Data.QuadVertexBufferPtr->TillingFactor = tilling;
+		s_Data.QuadVertexBufferPtr->EntityID = entityID;
 		s_Data.QuadVertexBufferPtr++;
 
 		s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPosition[2];
@@ -682,6 +685,7 @@ namespace Gart
 		s_Data.QuadVertexBufferPtr->TexCoord = { 1.0f,1.0f };
 		s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
 		s_Data.QuadVertexBufferPtr->TillingFactor = tilling;
+		s_Data.QuadVertexBufferPtr->EntityID = entityID;
 		s_Data.QuadVertexBufferPtr++;
 
 		s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPosition[3];
@@ -689,6 +693,7 @@ namespace Gart
 		s_Data.QuadVertexBufferPtr->TexCoord = { 0.0f,1.0f };
 		s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
 		s_Data.QuadVertexBufferPtr->TillingFactor = tilling;
+		s_Data.QuadVertexBufferPtr->EntityID = entityID;
 		s_Data.QuadVertexBufferPtr++;
 
 		s_Data.QuadindexCount += 6;

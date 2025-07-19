@@ -2,10 +2,13 @@
 #include "SceneHeirarchyPanel.h"
 #include "Scene/Components.h"
 #include  "imgui.h"
+#include <filesystem>
 #include <imgui_internal.h>
 #include <glm/gtc/type_ptr.hpp>
 namespace Gart
 {
+	const std::filesystem::path s_AssetPath = "assets";
+
 	SceneHeirarchyPanel::SceneHeirarchyPanel(const Ref<Scene>& context)
 	{
 		SetContext(context);
@@ -326,6 +329,20 @@ namespace Gart
 		DrawComponent<SpriteRenderer>("Sprite Renderer", true, entity, [](auto& component)
 		{
 				ImGui::ColorEdit4("Color", glm::value_ptr(component.Color));
+				ImGui::Button("Texture",ImVec2(100.0f,0.0f));
+
+				if (ImGui::BeginDragDropTarget())
+				{
+					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+					{
+						const wchar_t* path = (const wchar_t*)payload->Data;
+						std::filesystem::path texturePath = std::filesystem::path(s_AssetPath) / path;
+						component.Texture = Texture2D::Create(texturePath.string());
+					}
+					ImGui::EndDragDropTarget();
+				}
+
+				ImGui::DragFloat("TillingFactor", &component.TillingFactor, 0.1, 0.0, 100.0);
 		});	
 
 	}

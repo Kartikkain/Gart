@@ -3,6 +3,7 @@
 #include "Renderer/Camera.h"
 #include "SceneCamera.h"
 #include "ScriptableEntity.h"
+#include "Renderer/Texture.h"
 #include <glm/gtc/matrix_transform.hpp>
 namespace Gart
 {
@@ -44,6 +45,8 @@ namespace Gart
 	struct SpriteRenderer
 	{
 		glm::vec4 Color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+		Ref<Texture2D> Texture;
+		float TillingFactor = 1.0f;
 
 		SpriteRenderer() = default;
 		SpriteRenderer(const SpriteRenderer&) = default;
