@@ -26,6 +26,12 @@ namespace Gart
 		void OpenScene(const std::filesystem::path& filepath);
 		void NewScene();
 		void SaveScene();
+
+		void OnScreenPlay();
+
+		void OnScreenStop();
+
+		void UI_Toolbar();
 	private:
 		Gart::OrthoGraphicCameraController m_OrthoCamera;
 		Gart::EditorCamera m_EditorCamera;
@@ -51,11 +57,22 @@ namespace Gart
 		bool m_ViewPortFocus;
 		bool m_ViewPortHover;
 		int m_GizmoType = -1;
+
+		enum class SceneState
+		{
+			Edit = 0, 
+			Play = 1
+		};
+
+		SceneState m_SceneState = SceneState::Edit;
+
 		//ParticleSystem m_ParticleSystem;
 		//ParticleProps m_Particle;
 		std::unordered_map<char, Gart::Ref<Gart::SubTexture2D>> m_TileSet;
 		uint32_t m_MapWidth, m_MapHeight;
 		SceneHeirarchyPanel m_HierarchyPanel;
 		ContentBrowserPanel m_ContentBrowserPanel;
+
+		Ref<Texture2D> m_IconPlay, m_IconStop;
 	};
 }

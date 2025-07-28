@@ -30,6 +30,9 @@ namespace Gart
 
 		m_OrthoCamera.SetZoomLevel(7.0f);
 
+		m_IconPlay = Gart::Texture2D::Create("Resources/Icons/PlayButton.png");
+		m_IconStop = Gart::Texture2D::Create("Resources/Icons/StopButton.png");
+
 		m_Texture = Gart::Texture2D::Create("assets/textures/smile.png");
 		m_SpriteSheet = Gart::Texture2D::Create("assets/game/textures/RPG.png");
 		m_Tree = Gart::SubTexture2D::CreateFromCoords(m_SpriteSheet, { 2,1 }, { 128,128 }, { 1,2 });
@@ -116,6 +119,7 @@ namespace Gart
 
 		m_SecondaryCameraComponent.AddComponent<NativeScriptComponent>().Bind<CameraController>();
 #endif
+
 		m_HierarchyPanel.SetContext(m_ActiveScene);
 		SceneSerialization l_Serializer(m_ActiveScene);
 		//l_Serializer.DeSerialize("assets/Scenes/Gizmo.gart");
@@ -137,11 +141,11 @@ namespace Gart
 
 		Gart::Renderer2D::ResetStats();
 
-		if (m_ViewPortFocus)
+		/*if (m_ViewPortFocus)
 		{
 			m_OrthoCamera.OnUpdate(ts);
 			m_EditorCamera.OnUpdate(ts);
-		}
+		}*/
 
 		Gart::RenderCommand::SetClearColor({ 0.1f,0.1f,0.1f,1 });
 		Gart::RenderCommand::Clear();
@@ -165,7 +169,7 @@ namespace Gart
 		}*/
 
 		m_framebuffer->ClearColorAttachment(1, -1);
-		m_ActiveScene->OnUpdateEditor(ts,m_EditorCamera);
+		//m_ActiveScene->OnUpdateEditor(ts,m_EditorCamera);
 
 
 		//Gart::Renderer2D::EndScene();
@@ -188,6 +192,25 @@ namespace Gart
 
 		m_ParticleSystem.OnUpdate(ts);
 		m_ParticleSystem.OnRender(m_OrthoCamera.GetCamera());*/
+
+		switch (m_SceneState)
+		{
+		case SceneState::Edit: 
+		{
+			if (m_ViewPortFocus)
+				m_OrthoCamera.OnUpdate(ts);
+			
+			m_EditorCamera.OnUpdate(ts);
+
+			m_ActiveScene->OnUpdateEditor(ts, m_EditorCamera);
+
+			break;
+		}
+		case SceneState::Play:
+			m_ActiveScene->OnUpdateRuntime(ts);
+			break;
+	
+		}
 
 		auto[mx,my] = ImGui::GetMousePos();
 		mx -= m_ViewportBound[0].x;
@@ -285,7 +308,7 @@ namespace Gart
 		/*static bool show = true;
 
 		ImGui::ShowDemoWindow(&show);*/
-
+		
 		m_HierarchyPanel.OnGUIRender();
 		m_ContentBrowserPanel.OnimGuiRender();
 
@@ -396,6 +419,7 @@ namespace Gart
 
 		ImGui::PopStyleVar();
 
+		UI_Toolbar();
 
 		ImGui::End();
 
@@ -511,6 +535,51 @@ namespace Gart
 			SceneSerialization l_Serializer(m_ActiveScene);
 			l_Serializer.Serialize(filepath);
 		}
+	}
+
+	void EditorLayer::OnScreenPlay()
+	{
+		m_SceneState = SceneState::Play;
+	}
+
+	void EditorLayer::OnScreenStop()
+	{
+		m_SceneState = SceneState::Edit;
+	}
+
+	void EditorLayer::UI_Toolbar()
+	{
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 2));
+		ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2(0, 0));
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
+
+		auto& colors = ImGui::GetStyle().Colors;
+		const auto& buttonHovered = colors[ImGuiCol_ButtonHovered];
+
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(buttonHovered.x, buttonHovered.y, buttonHovered.z, 0.5f));
+
+		const auto& buttonActive = colors[ImGuiCol_ButtonActive];
+
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(buttonActive.x, buttonActive.y, buttonActive.z, 0.5f));
+
+		ImGui::Begin("##toolbar", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+
+		float size = ImGui::GetWindowHeight() - 4.0f;
+		Ref<Texture2D> icon = m_SceneState == SceneState::Edit ? m_IconPlay : m_IconStop;
+
+		ImGui::SetCursorPosX((ImGui::GetWindowContentRegionMax().x * 0.5f) - (size * 0.5f));
+
+		if (ImGui::ImageButton((ImTextureID)icon->GetRenderID(), ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), 0))
+		{
+			if (m_SceneState == SceneState::Edit)
+				OnScreenPlay();
+			else if (m_SceneState == SceneState::Play)
+				OnScreenStop();
+		}
+		ImGui::PopStyleVar(2);
+		ImGui::PopStyleColor(3);
+
+		ImGui::End();
 	}
 
 }
