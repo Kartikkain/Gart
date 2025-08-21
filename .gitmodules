@@ -16,3 +16,6 @@
 [submodule "Gart/vendor/ImGuizmo"]
 	path = Gart/vendor/ImGuizmo
 	url = https://github.com/Kartikkain/ImGuizmo.git
+[submodule "Gart/vendor/Box2D"]
+	path = Gart/vendor/Box2D
+	url = https://github.com/Kartikkain/box2d.git

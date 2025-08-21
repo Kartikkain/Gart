@@ -15,6 +15,7 @@ OutputDir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 include "Dependencies.lua"
 
 include "Gart/vendor/GLFW"
+include "Gart/vendor/Box2D"
 include "Gart/vendor/Glad"
 include "Gart/vendor/ImGui"
 include "Gart/vendor/yaml-cpp"
@@ -50,6 +51,7 @@ project "Gart"
 		"%{prj.name}/src",
 		"%{prj.name}/vendor/spdlog/include",
 		"%{IncludeDir.GLFW}",
+		"%{IncludeDir.Box2D}",
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.glm}",
@@ -63,6 +65,7 @@ project "Gart"
 	links
 	{
 		"GLFW",
+		"Box2D",
 		"Glad",
 		"imgui",
 		"yaml-cpp",

@@ -234,16 +234,40 @@ namespace Gart
 
 			if (ImGui::BeginPopup("AddComponent"))
 			{
-				if (ImGui::MenuItem("Camera"))
+				if (!m_SelectedEntity.HasComponent<CameraComponent>())
 				{
-					m_SelectedEntity.AddComponent<CameraComponent>();
-					ImGui::CloseCurrentPopup();
+					if (ImGui::MenuItem("Camera"))
+					{
+						m_SelectedEntity.AddComponent<CameraComponent>();
+						ImGui::CloseCurrentPopup();
+					}
+				}
+				
+				if (!m_SelectedEntity.HasComponent<SpriteRenderer>())
+				{
+					if (ImGui::MenuItem("Sprite Renderer"))
+					{
+						m_SelectedEntity.AddComponent<SpriteRenderer>();
+						ImGui::CloseCurrentPopup();
+					}
+				}
+				
+				if (!m_SelectedEntity.HasComponent<RigidBody2DComponent>())
+				{
+					if (ImGui::MenuItem("RigidBody 2D"))
+					{
+						m_SelectedEntity.AddComponent<RigidBody2DComponent>();
+						ImGui::CloseCurrentPopup();
+					}
 				}
 
-				if (ImGui::MenuItem("Sprite Renderer"))
+				if (!m_SelectedEntity.HasComponent<BoxCollider2DComponent>())
 				{
-					m_SelectedEntity.AddComponent<SpriteRenderer>();
-					ImGui::CloseCurrentPopup();
+					if (ImGui::MenuItem("Box Collider 2D"))
+					{
+						m_SelectedEntity.AddComponent<BoxCollider2DComponent>();
+						ImGui::CloseCurrentPopup();
+					}
 				}
 
 				ImGui::EndPopup();
@@ -344,6 +368,45 @@ namespace Gart
 
 				ImGui::DragFloat("TillingFactor", &component.TillingFactor, 0.1, 0.0, 100.0);
 		});	
+
+		DrawComponent<RigidBody2DComponent>("RigidBody 2D", true, entity, [](auto& component)
+		{
+
+				const char* BodyTypeString[] = { "Static","Dynamic","kinematic"};
+				const char* currentBodyTypeString = BodyTypeString[(int)component.Type];
+
+				if (ImGui::BeginCombo("Body Type", currentBodyTypeString))
+				{
+					for (int i = 0; i < 3; i++)
+					{
+						bool IsSelected = currentBodyTypeString == BodyTypeString[i];
+						if (ImGui::Selectable(BodyTypeString[i], IsSelected))
+						{
+							currentBodyTypeString = BodyTypeString[i];
+							component.Type = (RigidBody2DComponent::BodyType)i;
+						}
+
+						if (IsSelected)
+							ImGui::SetItemDefaultFocus();
+					}
+					ImGui::EndCombo();
+				}
+
+
+				ImGui::Checkbox("Fixed Rotation", &component.FixedRotation);
+		});
+
+
+		DrawComponent<BoxCollider2DComponent>("Box Collider 2D", true, entity, [](auto& component)
+			{
+
+				ImGui::DragFloat2("Offset", glm::value_ptr(component.Offset));
+				ImGui::DragFloat2("Size", glm::value_ptr(component.Size));
+				ImGui::DragFloat("Density", &component.Density, 0.01, 0.0, 1.0);
+				ImGui::DragFloat("Friction", &component.Friction, 0.01, 0.0, 1.0);
+				ImGui::DragFloat("Restitution", &component.Restitution, 0.01, 0.0, 1.0);
+				ImGui::DragFloat("Restitution ThreshHold", &component.RestitutionThreshHold, 0.01, 0.0);
+			});
 
 	}
 	void SceneHeirarchyPanel::SetSelectedEntity(Entity& entity)
