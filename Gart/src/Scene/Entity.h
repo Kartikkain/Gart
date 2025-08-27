@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Scene.h"
-
+#include "Core/UUID.h"
+#include "Scene/Components.h"
 #include "entt.hpp"
 
 namespace Gart
@@ -38,6 +39,7 @@ namespace Gart
 			m_Scene->m_Registery.remove<T>(m_EntityHandler);
 		}
 
+		UUID GetUUID() { return GetComponent<IDComponent>().m_ID; }
 		operator bool() const { return m_EntityHandler != entt::null; }
 
 		operator entt::entity() const { return m_EntityHandler; }

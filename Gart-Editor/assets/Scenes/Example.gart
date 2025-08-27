@@ -1,24 +1,24 @@
 Scene: Untitled
 Entities:
-  - Entity: 12223144324345
+  - Entity: 18318463472529034221
     TagComponent:
-      Tag: Clipping-Space Camera
+      Tag: Square
     TransformComponent:
       Position: [0, 0, 0]
       Rotation: [0, 0, 0]
       Scale: [1.00999999, 1, 1]
-    CameraComponent:
-      Camera:
-        ProjetionType: 1
-        PerspectiveFOV: 0.785398185
-        PerspectiveNearClip: 0.00999999978
-        PerspectiveFarClip: 1000
-        OrthographicSize: 10
-        OrthographicNearClip: -1
-        OrthographicFarClip: 1
-      Primary: true
-      FixedAspectRatio: false
-  - Entity: 12223144324345
+    SpriteRenderer:
+      Color: [1, 0, 0, 1]
+  - Entity: 10864214884317716434
+    TagComponent:
+      Tag: Green Square
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1.00999999, 1, 1]
+    SpriteRenderer:
+      Color: [0, 1, 0, 1]
+  - Entity: 12096394236950700426
     TagComponent:
       Tag: Main Camera
     TransformComponent:
@@ -36,22 +36,21 @@ Entities:
         OrthographicFarClip: 1
       Primary: true
       FixedAspectRatio: false
-  - Entity: 12223144324345
+  - Entity: 634750856070957666
     TagComponent:
-      Tag: Green Square
+      Tag: Clipping-Space Camera
     TransformComponent:
       Position: [0, 0, 0]
       Rotation: [0, 0, 0]
       Scale: [1.00999999, 1, 1]
-    SpriteRenderer:
-      Color: [0, 1, 0, 1]
-  - Entity: 12223144324345
-    TagComponent:
-      Tag: Square
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1.00999999, 1, 1]
-    SpriteRenderer:
-      Color: [1, 0, 0, 1]
-  
+    CameraComponent:
+      Camera:
+        ProjetionType: 1
+        PerspectiveFOV: 0.785398185
+        PerspectiveNearClip: 0.00999999978
+        PerspectiveFarClip: 1000
+        OrthographicSize: 10
+        OrthographicNearClip: -1
+        OrthographicFarClip: 1
+      Primary: true
+      FixedAspectRatio: false

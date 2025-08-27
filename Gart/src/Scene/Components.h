@@ -2,11 +2,20 @@
 #include<glm/glm.hpp>
 #include "Renderer/Camera.h"
 #include "SceneCamera.h"
-#include "ScriptableEntity.h"
 #include "Renderer/Texture.h"
+#include "Core/UUID.h"
 #include <glm/gtc/matrix_transform.hpp>
 namespace Gart
 {
+
+	struct IDComponent
+	{
+		UUID m_ID;
+
+		IDComponent() = default;
+
+		IDComponent(const IDComponent&) = default;
+	};
 
 	struct TagComponent
 	{
@@ -63,6 +72,8 @@ namespace Gart
 		CameraComponent(const CameraComponent&) = default;
 		
 	};
+
+	class ScriptableEntity;
 
 	struct NativeScriptComponent {
 

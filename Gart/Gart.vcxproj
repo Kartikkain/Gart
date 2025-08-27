@@ -157,6 +157,7 @@
     <ClInclude Include="src\Core\MouseButtonCodes.h" />
     <ClInclude Include="src\Core\TimeStep.h" />
     <ClInclude Include="src\Core\Timer.h" />
+    <ClInclude Include="src\Core\UUID.h" />
     <ClInclude Include="src\Core\Window.h" />
     <ClInclude Include="src\Debug\Instrumentor.h" />
     <ClInclude Include="src\Events\ApplicationEvent.h" />
@@ -623,6 +624,7 @@
     <ClCompile Include="src\Core\Layer.cpp" />
     <ClCompile Include="src\Core\LayerStack.cpp" />
     <ClCompile Include="src\Core\Log.cpp" />
+    <ClCompile Include="src\Core\UUID.cpp" />
     <ClCompile Include="src\Math\Math.cpp" />
     <ClCompile Include="src\Platform\OpenGl\OpenGLShader.cpp" />
     <ClCompile Include="src\Platform\OpenGl\OpenGlBuffer.cpp" />

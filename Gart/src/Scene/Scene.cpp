@@ -3,6 +3,7 @@
 #include "Components.h"
 #include "Renderer/Renderer2D.h"
 #include "Entity.h"
+#include "ScriptableEntity.h"
 #include "box2d/b2_world.h"
 #include "box2d/b2_body.h"
 #include "box2d/b2_fixture.h"
@@ -32,7 +33,13 @@ namespace Gart
 	}
 	Entity Scene::CreateEntity(const std::string& name)
 	{
+		return CreateEntityWithUUID(UUID(), name);
+	}
+
+	Entity Scene::CreateEntityWithUUID(UUID uuid, const std::string& name)
+	{
 		Entity entity = { m_Registery.create(), this };
+		entity.AddComponent<IDComponent>(uuid);
 		entity.AddComponent<TransformComponent>();
 		auto& tag = entity.AddComponent<TagComponent>();
 		tag.m_Tag = name.empty() ? "Entity" : name;
@@ -214,6 +221,12 @@ namespace Gart
 	void Scene::OnComponentAdded(Entity entity, T& component)
 	{
 		static_assert(false);
+	}
+
+	template<>
+	void Scene::OnComponentAdded<IDComponent>(Entity entity, IDComponent& component)
+	{
+
 	}
 
 	template<>
