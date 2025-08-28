@@ -51,6 +51,60 @@ namespace Gart
 		m_Registery.destroy(entity);
 	}
 
+	template<typename component>
+	static void CopyComponent(entt::registry& src, entt::registry& dst, const std::unordered_map<UUID, entt::entity>& enttMap)
+	{
+		auto view = src.view<component>();
+
+		for (auto e : view)
+		{
+			UUID uuid = src.get<IDComponent>(e).m_ID;
+
+			entt::entity dstEntity = enttMap.at(uuid);
+
+			auto& Component = src.get<component>(e);
+			dst.emplace_or_replace<component>(dstEntity, Component);
+		}
+	}
+
+	template<typename component>
+	static void CopyComponentIfExist(Entity src, Entity dst)
+	{
+		if (src.HasComponent<component>())
+			dst.AddOrReplaceComponent<component>(src.GetComponent<component>());
+	}
+	Ref<Scene> Scene::Copy(Ref<Scene> other)
+	{
+		Ref<Scene> newScene = std::make_shared<Scene>();
+
+		newScene->m_ViewportWidth = other->m_ViewportWidth;
+		newScene->m_ViewportHeight = other->m_ViewportHeight;
+
+		std::unordered_map<UUID, entt::entity> enttMap;
+
+		auto& srcSceneRegistery = other->m_Registery;
+		auto& dstSceneRegistery = newScene->m_Registery;
+		auto view = srcSceneRegistery.view<IDComponent>();
+
+		for (auto e : view)
+		{
+			UUID uuid = srcSceneRegistery.get<IDComponent>(e).m_ID;
+			std::string name = srcSceneRegistery.get<TagComponent>(e).m_Tag;
+
+			Entity l_entity = newScene->CreateEntityWithUUID(uuid, name);
+			enttMap[uuid] = (entt::entity)l_entity;
+		}
+
+		CopyComponent<TransformComponent>(srcSceneRegistery, dstSceneRegistery, enttMap);
+		CopyComponent<SpriteRenderer>(srcSceneRegistery, dstSceneRegistery, enttMap);
+		CopyComponent<CameraComponent>(srcSceneRegistery, dstSceneRegistery, enttMap);
+		CopyComponent<NativeScriptComponent>(srcSceneRegistery, dstSceneRegistery, enttMap);
+		CopyComponent<RigidBody2DComponent>(srcSceneRegistery, dstSceneRegistery, enttMap);
+		CopyComponent<BoxCollider2DComponent>(srcSceneRegistery, dstSceneRegistery, enttMap);
+
+		return newScene;
+	}
+
 	void Scene::OnRuntimeStart()
 	{
 		m_PhysicsWorld = new b2World({ 0.0f,-9.8f });
@@ -201,6 +255,19 @@ namespace Gart
 				cameraComponent.camera.SetViewportSize(width, height);
 			}
 		}
+	}
+
+	void Scene::DuplicateEntity(Entity entity)
+	{
+		std::string entityName = entity.GetName();
+		Entity newEntity = CreateEntity(entityName);
+
+		CopyComponentIfExist<TransformComponent>(entity,newEntity);
+		CopyComponentIfExist<SpriteRenderer>(entity, newEntity);
+		CopyComponentIfExist<CameraComponent>(entity, newEntity);
+		CopyComponentIfExist<NativeScriptComponent>(entity, newEntity);
+		CopyComponentIfExist<RigidBody2DComponent>(entity, newEntity);
+		CopyComponentIfExist<BoxCollider2DComponent>(entity, newEntity);
 	}
 
 	Entity Scene::GetPrimaryCamera()

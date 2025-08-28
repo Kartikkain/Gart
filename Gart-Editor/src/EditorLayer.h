@@ -27,15 +27,21 @@ namespace Gart
 		void NewScene();
 		void SaveScene();
 
+		void SaveS();
+
+		void SerializeScene(Ref<Scene> scene, const std::filesystem::path& filepath);
 		void OnScreenPlay();
 
 		void OnScreenStop();
 
+		void OnDuplicateEntity();
 		void UI_Toolbar();
 	private:
 		Gart::OrthoGraphicCameraController m_OrthoCamera;
 		Gart::EditorCamera m_EditorCamera;
+		std::filesystem::path m_EditorScenePath;
 		Ref<Scene> m_ActiveScene;
+		Ref<Scene> m_EditorScene;
 		Entity m_SquareEntity;
 		Entity m_SquareEntityGreen;
 		Entity m_CameraComponent;

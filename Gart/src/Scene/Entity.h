@@ -27,6 +27,14 @@ namespace Gart
 			return component;
 		}
 
+		template<typename T, typename... Args>
+		T& AddOrReplaceComponent(Args&&... args)
+		{
+			T& component = m_Scene->m_Registery.emplace_or_replace<T>(m_EntityHandler, std::forward<Args>(args)...);
+			m_Scene->OnComponentAdded<T>(*this, component);
+			return component;
+		}
+
 		template<typename T>
 		T& GetComponent()
 		{
@@ -40,6 +48,7 @@ namespace Gart
 		}
 
 		UUID GetUUID() { return GetComponent<IDComponent>().m_ID; }
+		const std::string GetName() { return GetComponent<TagComponent>().m_Tag; }
 		operator bool() const { return m_EntityHandler != entt::null; }
 
 		operator entt::entity() const { return m_EntityHandler; }

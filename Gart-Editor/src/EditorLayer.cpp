@@ -457,6 +457,11 @@ namespace Gart
 		case BSS_KEY_S:
 			
 			if (control && shift) SaveScene();
+			else if (control) SaveS();
+			break;
+
+		case BSS_KEY_D:
+			if (control) OnDuplicateEntity();
 			break;
 
 		case BSS_KEY_Q:
@@ -509,14 +514,21 @@ namespace Gart
 
 	void EditorLayer::OpenScene(const std::filesystem::path& filepath)
 	{
-		if (!filepath.empty())
-		{
-			m_ActiveScene = std::make_shared<Scene>();
-			m_ActiveScene->OnViewportResize((uint32_t)m_ViewPortSize.x, (uint32_t)m_ViewPortSize.y);
-			m_HierarchyPanel.SetContext(m_ActiveScene);
+		if (m_SceneState != SceneState::Edit)
+			OnScreenStop();
 
-			SceneSerialization l_Serializer(m_ActiveScene);
-			l_Serializer.DeSerialize(filepath.string());
+		Ref<Scene> newScene = std::make_shared<Scene>();
+		SceneSerialization serializer(newScene);
+
+		if (serializer.DeSerialize(filepath.string()))
+		{
+			m_EditorScene = newScene;
+			m_EditorScene->OnViewportResize((uint32_t)m_ViewPortSize.x, (uint32_t)m_ViewPortSize.y);
+			m_ActiveScene = m_EditorScene;
+			m_HierarchyPanel.SetContext(m_ActiveScene);
+			m_EditorScenePath = filepath;
+			//SceneSerialization l_Serializer(m_ActiveScene);
+			//l_Serializer.DeSerialize(filepath.string());
 		}
 	}
 
@@ -525,6 +537,8 @@ namespace Gart
 		m_ActiveScene = std::make_shared<Scene>();
 		m_ActiveScene->OnViewportResize((uint32_t)m_ViewPortSize.x, (uint32_t)m_ViewPortSize.y);
 		m_HierarchyPanel.SetContext(m_ActiveScene);
+
+		m_EditorScenePath = std::filesystem::path();
 	}
 
 	void EditorLayer::SaveScene()
@@ -532,22 +546,55 @@ namespace Gart
 		std::string filepath = FileDialogs::SaveFile("Gart Scenes (*.gart)\0*.gart\0");
 		if (!filepath.empty())
 		{
-			SceneSerialization l_Serializer(m_ActiveScene);
-			l_Serializer.Serialize(filepath);
+			
+			m_EditorScenePath = filepath;
+			SerializeScene(m_ActiveScene, m_EditorScenePath);
 		}
+	}
+
+	void EditorLayer::SaveS()
+	{
+		if (!m_EditorScenePath.empty())
+		{
+			SerializeScene(m_ActiveScene, m_EditorScenePath);
+		}
+		else SaveScene();
+	}
+
+	void EditorLayer::SerializeScene(Ref<Scene> scene, const std::filesystem::path& filepath)
+	{
+		SceneSerialization l_Serializer(scene);
+		l_Serializer.Serialize(filepath.string());
 	}
 
 	void EditorLayer::OnScreenPlay()
 	{
-		m_ActiveScene->OnRuntimeStart();
 		m_SceneState = SceneState::Play;
+		m_ActiveScene = Scene::Copy(m_EditorScene);
+		m_ActiveScene->OnRuntimeStart();
+		
 	}
 
 	void EditorLayer::OnScreenStop()
 	{
-		m_ActiveScene->OnRuntimeStop();
 		m_SceneState = SceneState::Edit;
+		m_ActiveScene->OnRuntimeStop();
+		m_ActiveScene = m_EditorScene;
 	}
+
+	void EditorLayer::OnDuplicateEntity()
+	{
+		if (m_SceneState != SceneState::Edit) return;
+
+		Entity selectedEntity = m_HierarchyPanel.GetSelectedEntity();
+
+		if (selectedEntity)
+		{
+		  m_EditorScene->DuplicateEntity(selectedEntity);
+		}
+	}
+
+
 
 	void EditorLayer::UI_Toolbar()
 	{

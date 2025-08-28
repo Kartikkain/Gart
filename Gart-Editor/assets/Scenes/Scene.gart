@@ -1,10 +1,29 @@
 Scene: Untitled
 Entities:
-  - Entity: 1115797879137429183
+  - Entity: 6053261642336665199
     TagComponent:
       Tag: Ground
     TransformComponent:
-      Position: [0, -3.5, 0]
+      Position: [-7.95336246, -4.76102209, 0]
+      Rotation: [0, 0, 0]
+      Scale: [13.8100004, 1, 1]
+    SpriteRenderer:
+      Color: [1, 1, 1, 1]
+    RigidBody2DComponent:
+      BodyType: Static
+      FixedRotation: false
+    BoxCollider2DComponent:
+      Offset: [0, 0]
+      Size: [0.5, 0.5]
+      Density: 1
+      Friction: 0.5
+      Restitution: 0
+      RestitutionThreshHold: 0.5
+  - Entity: 1115797879137429183
+    TagComponent:
+      Tag: GroundG
+    TransformComponent:
+      Position: [0, -14.7690935, 0]
       Rotation: [0, 0, 0]
       Scale: [13.8100004, 1, 1]
     SpriteRenderer:
@@ -56,3 +75,22 @@ Entities:
         OrthographicFarClip: 1
       Primary: true
       FixedAspectRatio: false
+  - Entity: 15930859019182637460
+    TagComponent:
+      Tag: Ground1
+    TransformComponent:
+      Position: [-35.2659264, -7.98578691, 0]
+      Rotation: [0, 0, 0]
+      Scale: [13.8100004, 1, 1]
+    SpriteRenderer:
+      Color: [1, 0, 0, 1]
+    RigidBody2DComponent:
+      BodyType: Static
+      FixedRotation: false
+    BoxCollider2DComponent:
+      Offset: [0, 0]
+      Size: [0.5, 0.5]
+      Density: 1
+      Friction: 0.5
+      Restitution: 0
+      RestitutionThreshHold: 0.5

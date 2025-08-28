@@ -20,13 +20,14 @@ namespace Gart
 			Entity CreateEntityWithUUID(UUID uuid,const std::string& name = std::string());
 			void DestroyEntity(Entity entity);
 			/*entt::registry& GetReg() { return m_Registery; }*/
-
+			static Ref<Scene> Copy(Ref<Scene> other);
 			void OnRuntimeStart();
 			void OnRuntimeStop();
 			void OnUpdateEditor(TimeStep ts,const EditorCamera& camera);
 			void OnUpdateRuntime(TimeStep ts);
 			void OnViewportResize(uint32_t width, uint32_t height);
-
+			
+			void DuplicateEntity(Entity entity);
 			Entity GetPrimaryCamera();
 	
 		private:
