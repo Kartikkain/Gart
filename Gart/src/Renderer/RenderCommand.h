@@ -30,6 +30,16 @@ namespace Gart
 			s_RendererAPI->DrawIndexed(vertexArray,count);
 		}
 
+		inline static void DrawLine(const std::shared_ptr<VertexArray>& vertexArray, uint32_t count = 0)
+		{
+			s_RendererAPI->DrawLine(vertexArray, count);
+		}
+
+		inline static void SetLineThickness(float width)
+		{
+			s_RendererAPI->SetLineThickness(width);
+		}
+
 	private:
 		static RendererAPI* s_RendererAPI;
 	};

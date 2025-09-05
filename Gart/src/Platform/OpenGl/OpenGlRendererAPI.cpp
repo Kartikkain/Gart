@@ -6,6 +6,7 @@ namespace Gart
 	void OpenGlRendererAPI::Init()
 	{
 		glEnable(GL_BLEND);
+		glEnable(GL_LINE_SMOOTH);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 	void OpenGlRendererAPI::SetClearColor(const glm::vec4& color)
@@ -29,6 +30,17 @@ namespace Gart
 		uint32_t l_count = count ? vertexArray->GetIndexBuffer()->GetCount() : count;
 		glDrawElements(GL_TRIANGLES, l_count, GL_UNSIGNED_INT, nullptr);
 		//glBindTexture(GL_TEXTURE_2D, 0);
+	}
+
+	void OpenGlRendererAPI::DrawLine(const std::shared_ptr<VertexArray>& vertexArray, uint32_t count)
+	{
+		vertexArray->Bind();
+		glDrawArrays(GL_LINES, 0, count);
+	}
+
+	void OpenGlRendererAPI::SetLineThickness(float width)
+	{
+		glLineWidth(width);
 	}
 
 }

@@ -244,6 +244,7 @@ namespace Gart
 		{
 			auto [transform, sprite] = group.get<TransformComponent, SpriteRenderer>(entity);
 			Renderer2D::DrawSprite(transform.GetTransform(), sprite, (int)entity);
+			
 		}
 
 		auto view = m_Registery.view<TransformComponent, CircleRendererComponent>();
@@ -252,6 +253,9 @@ namespace Gart
 			auto [transform, circle] = view.get<TransformComponent, CircleRendererComponent>(entity);
 			Renderer2D::DrawCircle(transform.GetTransform(), circle.Color, circle.Thickness, circle.Fade, (int)entity);
 		}
+
+		
+
 		Renderer2D::EndScene();
 	}
 

@@ -31,6 +31,15 @@ namespace Gart
 		int EntityID;
 	};
 
+	struct LineVertex
+	{
+		glm::vec3 Position;
+		glm::vec4 Color;
+		
+		// Editor Only
+		int EntityID;
+	};
+
 	struct Renderer2DStorage
 	{
 		static const uint32_t MaxQuads = 1000;
@@ -46,6 +55,10 @@ namespace Gart
 		Ref<VertexBuffer> CircleVertexBuffer;
 		Ref<Shader> CircleShader;
 
+		Ref<VertexArray> LineVertexArray;
+		Ref<VertexBuffer> LineVertexBuffer;
+		Ref<Shader> LineShader;
+
 		Ref<Texture2D> WhiteTexture;
 
 
@@ -56,6 +69,12 @@ namespace Gart
 		uint32_t CircleindexCount = 0;
 		CircleVertex* CircleVertexBufferBase = nullptr;
 		CircleVertex* CircleVertexBufferPtr = nullptr;
+
+		uint32_t LineindexCount = 0;
+		LineVertex* LineVertexBufferBase = nullptr;
+		LineVertex* LineVertexBufferPtr = nullptr;
+		float LineWidth = 2.0f;
+
 
 		std::array<Ref<Texture2D>, MaxTexureSlots> TextureSlots;
 		uint32_t TextureSlotIndex = 1;
@@ -150,6 +169,20 @@ namespace Gart
 		s_Data.CircleVertexArray->SetIndexBuffer(m_IndexBuffer);
 		s_Data.CircleVertexBufferBase = new CircleVertex[s_Data.MaxIndices];
 
+		//Line
+
+		s_Data.LineVertexArray = VertexArray::Create();
+		s_Data.LineVertexBuffer.reset(VertexBuffer::Create(s_Data.MaxVertices * sizeof(LineVertex)));
+
+		s_Data.LineVertexBuffer->SetLayout({
+			{Gart::ShaderDataType::Float3, "a_Position"},
+			{Gart::ShaderDataType::Float4, "a_Color"},
+			{Gart::ShaderDataType::Int, "a_EntityID"}
+			});
+
+		s_Data.LineVertexArray->AddVertexBuffer(s_Data.LineVertexBuffer);
+		s_Data.LineVertexBufferBase = new LineVertex[s_Data.MaxIndices];
+
 
 		int32_t samplers[s_Data.MaxTexureSlots];
 		for (uint32_t i = 0; i < s_Data.MaxTexureSlots; i++)
@@ -157,6 +190,8 @@ namespace Gart
 		s_Data.TextureShader = Shader::Create("assets/shaders/Texture.glsl");
 		
 		s_Data.CircleShader = Shader::Create("assets/shaders/Circle2D.glsl");
+
+		s_Data.LineShader = Shader::Create("assets/shaders/Line.glsl");
 
 		s_Data.WhiteTexture = Texture2D::Create(1, 1);
 		uint32_t whitetexturedata = 0xffffffff;
@@ -244,6 +279,17 @@ namespace Gart
 
 			s_Data.CircleShader->Bind();
 			RenderCommand::DrawIndexed(s_Data.CircleVertexArray, s_Data.CircleindexCount);
+			s_Data.Stats.DrawCalls++;
+		}
+
+		if (s_Data.LineindexCount)
+		{
+			uint32_t datasize = (uint8_t*)s_Data.LineVertexBufferPtr - (uint8_t*)s_Data.LineVertexBufferBase;
+			s_Data.LineVertexBuffer->SetData(s_Data.LineVertexBufferBase, datasize);
+
+			s_Data.LineShader->Bind();
+			RenderCommand::SetLineThickness(s_Data.LineWidth);
+			RenderCommand::DrawLine(s_Data.LineVertexArray, s_Data.LineindexCount);
 			s_Data.Stats.DrawCalls++;
 		}
 	}
@@ -774,6 +820,44 @@ namespace Gart
 		s_Data.Stats.QuadCounts++;
 	}
 
+
+	void Renderer2D::DrawLine(const glm::vec3& p0, const glm::vec3& p1, const glm::vec4& color, int entityID)
+	{
+		s_Data.LineVertexBufferPtr->Position = p0;
+		s_Data.LineVertexBufferPtr->Color = color;
+		s_Data.LineVertexBufferPtr->EntityID = entityID;
+		s_Data.LineVertexBufferPtr++;
+
+		s_Data.LineVertexBufferPtr->Position = p1;
+		s_Data.LineVertexBufferPtr->Color = color;
+		s_Data.LineVertexBufferPtr->EntityID = entityID;
+		s_Data.LineVertexBufferPtr++;
+
+		s_Data.LineindexCount += 2;
+
+	}
+
+	void Renderer2D::DrawRect(const glm::mat4& transform, const glm::vec4& color, int entityID)
+	{
+		glm::vec3 Linevertices[4];
+
+		for (size_t i = 0; i < 4; i++)
+			Linevertices[i] = transform * s_Data.QuadVertexPosition[i];
+		DrawLine(Linevertices[0], Linevertices[1], color);
+		DrawLine(Linevertices[1], Linevertices[2], color);
+		DrawLine(Linevertices[2], Linevertices[3], color);
+		DrawLine(Linevertices[3], Linevertices[0], color);
+	}
+
+	float Renderer2D::GetLineWidth()
+	{
+		return s_Data.LineWidth;
+	}
+
+	void Renderer2D::SetLineWidth(float width)
+	{
+		s_Data.LineWidth = width;
+	}
 	void Renderer2D::ResetStats()
 	{
 		memset(&s_Data.Stats, 0, sizeof(Renderer2D::Statistics));
@@ -799,5 +883,8 @@ namespace Gart
 
 		s_Data.CircleindexCount = 0;
 		s_Data.CircleVertexBufferPtr = s_Data.CircleVertexBufferBase;
+
+		s_Data.LineindexCount = 0;
+		s_Data.LineVertexBufferPtr = s_Data.LineVertexBufferBase;
 	}
 }

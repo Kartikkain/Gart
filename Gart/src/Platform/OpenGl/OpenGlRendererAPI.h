@@ -12,5 +12,8 @@ namespace Gart
 		virtual void Clear() override;
 
 		virtual void DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray, uint32_t count = 0) override;
+		virtual void DrawLine(const std::shared_ptr<VertexArray>& vertexArray, uint32_t count = 0) override;
+		
+		virtual void SetLineThickness(float width) override;
 	};
 }
