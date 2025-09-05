@@ -270,6 +270,15 @@ namespace Gart
 					}
 				}
 
+				if (!m_SelectedEntity.HasComponent<CircleRendererComponent>())
+				{
+					if (ImGui::MenuItem("Circle Renderer"))
+					{
+						m_SelectedEntity.AddComponent<CircleRendererComponent>();
+						ImGui::CloseCurrentPopup();
+					}
+				}
+
 				ImGui::EndPopup();
 
 			}
@@ -406,6 +415,16 @@ namespace Gart
 				ImGui::DragFloat("Friction", &component.Friction, 0.01, 0.0, 1.0);
 				ImGui::DragFloat("Restitution", &component.Restitution, 0.01, 0.0, 1.0);
 				ImGui::DragFloat("Restitution ThreshHold", &component.RestitutionThreshHold, 0.01, 0.0);
+			});
+
+
+		DrawComponent<CircleRendererComponent>("Circle Renderer", true, entity, [](auto& component)
+			{
+
+				ImGui::ColorEdit4("Color", glm::value_ptr(component.Color));
+				ImGui::DragFloat("Thickness", &component.Thickness, 0.025f, 0.0, 1.0);
+				ImGui::DragFloat("Fade", &component.Fade, 0.00025f, 0.0, 1.0);
+				
 			});
 
 	}

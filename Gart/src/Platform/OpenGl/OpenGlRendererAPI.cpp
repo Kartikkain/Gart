@@ -25,9 +25,10 @@ namespace Gart
 
 	void OpenGlRendererAPI::DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray, uint32_t count)
 	{
+		vertexArray->Bind();
 		uint32_t l_count = count ? vertexArray->GetIndexBuffer()->GetCount() : count;
 		glDrawElements(GL_TRIANGLES, l_count, GL_UNSIGNED_INT, nullptr);
-		glBindTexture(GL_TEXTURE_2D, 0);
+		//glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
 }

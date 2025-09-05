@@ -108,6 +108,17 @@ namespace Gart
 
 	};
 
+	struct CircleRendererComponent
+	{
+		glm::vec4 Color{ 1,1,1,1 };
+		float Radius = 0.5f;
+		float Fade = 0.005f;
+		float Thickness = 1.0f;
+
+		CircleRendererComponent() = default;
+		CircleRendererComponent(const CircleRendererComponent&) = default;
+	};
+
 	struct BoxCollider2DComponent
 	{
 		glm::vec2 Offset = { 0.0f,0.0f };

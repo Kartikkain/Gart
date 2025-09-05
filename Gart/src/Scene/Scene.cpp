@@ -98,6 +98,7 @@ namespace Gart
 		CopyComponent<TransformComponent>(srcSceneRegistery, dstSceneRegistery, enttMap);
 		CopyComponent<SpriteRenderer>(srcSceneRegistery, dstSceneRegistery, enttMap);
 		CopyComponent<CameraComponent>(srcSceneRegistery, dstSceneRegistery, enttMap);
+		CopyComponent<CircleRendererComponent>(srcSceneRegistery, dstSceneRegistery, enttMap);
 		CopyComponent<NativeScriptComponent>(srcSceneRegistery, dstSceneRegistery, enttMap);
 		CopyComponent<RigidBody2DComponent>(srcSceneRegistery, dstSceneRegistery, enttMap);
 		CopyComponent<BoxCollider2DComponent>(srcSceneRegistery, dstSceneRegistery, enttMap);
@@ -224,6 +225,13 @@ namespace Gart
 				auto [transform, sprite] = group.get<TransformComponent, SpriteRenderer>(entity);
 				Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color);
 			}
+
+			auto view = m_Registery.view<TransformComponent, CircleRendererComponent>();
+			for (auto entity : view)
+			{
+				auto [transform, circle] = view.get<TransformComponent, CircleRendererComponent>(entity);
+				Renderer2D::DrawCircle(transform.GetTransform(), circle.Color, circle.Thickness, circle.Fade, (int)entity);
+			}
 			Renderer2D::EndScene();
 		}
 	}
@@ -236,6 +244,13 @@ namespace Gart
 		{
 			auto [transform, sprite] = group.get<TransformComponent, SpriteRenderer>(entity);
 			Renderer2D::DrawSprite(transform.GetTransform(), sprite, (int)entity);
+		}
+
+		auto view = m_Registery.view<TransformComponent, CircleRendererComponent>();
+		for (auto entity : view)
+		{
+			auto [transform, circle] = view.get<TransformComponent, CircleRendererComponent>(entity);
+			Renderer2D::DrawCircle(transform.GetTransform(), circle.Color, circle.Thickness, circle.Fade, (int)entity);
 		}
 		Renderer2D::EndScene();
 	}
@@ -265,6 +280,7 @@ namespace Gart
 		CopyComponentIfExist<TransformComponent>(entity,newEntity);
 		CopyComponentIfExist<SpriteRenderer>(entity, newEntity);
 		CopyComponentIfExist<CameraComponent>(entity, newEntity);
+		CopyComponentIfExist<CircleRendererComponent>(entity, newEntity);
 		CopyComponentIfExist<NativeScriptComponent>(entity, newEntity);
 		CopyComponentIfExist<RigidBody2DComponent>(entity, newEntity);
 		CopyComponentIfExist<BoxCollider2DComponent>(entity, newEntity);
@@ -335,6 +351,12 @@ namespace Gart
 
 	template<>
 	void Scene::OnComponentAdded<BoxCollider2DComponent>(Entity entity, BoxCollider2DComponent& component)
+	{
+
+	}
+
+	template<>
+	void Scene::OnComponentAdded<CircleRendererComponent>(Entity entity, CircleRendererComponent& component)
 	{
 
 	}

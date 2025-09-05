@@ -20,6 +20,17 @@ namespace Gart
 		int EntityID;
 	};
 
+	struct CircleVertex
+	{
+		glm::vec3 WorldPosition;
+		glm::vec3 LocalPosition;
+		glm::vec4 Color;
+		float Thickness;
+		float Fade;
+		// Editor Only
+		int EntityID;
+	};
+
 	struct Renderer2DStorage
 	{
 		static const uint32_t MaxQuads = 1000;
@@ -30,11 +41,21 @@ namespace Gart
 		Ref<VertexArray> QuadVertexArray;
 		Ref<VertexBuffer> QuadVertexBuffer;
 		Ref<Shader> TextureShader;
+
+		Ref<VertexArray> CircleVertexArray;
+		Ref<VertexBuffer> CircleVertexBuffer;
+		Ref<Shader> CircleShader;
+
 		Ref<Texture2D> WhiteTexture;
+
 
 		uint32_t QuadindexCount = 0;
 		QuadVertex* QuadVertexBufferBase = nullptr;
 		QuadVertex* QuadVertexBufferPtr = nullptr;
+
+		uint32_t CircleindexCount = 0;
+		CircleVertex* CircleVertexBufferBase = nullptr;
+		CircleVertex* CircleVertexBufferPtr = nullptr;
 
 		std::array<Ref<Texture2D>, MaxTexureSlots> TextureSlots;
 		uint32_t TextureSlotIndex = 1;
@@ -109,14 +130,33 @@ namespace Gart
 		m_IndexBuffer.reset(IndexBuffer::Create(quadIndicies, s_Data.MaxIndices ));
 		s_Data.QuadVertexArray->SetIndexBuffer(m_IndexBuffer);
 		delete[] quadIndicies;
-		//auto m_Shader = m_shadeLibrary.Load("assets/shaders/Texture.glsl");
+		
+
+		//Circle
+
+		s_Data.CircleVertexArray = VertexArray::Create();
+		s_Data.CircleVertexBuffer.reset(VertexBuffer::Create(s_Data.MaxVertices * sizeof(CircleVertex)));
+
+		s_Data.CircleVertexBuffer->SetLayout({
+			{Gart::ShaderDataType::Float3, "a_WorldPosition"},
+			{Gart::ShaderDataType::Float3, "a_LocalPosition"},
+			{Gart::ShaderDataType::Float4, "a_Color"},
+			{Gart::ShaderDataType::Float, "a_Thickness"},
+			{Gart::ShaderDataType::Float, "a_Fade"},
+			{Gart::ShaderDataType::Int, "a_EntityID"}
+			});
+
+		s_Data.CircleVertexArray->AddVertexBuffer(s_Data.CircleVertexBuffer);
+		s_Data.CircleVertexArray->SetIndexBuffer(m_IndexBuffer);
+		s_Data.CircleVertexBufferBase = new CircleVertex[s_Data.MaxIndices];
+
 
 		int32_t samplers[s_Data.MaxTexureSlots];
 		for (uint32_t i = 0; i < s_Data.MaxTexureSlots; i++)
 			samplers[i] = i;
 		s_Data.TextureShader = Shader::Create("assets/shaders/Texture.glsl");
-		/*s_Data.TextureShader->Bind();
-		s_Data.TextureShader->SetIntArray("u_Texture",samplers,s_Data.MaxTexureSlots);*/
+		
+		s_Data.CircleShader = Shader::Create("assets/shaders/Circle2D.glsl");
 
 		s_Data.WhiteTexture = Texture2D::Create(1, 1);
 		uint32_t whitetexturedata = 0xffffffff;
@@ -176,21 +216,36 @@ namespace Gart
 	void Renderer2D::EndScene()
 	{
 		GART_PROFILE_FUNCTION();
-		uint32_t datasize = (uint8_t*)s_Data.QuadVertexBufferPtr - (uint8_t*)s_Data.QuadVertexBufferBase;
-		s_Data.QuadVertexBuffer->SetData(s_Data.QuadVertexBufferBase, datasize);
+
 		Flush();
 	}
 
 	void Renderer2D::Flush()
 	{ 
-		for (uint32_t i = 0; i < s_Data.TextureSlotIndex; i++)
+		if (s_Data.QuadindexCount)
 		{
-			s_Data.TextureSlots[i]->Bind(i);
+			uint32_t datasize = (uint8_t*)s_Data.QuadVertexBufferPtr - (uint8_t*)s_Data.QuadVertexBufferBase;
+			s_Data.QuadVertexBuffer->SetData(s_Data.QuadVertexBufferBase, datasize);
+
+			for (uint32_t i = 0; i < s_Data.TextureSlotIndex; i++)
+			{
+				s_Data.TextureSlots[i]->Bind(i);
+			}
+
+			s_Data.TextureShader->Bind();
+			RenderCommand::DrawIndexed(s_Data.QuadVertexArray, s_Data.QuadindexCount);
+			s_Data.Stats.DrawCalls++;
 		}
 
-		s_Data.TextureShader->Bind();
-		RenderCommand::DrawIndexed(s_Data.QuadVertexArray, s_Data.QuadindexCount);
-		s_Data.Stats.DrawCalls++;
+		if (s_Data.CircleindexCount)
+		{
+			uint32_t datasize = (uint8_t*)s_Data.CircleVertexBufferPtr - (uint8_t*)s_Data.CircleVertexBufferBase;
+			s_Data.CircleVertexBuffer->SetData(s_Data.CircleVertexBufferBase, datasize);
+
+			s_Data.CircleShader->Bind();
+			RenderCommand::DrawIndexed(s_Data.CircleVertexArray, s_Data.CircleindexCount);
+			s_Data.Stats.DrawCalls++;
+		}
 	}
 	void Renderer2D::DrawSprite(const glm::mat4& transform, SpriteRenderer& str, int entityID)
 	{
@@ -701,6 +756,24 @@ namespace Gart
 		s_Data.Stats.QuadCounts++;
 	}
 
+	void Renderer2D::DrawCircle(const glm::mat4& transform, const glm::vec4& color, float thickness , float fade , int entityID )
+	{
+		for (size_t i = 0; i < 4; i++)
+		{
+			s_Data.CircleVertexBufferPtr->WorldPosition = transform * s_Data.QuadVertexPosition[i];
+			s_Data.CircleVertexBufferPtr->LocalPosition = s_Data.QuadVertexPosition[i] * 2.0f;
+			s_Data.CircleVertexBufferPtr->Color = color;
+			s_Data.CircleVertexBufferPtr->Thickness = thickness;
+			s_Data.CircleVertexBufferPtr->Fade = fade;
+			s_Data.CircleVertexBufferPtr->EntityID = entityID;
+			s_Data.CircleVertexBufferPtr++;
+		}
+
+		s_Data.CircleindexCount += 6;
+
+		s_Data.Stats.QuadCounts++;
+	}
+
 	void Renderer2D::ResetStats()
 	{
 		memset(&s_Data.Stats, 0, sizeof(Renderer2D::Statistics));
@@ -723,5 +796,8 @@ namespace Gart
 		s_Data.QuadindexCount = 0;
 		s_Data.TextureSlotIndex = 1;
 		s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
+
+		s_Data.CircleindexCount = 0;
+		s_Data.CircleVertexBufferPtr = s_Data.CircleVertexBufferBase;
 	}
 }
