@@ -8,6 +8,7 @@
 #include "box2d/b2_body.h"
 #include "box2d/b2_fixture.h"
 #include "box2d/b2_polygon_shape.h"
+#include "box2d/b2_circle_shape.h"
 #include<glm/gtc/matrix_transform.hpp>
 
 namespace Gart
@@ -102,6 +103,7 @@ namespace Gart
 		CopyComponent<NativeScriptComponent>(srcSceneRegistery, dstSceneRegistery, enttMap);
 		CopyComponent<RigidBody2DComponent>(srcSceneRegistery, dstSceneRegistery, enttMap);
 		CopyComponent<BoxCollider2DComponent>(srcSceneRegistery, dstSceneRegistery, enttMap);
+		CopyComponent<CircleCollider2DComponent>(srcSceneRegistery, dstSceneRegistery, enttMap);
 
 		return newScene;
 	}
@@ -140,6 +142,23 @@ namespace Gart
 				fixtureDef.friction = bc2d.Friction;
 				fixtureDef.restitution = bc2d.Restitution;
 				fixtureDef.restitutionThreshold = bc2d.RestitutionThreshHold;
+				body->CreateFixture(&fixtureDef);
+			}
+
+			if (entity.HasComponent<CircleCollider2DComponent>())
+			{
+				auto& cc2d = entity.GetComponent<CircleCollider2DComponent>();
+
+				b2CircleShape CircleShape;
+				CircleShape.m_p.Set(cc2d.Offset.x, cc2d.Offset.y);
+				CircleShape.m_radius = cc2d.Radius;
+
+				b2FixtureDef fixtureDef;
+				fixtureDef.shape = &CircleShape;
+				fixtureDef.density = cc2d.Density;
+				fixtureDef.friction = cc2d.Friction;
+				fixtureDef.restitution = cc2d.Restitution;
+				fixtureDef.restitutionThreshold = cc2d.RestitutionThreshHold;
 				body->CreateFixture(&fixtureDef);
 			}
 			
@@ -288,6 +307,7 @@ namespace Gart
 		CopyComponentIfExist<NativeScriptComponent>(entity, newEntity);
 		CopyComponentIfExist<RigidBody2DComponent>(entity, newEntity);
 		CopyComponentIfExist<BoxCollider2DComponent>(entity, newEntity);
+		CopyComponentIfExist<CircleCollider2DComponent>(entity, newEntity);
 	}
 
 	Entity Scene::GetPrimaryCamera()
@@ -361,6 +381,12 @@ namespace Gart
 
 	template<>
 	void Scene::OnComponentAdded<CircleRendererComponent>(Entity entity, CircleRendererComponent& component)
+	{
+
+	}
+
+	template<>
+	void Scene::OnComponentAdded<CircleCollider2DComponent>(Entity entity, CircleCollider2DComponent& component)
 	{
 
 	}

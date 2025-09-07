@@ -219,6 +219,20 @@ namespace Gart
 			out << YAML::EndMap;
 		}
 
+		if (entity.HasComponent<CircleCollider2DComponent>())
+		{
+			out << YAML::Key << "CircleCollider2DComponent";
+			out << YAML::BeginMap;
+			auto& circleCollider2DComponent = entity.GetComponent<CircleCollider2DComponent>();
+			out << YAML::Key << "Offset" << YAML::Value << circleCollider2DComponent.Offset;
+			out << YAML::Key << "Radius" << YAML::Value << circleCollider2DComponent.Radius;
+			out << YAML::Key << "Density" << YAML::Value << circleCollider2DComponent.Density;
+			out << YAML::Key << "Friction" << YAML::Value << circleCollider2DComponent.Friction;
+			out << YAML::Key << "Restitution" << YAML::Value << circleCollider2DComponent.Restitution;
+			out << YAML::Key << "RestitutionThreshHold" << YAML::Value << circleCollider2DComponent.RestitutionThreshHold;
+			out << YAML::EndMap;
+		}
+
 		if (entity.HasComponent<CircleRendererComponent>())
 		{
 			out << YAML::Key << "CircleRendererComponent";
@@ -333,6 +347,19 @@ namespace Gart
 					bc2d.Restitution = boxCollider2DComponent["Restitution"].as<float>();
 					bc2d.RestitutionThreshHold = boxCollider2DComponent["RestitutionThreshHold"].as<float>();
 					
+				}
+
+				auto circleCollider2DComponent = entity["CircleCollider2DComponent"];
+				if (circleCollider2DComponent)
+				{
+					auto& cc2d = deSerialzeEntity.AddComponent<CircleCollider2DComponent>();
+					cc2d.Offset = circleCollider2DComponent["Offset"].as<glm::vec2>();
+					cc2d.Radius = circleCollider2DComponent["Radius"].as<float>();
+					cc2d.Density = circleCollider2DComponent["Density"].as<float>();
+					cc2d.Friction = circleCollider2DComponent["Friction"].as<float>();
+					cc2d.Restitution = circleCollider2DComponent["Restitution"].as<float>();
+					cc2d.RestitutionThreshHold = circleCollider2DComponent["RestitutionThreshHold"].as<float>();
+
 				}
 
 				auto circleRendererComponent = entity["CircleRendererComponent"];
