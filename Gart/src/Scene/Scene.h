@@ -28,6 +28,13 @@ namespace Gart
 			void OnViewportResize(uint32_t width, uint32_t height);
 			
 			void DuplicateEntity(Entity entity);
+
+			template<typename... Components>
+			auto GetAllEntityWith()
+			{
+				return m_Registery.view<Components...>();
+			}
+
 			Entity GetPrimaryCamera();
 	
 		private:

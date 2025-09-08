@@ -151,7 +151,7 @@ namespace Gart
 
 				b2CircleShape CircleShape;
 				CircleShape.m_p.Set(cc2d.Offset.x, cc2d.Offset.y);
-				CircleShape.m_radius = cc2d.Radius;
+				CircleShape.m_radius = transform.Scale.x * cc2d.Radius;
 
 				b2FixtureDef fixtureDef;
 				fixtureDef.shape = &CircleShape;

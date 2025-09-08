@@ -28,6 +28,7 @@ namespace Gart
 		void SaveScene();
 
 		void SaveS();
+		void OnOverlayRender();
 
 		void SerializeScene(Ref<Scene> scene, const std::filesystem::path& filepath);
 		void OnScreenPlay();
@@ -62,6 +63,7 @@ namespace Gart
 		glm::vec2 m_ViewportBound[2];
 		bool m_ViewPortFocus;
 		bool m_ViewPortHover;
+		bool m_ShowPhysicsColliders = false;
 		int m_GizmoType = -1;
 
 		enum class SceneState

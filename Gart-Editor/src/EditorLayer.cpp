@@ -225,7 +225,8 @@ namespace Gart
 			m_HoveredEntity = pixel == -1 && pixel < -1 ? Entity() : Entity((entt::entity)pixel, m_ActiveScene.get());
 			BSS_CLIENT_INFO("pixel {0}", pixel);
 		}
-		
+		OnOverlayRender();
+
 		m_framebuffer->Unbind();
 	}
 
@@ -325,7 +326,7 @@ namespace Gart
 		ImGui::Text("Quad Counts: %d", l_stats.QuadCounts);
 		ImGui::Text("Number Of Vertices: %d", l_stats.GetNumbersOfVertices());
 		ImGui::Text("Number Of Indicies: %d", l_stats.GetNumbersOfIndices());
-
+		ImGui::Checkbox("Show Physics Colliders", &m_ShowPhysicsColliders);
 		ImGui::End();
 
 
@@ -561,6 +562,61 @@ namespace Gart
 		else SaveScene();
 	}
 
+	void EditorLayer::OnOverlayRender()
+	{
+		
+
+		if (m_SceneState == SceneState::Play)
+		{
+			Entity l_camera = m_ActiveScene->GetPrimaryCamera();
+			Renderer2D::BeginScene(l_camera.GetComponent<CameraComponent>().camera, l_camera.GetComponent<TransformComponent>().GetTransform());
+		}
+		else
+		{
+			Renderer2D::BeginScene(m_EditorCamera);
+		}
+
+		if (m_ShowPhysicsColliders)
+		{
+
+			// Draw Circle Physics Colliders
+
+			{
+				auto view = m_ActiveScene->GetAllEntityWith<TransformComponent, CircleCollider2DComponent>();
+				for (auto entity : view)
+				{
+					auto [tc, cc2d] = view.get<TransformComponent, CircleCollider2DComponent>(entity);
+					glm::vec3 translate = tc.Translate + glm::vec3(cc2d.Offset, 0.001f);
+					glm::vec3 scale = tc.Scale * glm::vec3(cc2d.Radius * 2.0f);
+					glm::mat4 transform = glm::translate(glm::mat4(1.0f), translate)
+						* glm::scale(glm::mat4(1.0f), scale);
+					Renderer2D::DrawCircle(transform, glm::vec4(0, 1, 0, 1), 0.05f);
+				}
+			}
+
+			// Drawing Box Physics Colliders
+
+			{
+				auto view = m_ActiveScene->GetAllEntityWith<TransformComponent, BoxCollider2DComponent>();
+				for (auto entity : view)
+				{
+					auto [tc, bc2d] = view.get<TransformComponent, BoxCollider2DComponent>(entity);
+
+					glm::vec3 translate = tc.Translate + glm::vec3(bc2d.Offset, 0.001f);
+					glm::vec3 scale = tc.Scale * glm::vec3(bc2d.Size * 2.0f, 1);
+
+					glm::mat4 transform = glm::translate(glm::mat4(1.0f), translate)
+						* glm::rotate(glm::mat4(1.0), tc.Rotation.z, glm::vec3(0, 0, 1))
+						* glm::scale(glm::mat4(1.0f), scale);
+
+					Renderer2D::DrawRect(transform, glm::vec4(0, 1, 0, 1));
+
+				}
+			}
+		}
+
+		Renderer2D::EndScene();
+	}
 	void EditorLayer::SerializeScene(Ref<Scene> scene, const std::filesystem::path& filepath)
 	{
 		SceneSerialization l_Serializer(scene);
