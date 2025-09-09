@@ -33,6 +33,7 @@ namespace Gart
 		void SerializeScene(Ref<Scene> scene, const std::filesystem::path& filepath);
 		void OnScreenPlay();
 
+		void OnSimulation();
 		void OnScreenStop();
 
 		void OnDuplicateEntity();
@@ -63,13 +64,14 @@ namespace Gart
 		glm::vec2 m_ViewportBound[2];
 		bool m_ViewPortFocus;
 		bool m_ViewPortHover;
-		bool m_ShowPhysicsColliders = false;
+		bool m_ShowPhysicsColliders = true;
 		int m_GizmoType = -1;
 
 		enum class SceneState
 		{
 			Edit = 0, 
-			Play = 1
+			Play = 1,
+			Simulation = 2
 		};
 
 		SceneState m_SceneState = SceneState::Edit;
@@ -81,6 +83,6 @@ namespace Gart
 		SceneHeirarchyPanel m_HierarchyPanel;
 		ContentBrowserPanel m_ContentBrowserPanel;
 
-		Ref<Texture2D> m_IconPlay, m_IconStop;
+		Ref<Texture2D> m_IconPlay, m_IconStop, m_IconSimulate;
 	};
 }

@@ -110,6 +110,26 @@ namespace Gart
 
 	void Scene::OnRuntimeStart()
 	{
+		OnPhysicsStart();
+	}
+
+	void Scene::OnRuntimeStop()
+	{
+		OnPhysicsStop();
+	}
+
+	void Scene::OnSimulationStart()
+	{
+		OnPhysicsStart();
+	}
+
+	void Scene::OnSimulationStop()
+	{
+		OnPhysicsStop();
+	}
+
+	void Scene::OnPhysicsStart()
+	{
 		m_PhysicsWorld = new b2World({ 0.0f,-9.8f });
 
 		auto view = m_Registery.view<RigidBody2DComponent>();
@@ -161,15 +181,47 @@ namespace Gart
 				fixtureDef.restitutionThreshold = cc2d.RestitutionThreshHold;
 				body->CreateFixture(&fixtureDef);
 			}
-			
+
 		}
 	}
 
-	void Scene::OnRuntimeStop()
+	void Scene::OnPhysicsStop()
 	{
 		delete m_PhysicsWorld;
 		m_PhysicsWorld = nullptr;
 	}
+
+	void Scene::OnUpdateSimulation(TimeStep ts, const EditorCamera& camera)
+	{
+		{
+			const int32_t velocityIterations = 6;
+			const int32_t positionIterations = 2;
+
+			m_PhysicsWorld->Step(ts, velocityIterations, positionIterations);
+
+			auto& view = m_Registery.view<RigidBody2DComponent>();
+
+			for (auto e : view)
+			{
+				Entity entity = { e,this };
+
+				auto& rb2d = entity.GetComponent<RigidBody2DComponent>();
+				auto& transform = entity.GetComponent<TransformComponent>();
+
+				b2Body* body = (b2Body*)rb2d.RuntimeBody;
+
+				const auto& position = body->GetPosition();
+
+				transform.Translate.x = position.x;
+				transform.Translate.y = position.y;
+				transform.Rotation.z = body->GetAngle();
+
+			}
+
+		}
+		RenderScene(camera);
+	}
+
 	void Scene::OnUpdateRuntime(TimeStep ts)
 	{
 		// Scripts
@@ -257,6 +309,28 @@ namespace Gart
 
 	void Scene::OnUpdateEditor(TimeStep ts, const EditorCamera& camera)
 	{
+		RenderScene(camera);
+	}
+
+	void Scene::OnViewportResize(uint32_t width, uint32_t height)
+	{
+		m_ViewportWidth = width;
+		m_ViewportHeight = height;
+		auto view = m_Registery.view<CameraComponent>();
+
+		for (auto entity : view)
+		{
+			auto& cameraComponent = view.get<CameraComponent>(entity);
+			
+			if (!cameraComponent.FixedAspectRatio)
+			{
+				cameraComponent.camera.SetViewportSize(width, height);
+			}
+		}
+	}
+
+	void Scene::RenderScene(const EditorCamera& camera)
+	{
 		Renderer2D::BeginScene(camera);
 		auto group = m_Registery.group<TransformComponent>(entt::get<SpriteRenderer>);
 		for (auto entity : group)
@@ -276,23 +350,6 @@ namespace Gart
 		
 
 		Renderer2D::EndScene();
-	}
-
-	void Scene::OnViewportResize(uint32_t width, uint32_t height)
-	{
-		m_ViewportWidth = width;
-		m_ViewportHeight = height;
-		auto view = m_Registery.view<CameraComponent>();
-
-		for (auto entity : view)
-		{
-			auto& cameraComponent = view.get<CameraComponent>(entity);
-			
-			if (!cameraComponent.FixedAspectRatio)
-			{
-				cameraComponent.camera.SetViewportSize(width, height);
-			}
-		}
 	}
 
 	void Scene::DuplicateEntity(Entity entity)

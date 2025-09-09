@@ -23,10 +23,21 @@ namespace Gart
 			static Ref<Scene> Copy(Ref<Scene> other);
 			void OnRuntimeStart();
 			void OnRuntimeStop();
+
+			void OnSimulationStart();
+
+			void OnSimulationStop();
+
+			void OnPhysicsStart();
+
+			void OnPhysicsStop();
+
 			void OnUpdateEditor(TimeStep ts,const EditorCamera& camera);
+			void OnUpdateSimulation(TimeStep ts,const EditorCamera& camera);
 			void OnUpdateRuntime(TimeStep ts);
 			void OnViewportResize(uint32_t width, uint32_t height);
 			
+			void RenderScene(const EditorCamera& camera);
 			void DuplicateEntity(Entity entity);
 
 			template<typename... Components>

@@ -32,6 +32,7 @@ namespace Gart
 
 		m_IconPlay = Gart::Texture2D::Create("Resources/Icons/PlayButton.png");
 		m_IconStop = Gart::Texture2D::Create("Resources/Icons/StopButton.png");
+		m_IconSimulate = Gart::Texture2D::Create("Resources/Icons/SimulateButton.png");
 
 		m_Texture = Gart::Texture2D::Create("assets/textures/smile.png");
 		m_SpriteSheet = Gart::Texture2D::Create("assets/game/textures/RPG.png");
@@ -60,7 +61,8 @@ namespace Gart
 		m_Particle.VelocityVariation = { 3.0f, 1.0f };
 		m_Particle.Position = { 0.0f, 0.0f };*/
 
-		m_ActiveScene = std::make_shared<Scene>();
+		m_EditorScene = std::make_shared<Scene>();
+		m_ActiveScene = m_EditorScene;
 #if 0
 		auto Square = m_ActiveScene->CreateEntity("Square");
 		auto GreenSquare = m_ActiveScene->CreateEntity("Green Square");
@@ -122,9 +124,7 @@ namespace Gart
 
 		m_HierarchyPanel.SetContext(m_ActiveScene);
 		SceneSerialization l_Serializer(m_ActiveScene);
-		//l_Serializer.DeSerialize("assets/Scenes/Gizmo.gart");
 		m_GizmoType = ImGuizmo::OPERATION::TRANSLATE;
-		//l_Serializer.Serialize("assets/Scenes/Gizmo.gart");
 	}
 
 	void EditorLayer::OnDitach()
@@ -206,10 +206,17 @@ namespace Gart
 
 			break;
 		}
+
+		case SceneState::Simulation:
+		{
+			m_EditorCamera.OnUpdate(ts);
+			m_ActiveScene->OnUpdateSimulation(ts, m_EditorCamera);
+			break;
+		}
+
 		case SceneState::Play:
 			m_ActiveScene->OnUpdateRuntime(ts);
 			break;
-	
 		}
 
 		auto[mx,my] = ImGui::GetMousePos();
@@ -569,7 +576,8 @@ namespace Gart
 		if (m_SceneState == SceneState::Play)
 		{
 			Entity l_camera = m_ActiveScene->GetPrimaryCamera();
-			Renderer2D::BeginScene(l_camera.GetComponent<CameraComponent>().camera, l_camera.GetComponent<TransformComponent>().GetTransform());
+			if(l_camera)
+				Renderer2D::BeginScene(l_camera.GetComponent<CameraComponent>().camera, l_camera.GetComponent<TransformComponent>().GetTransform());
 		}
 		else
 		{
@@ -625,16 +633,32 @@ namespace Gart
 
 	void EditorLayer::OnScreenPlay()
 	{
+		if (m_SceneState == SceneState::Simulation)
+			OnScreenStop();
 		m_SceneState = SceneState::Play;
 		m_ActiveScene = Scene::Copy(m_EditorScene);
 		m_ActiveScene->OnRuntimeStart();
 		
 	}
 
+	void EditorLayer::OnSimulation()
+	{
+		if (m_SceneState == SceneState::Play)
+			OnScreenStop();
+
+		m_SceneState = SceneState::Simulation;
+		m_ActiveScene = Scene::Copy(m_EditorScene);
+		m_ActiveScene->OnSimulationStart();
+	}
+
 	void EditorLayer::OnScreenStop()
 	{
+		if (m_SceneState == SceneState::Play)
+			m_ActiveScene->OnRuntimeStop();
+		else if (m_SceneState == SceneState::Simulation)
+			m_ActiveScene->OnSimulationStop();
+
 		m_SceneState = SceneState::Edit;
-		m_ActiveScene->OnRuntimeStop();
 		m_ActiveScene = m_EditorScene;
 	}
 
@@ -670,16 +694,32 @@ namespace Gart
 		ImGui::Begin("##toolbar", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 
 		float size = ImGui::GetWindowHeight() - 4.0f;
-		Ref<Texture2D> icon = m_SceneState == SceneState::Edit ? m_IconPlay : m_IconStop;
-
-		ImGui::SetCursorPosX((ImGui::GetWindowContentRegionMax().x * 0.5f) - (size * 0.5f));
-
-		if (ImGui::ImageButton((ImTextureID)icon->GetRenderID(), ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), 0))
+		bool toolbar = (bool)m_ActiveScene;
 		{
-			if (m_SceneState == SceneState::Edit)
-				OnScreenPlay();
-			else if (m_SceneState == SceneState::Play)
-				OnScreenStop();
+			Ref<Texture2D> icon = (m_SceneState == SceneState::Edit || m_SceneState == SceneState::Simulation) ? m_IconPlay : m_IconStop;
+
+			ImGui::SetCursorPosX((ImGui::GetWindowContentRegionMax().x * 0.5f) - (size * 0.5f));
+
+			if (ImGui::ImageButton((ImTextureID)icon->GetRenderID(), ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), 0) && toolbar)
+			{
+				if (m_SceneState == SceneState::Edit || m_SceneState == SceneState::Simulation && toolbar)
+					OnScreenPlay();
+				else if (m_SceneState == SceneState::Play)
+					OnScreenStop();
+			}
+		}
+		ImGui::SameLine();
+		{
+
+			Ref<Texture2D> icon = (m_SceneState == SceneState::Edit || m_SceneState == SceneState::Play) ? m_IconSimulate : m_IconStop;
+
+			if (ImGui::ImageButton((ImTextureID)icon->GetRenderID(), ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), 0) && toolbar)
+			{
+				if (m_SceneState == SceneState::Edit || m_SceneState == SceneState::Play && toolbar)
+					OnSimulation();
+				else if (m_SceneState == SceneState::Simulation)
+					OnScreenStop();
+			}
 		}
 		ImGui::PopStyleVar(2);
 		ImGui::PopStyleColor(3);
