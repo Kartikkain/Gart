@@ -111,8 +111,8 @@ namespace Gart
 	class GartEditor : public BSS::Application
 	{
 	public:
-		GartEditor(BSS::ApplicationCommandLineArgs args)
-			:Application("Gart Editor",args)
+		GartEditor(BSS::ApplicationSpecification specification)
+			:Application(specification)
 		{
 			//PushLayer(new ExampleLayer());
 			PushLayer(new EditorLayer());
@@ -131,5 +131,9 @@ namespace Gart
 
 BSS::Application* BSS::CreateApplication(ApplicationCommandLineArgs args)
 {
-	return new Gart::GartEditor(args);
+	BSS::ApplicationSpecification spec;
+	spec.Name = "Gart Engine";
+	spec.ComandLineArgs = args;
+
+	return new Gart::GartEditor(spec);
 }

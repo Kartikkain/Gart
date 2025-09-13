@@ -15,7 +15,7 @@ namespace Gart
 		virtual uint32_t GetHeight() const override { return m_Height; }
 		virtual uint32_t GetRenderID() const override { return m_RenderID; }
 		virtual void SetData(void* data, uint32_t size) override;
-
+		virtual const std::string GetPath() const override { return m_Path; }
 		virtual void Bind(uint32_t slot = 0) const override;
 
 		virtual bool operator== (const Texture& other) const override

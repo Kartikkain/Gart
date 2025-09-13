@@ -26,11 +26,18 @@ namespace BSS
 		}
 	};
 
+	struct ApplicationSpecification
+	{
+		std::string Name;
+		std::string WorkingDirectory;
+		ApplicationCommandLineArgs ComandLineArgs;
+	};
+
 	class BSS_API Application
 	{
 	public:
 		//Application(const std::string& name = "Gart App");
-		Application(const std::string& name = "Gart App",ApplicationCommandLineArgs args = ApplicationCommandLineArgs());
+		Application(const ApplicationSpecification& specification);
 		virtual ~Application();
 		void Run();
 		void Close();
@@ -42,7 +49,7 @@ namespace BSS
 		inline static Application& Get() { return *s_Instance; }
 		inline Window& GetWindow() { return *m_Window; }
 
-		ApplicationCommandLineArgs GetCommandLineArgs() const { return m_CommandLineArgs; }
+		ApplicationCommandLineArgs GetCommandLineArgs() const { return m_Specification.ComandLineArgs; }
 	private:
 
 		float m_LastFrameTime = 0.0f;
@@ -54,7 +61,8 @@ namespace BSS
 		bool m_Running = true;
 		bool m_Minimize = false;
 		LayerStack m_LayerStack;
-		ApplicationCommandLineArgs m_CommandLineArgs;
+
+		ApplicationSpecification m_Specification;
 		static Application* s_Instance;
 		
 	};

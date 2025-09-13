@@ -88,6 +88,11 @@ void main()
 		case 31: texColor *= texture(u_Texture[31],v_Texture * v_TillingFactor); break;
 		
 	}
+
+
+	if(texColor.a == 0)
+		discard;
+
 	fragColor = texColor;
 	fragColor2 = v_EntityID;
 }

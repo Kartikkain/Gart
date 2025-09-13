@@ -613,8 +613,9 @@ namespace Gart
 					glm::vec3 translate = tc.Translate + glm::vec3(bc2d.Offset, 0.001f);
 					glm::vec3 scale = tc.Scale * glm::vec3(bc2d.Size * 2.0f, 1);
 
-					glm::mat4 transform = glm::translate(glm::mat4(1.0f), translate)
+					glm::mat4 transform = glm::translate(glm::mat4(1.0f), tc.Translate)
 						* glm::rotate(glm::mat4(1.0), tc.Rotation.z, glm::vec3(0, 0, 1))
+						* glm::translate(glm::mat4(1.0), glm::vec3(bc2d.Offset, 0.001f))
 						* glm::scale(glm::mat4(1.0f), scale);
 
 					Renderer2D::DrawRect(transform, glm::vec4(0, 1, 0, 1));

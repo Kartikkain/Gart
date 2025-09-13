@@ -153,4 +153,13 @@ namespace Gart
 
 	};
 
+	template<typename... component>
+	struct ComponentGroup
+	{
+
+	};
+
+	using AllComponent = ComponentGroup<TransformComponent,SpriteRenderer,CameraComponent,CircleRendererComponent
+		,CircleCollider2DComponent,BoxCollider2DComponent,RigidBody2DComponent>;
+
 }

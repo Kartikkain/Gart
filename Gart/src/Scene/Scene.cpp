@@ -52,28 +52,50 @@ namespace Gart
 		m_Registery.destroy(entity);
 	}
 
-	template<typename component>
+	template<typename... component>
 	static void CopyComponent(entt::registry& src, entt::registry& dst, const std::unordered_map<UUID, entt::entity>& enttMap)
 	{
-		auto view = src.view<component>();
+		([&]()
+			{
+				auto view = src.view<component>();
 
-		for (auto e : view)
-		{
-			UUID uuid = src.get<IDComponent>(e).m_ID;
+				for (auto e : view)
+				{
+					UUID uuid = src.get<IDComponent>(e).m_ID;
 
-			entt::entity dstEntity = enttMap.at(uuid);
+					entt::entity dstEntity = enttMap.at(uuid);
 
-			auto& Component = src.get<component>(e);
-			dst.emplace_or_replace<component>(dstEntity, Component);
-		}
+					auto& Component = src.get<component>(e);
+					dst.emplace_or_replace<component>(dstEntity, Component);
+				}
+
+			}(),...);
+		
 	}
 
-	template<typename component>
+	template<typename... component>
+	static void CopyComponent(ComponentGroup<component...>,entt::registry& src, entt::registry& dst, const std::unordered_map<UUID, entt::entity>& enttMap)
+	{
+		CopyComponent<component...>(src, dst, enttMap);
+	}
+
+	template<typename... component>
 	static void CopyComponentIfExist(Entity src, Entity dst)
 	{
-		if (src.HasComponent<component>())
-			dst.AddOrReplaceComponent<component>(src.GetComponent<component>());
+		([&]()
+			{
+				if (src.HasComponent<component>())
+					dst.AddOrReplaceComponent<component>(src.GetComponent<component>());
+			}(),...);
+		
 	}
+
+	template<typename... component>
+	static void CopyComponentIfExist(ComponentGroup<component...>,Entity src, Entity dst)
+	{
+		CopyComponentIfExist<component...>(src, dst);
+	}
+
 	Ref<Scene> Scene::Copy(Ref<Scene> other)
 	{
 		Ref<Scene> newScene = std::make_shared<Scene>();
@@ -96,14 +118,7 @@ namespace Gart
 			enttMap[uuid] = (entt::entity)l_entity;
 		}
 
-		CopyComponent<TransformComponent>(srcSceneRegistery, dstSceneRegistery, enttMap);
-		CopyComponent<SpriteRenderer>(srcSceneRegistery, dstSceneRegistery, enttMap);
-		CopyComponent<CameraComponent>(srcSceneRegistery, dstSceneRegistery, enttMap);
-		CopyComponent<CircleRendererComponent>(srcSceneRegistery, dstSceneRegistery, enttMap);
-		CopyComponent<NativeScriptComponent>(srcSceneRegistery, dstSceneRegistery, enttMap);
-		CopyComponent<RigidBody2DComponent>(srcSceneRegistery, dstSceneRegistery, enttMap);
-		CopyComponent<BoxCollider2DComponent>(srcSceneRegistery, dstSceneRegistery, enttMap);
-		CopyComponent<CircleCollider2DComponent>(srcSceneRegistery, dstSceneRegistery, enttMap);
+		CopyComponent(AllComponent{}, srcSceneRegistery, dstSceneRegistery, enttMap);
 
 		return newScene;
 	}
@@ -154,7 +169,7 @@ namespace Gart
 				auto& bc2d = entity.GetComponent<BoxCollider2DComponent>();
 
 				b2PolygonShape boxShape;
-				boxShape.SetAsBox(bc2d.Size.x * transform.Scale.x, bc2d.Size.y * transform.Scale.y);
+				boxShape.SetAsBox(bc2d.Size.x * transform.Scale.x, bc2d.Size.y * transform.Scale.y,b2Vec2(bc2d.Offset.x,bc2d.Offset.y),0.0);
 
 				b2FixtureDef fixtureDef;
 				fixtureDef.shape = &boxShape;
@@ -294,14 +309,14 @@ namespace Gart
 			for (auto entity : group)
 			{
 				auto [transform, sprite] = group.get<TransformComponent, SpriteRenderer>(entity);
-				Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color);
+				Renderer2D::DrawSprite(transform.GetTransform(), sprite);
 			}
 
 			auto view = m_Registery.view<TransformComponent, CircleRendererComponent>();
 			for (auto entity : view)
 			{
 				auto [transform, circle] = view.get<TransformComponent, CircleRendererComponent>(entity);
-				Renderer2D::DrawCircle(transform.GetTransform(), circle.Color, circle.Thickness, circle.Fade, (int)entity);
+				Renderer2D::DrawCircle(transform.GetTransform(), circle.Color, circle.Thickness, circle.Fade);
 			}
 			Renderer2D::EndScene();
 		}
@@ -357,14 +372,7 @@ namespace Gart
 		std::string entityName = entity.GetName();
 		Entity newEntity = CreateEntity(entityName);
 
-		CopyComponentIfExist<TransformComponent>(entity,newEntity);
-		CopyComponentIfExist<SpriteRenderer>(entity, newEntity);
-		CopyComponentIfExist<CameraComponent>(entity, newEntity);
-		CopyComponentIfExist<CircleRendererComponent>(entity, newEntity);
-		CopyComponentIfExist<NativeScriptComponent>(entity, newEntity);
-		CopyComponentIfExist<RigidBody2DComponent>(entity, newEntity);
-		CopyComponentIfExist<BoxCollider2DComponent>(entity, newEntity);
-		CopyComponentIfExist<CircleCollider2DComponent>(entity, newEntity);
+		CopyComponentIfExist(AllComponent{}, entity, newEntity);
 	}
 
 	Entity Scene::GetPrimaryCamera()

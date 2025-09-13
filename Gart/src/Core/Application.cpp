@@ -1,9 +1,10 @@
 #include "bsspch.h"
 #include "Application.h"
 #include "Log.h"
+#include "Input.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include "Input.h"
+#include <filesystem>
 
 
 namespace BSS
@@ -32,13 +33,19 @@ namespace BSS
 		return 0;
 	}
 
-	Application::Application(const std::string& name, ApplicationCommandLineArgs args)
-		:m_CommandLineArgs(args)
+	Application::Application(const ApplicationSpecification& specification)
+		:m_Specification(specification)
 	{
 		GART_PROFILE_FUNCTION();
 
 		s_Instance = this;
-		m_Window = std::unique_ptr<Window>(Window::Create(WindowProps(name)));
+
+		if (!specification.WorkingDirectory.empty())
+		{
+			std::filesystem::current_path(specification.WorkingDirectory);
+		}
+
+		m_Window = std::unique_ptr<Window>(Window::Create(WindowProps(m_Specification.Name)));
 		m_Window->SetEventCallback(BSS_EVENT_FN(OnEvent));
 
 		Gart::Renderer::Init();

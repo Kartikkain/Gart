@@ -192,6 +192,9 @@ namespace Gart
 			out << YAML::BeginMap;
 			auto& spriteRenderer = entity.GetComponent<SpriteRenderer>();
 			out << YAML::Key << "Color" << YAML::Value << spriteRenderer.Color;
+			if(spriteRenderer.Texture)
+				out << YAML::Key << "TexturePath" << YAML::Value << spriteRenderer.Texture->GetPath();
+			out << YAML::Key << "TillingFactor" << YAML::Value << spriteRenderer.TillingFactor;
 			out << YAML::EndMap;
 		}
 
@@ -326,6 +329,9 @@ namespace Gart
 				{
 					auto& Sprite = deSerialzeEntity.AddComponent<SpriteRenderer>();
 					Sprite.Color = spriteRenderer["Color"].as<glm::vec4>();
+					if(spriteRenderer["TexturePath"])
+						Sprite.Texture = Texture2D::Create(spriteRenderer["TexturePath"].as<std::string>());
+					if(spriteRenderer["TillingFactor"]) Sprite.TillingFactor = spriteRenderer["TillingFactor"].as<float>();
 				}
 
 				auto rigidBody2DComponent = entity["RigidBody2DComponent"];
