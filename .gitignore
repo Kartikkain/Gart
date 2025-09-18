@@ -1,7 +1,9 @@
 .vs/
 bin/
 bin-int/
+Intermediates/
 *.user
+**.csproj
 Sandbox/GartProfile-Delete.json
 Sandbox/GartProfile-Runtime.json
 Sandbox/GartProfile-StartUp.json

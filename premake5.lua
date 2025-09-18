@@ -14,6 +14,8 @@ OutputDir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 include "Dependencies.lua"
 
+
+include "Gart-ScriptCore"
 include "Gart/vendor/GLFW"
 include "Gart/vendor/Box2D"
 include "Gart/vendor/Glad"
@@ -58,6 +60,7 @@ project "Gart"
 		"%{IncludeDir.stb_image}",
 		"%{IncludeDir.entt}",
 		"%{IncludeDir.yaml_cpp}",
+		"%{IncludeDir.mono}",
 		"%{IncludeDir.ImGuizmo}",
 		"%{IncludeDir.VulkanSDK}"
 	}
@@ -69,7 +72,12 @@ project "Gart"
 		"Glad",
 		"imgui",
 		"yaml-cpp",
-		"opengl32.lib"
+		"opengl32.lib",
+		"%{Library.mono}",
+		"%{Library.WinSock}",
+		"%{Library.WinMM}",
+		"%{Library.WinVersion}",
+		"%{Library.Bcrypt}"
 	}
 
 	defines
@@ -89,6 +97,14 @@ project "Gart"
 			"BSS_PLATFORM_WINDOW",
 			"BSS_BUILD_DLL",
 			"GLFW_INCLUDE_NONE"
+		}
+
+		links
+		{
+			"%{Library.WinSock}",
+			"%{Library.WinMM}",
+			"%{Library.WinVersion}",
+			"%{Library.Bcrypt}"
 		}
 
 		

@@ -12,6 +12,7 @@
 #include "Renderer/VertexArray.h"
 #include "Renderer/OrthoGraphicCamera.h"
 #include "Renderer/Renderer.h"
+#include "Scripting/ScriptEngine.h"
 namespace BSS
 {
 	struct ApplicationCommandLineArgs
