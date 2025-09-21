@@ -2,6 +2,10 @@
 #include "Core.h"
 #include "spdlog/spdlog.h"
 #include "spdlog/fmt/ostr.h"
+
+#define GLM_ENABLE_EXPERIMENTAL
+#include "glm/gtx/string_cast.hpp"
+
 namespace BSS {
 
 	class BSS_API Log
@@ -15,6 +19,13 @@ namespace BSS {
 		static std::shared_ptr<spdlog::logger> s_ClientLogger;
 
 	};
+}
+
+
+template<typename OStream, glm::length_t L, typename T, glm::qualifier Q>
+inline OStream& operator<<(OStream& os, glm::vec<L, T, Q>& vector)
+{
+	return os << glm::to_string(vector);
 }
 
 #define BSS_CORE_ERROR(...) ::BSS::Log::GetCoreLogger()->error(__VA_ARGS__)

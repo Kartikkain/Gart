@@ -96,6 +96,18 @@ namespace Gart
 		}
 	}
 
+	static void NativeLog(glm::vec3* Parameter, glm::vec3* OutResult)
+	{
+		BSS_CORE_WARN("Value {0},{1},{2}", Parameter->x,Parameter->y,Parameter->z);
+
+		*OutResult = glm::normalize(*Parameter);
+	}
+
+	static float NativeLogFloat(glm::vec3* Parameter)
+	{
+		return glm::dot(*Parameter, *Parameter);
+	}
+
 
 	void ScriptEngine::InitMono()
 	{
@@ -113,6 +125,9 @@ namespace Gart
 		
 		s_Data->AppDomain = mono_domain_create_appdomain("GartScriptRuntime", nullptr);
 		mono_domain_set(s_Data->AppDomain, true);
+
+		mono_add_internal_call("Gart.Main::NativeVector", NativeLog);
+		mono_add_internal_call("Gart.Main::NativeVectorFloat", NativeLogFloat);
 
 		s_Data->CoreAssembly = LoadCSharpAssembly("Resources/Scripts/Gart-ScriptCore.dll");
 		PrintAssemblyTypes(s_Data->CoreAssembly);
