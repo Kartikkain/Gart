@@ -14,19 +14,30 @@ namespace Gart
             this.z = z;
         }
     }
-    public class Main
+
+    public class InternalCalls
     {
-        public Main()
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        extern public static void NativeVector(ref Vector3 position, out Vector3 Result);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        extern public static float NativeVectorFloat(ref Vector3 parameter);
+
+    }
+
+    public class Entity
+    {
+        public Entity()
         {
             Console.WriteLine("Main Constructor!");
 
             Vector3 pos = new Vector3(2,3,6);
 
-            NativeVector(ref pos, out Vector3 result);
+            InternalCalls.NativeVector(ref pos, out Vector3 result);
 
             Console.WriteLine($"normalize vector : {result.x}, {result.y}, {result.z}");
 
-            Console.WriteLine($"Dot product : {NativeVectorFloat(ref pos)}");
+            Console.WriteLine($"Dot product : {InternalCalls.NativeVectorFloat(ref pos)}");
 
         }
 
@@ -45,10 +56,6 @@ namespace Gart
             Console.WriteLine($"C# Says : {message}");
         }
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern static void NativeVector(ref Vector3 position, out Vector3 Result);
-
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern static float NativeVectorFloat(ref Vector3 parameter);
+        
     }
 }

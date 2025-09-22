@@ -198,6 +198,7 @@
     <ClInclude Include="src\Scene\SceneSerialization.h" />
     <ClInclude Include="src\Scene\ScriptableEntity.h" />
     <ClInclude Include="src\Scripting\ScriptEngine.h" />
+    <ClInclude Include="src\Scripting\ScriptGlue.h" />
     <ClInclude Include="src\Utils\PlatformUtils.h" />
     <ClInclude Include="src\bsspch.h" />
     <ClInclude Include="src\imgui\ImGuiLayer.h" />
@@ -662,6 +663,7 @@
     </ClCompile>
     <ClCompile Include="src\imgui\ImGuiBuild.cpp" />
     <ClCompile Include="src\imgui\ImGuiLayer.cpp" />
+    <ClCompile Include="src\Scripting\ScriptGlue.cpp" />
     <ClCompile Include="vendor\ImGuizmo\ImGuizmo.cpp" />
     <ClCompile Include="vendor\stb_image\stb_image.cpp" />
   </ItemGroup>
