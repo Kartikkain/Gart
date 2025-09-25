@@ -18,44 +18,35 @@ namespace Gart
     public class InternalCalls
     {
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern public static void NativeVector(ref Vector3 position, out Vector3 Result);
+        extern public static void Entity_GetTranslation(ulong id,out Vector3 position);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern public static float NativeVectorFloat(ref Vector3 parameter);
+        extern public static float Entity_SetTranslation(ulong id,ref Vector3 parameter);
 
     }
 
     public class Entity
     {
-        public Entity()
+        protected Entity() { ID = 0; }
+        internal Entity(ulong id)
         {
-            Console.WriteLine("Main Constructor!");
-
-            Vector3 pos = new Vector3(2,3,6);
-
-            InternalCalls.NativeVector(ref pos, out Vector3 result);
-
-            Console.WriteLine($"normalize vector : {result.x}, {result.y}, {result.z}");
-
-            Console.WriteLine($"Dot product : {InternalCalls.NativeVectorFloat(ref pos)}");
-
+           ID = id;
         }
 
-        public void PrintMessage()
-        {
-            Console.WriteLine("Hello World From C#");
-        }
+        public readonly ulong ID;
 
-        public void PrintInt(int message)
+        public Vector3 Translation
         {
-            Console.WriteLine($"C# Says : {message}");
-        }
+            get
+            {
+                InternalCalls.Entity_GetTranslation(ID, out Vector3 translation);
+                return translation;
 
-        public void PrintCustomMessage(string message)
-        {
-            Console.WriteLine($"C# Says : {message}");
+            }
+            set
+            {
+                InternalCalls.Entity_SetTranslation(ID, ref value);
+            }
         }
-
-        
     }
 }

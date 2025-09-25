@@ -91,19 +91,30 @@ namespace Gart
 		MonoImage* CoreAssemblyImage = nullptr;
 
 		ScriptClass EntityClass;
+		std::unordered_map<std::string, Ref<ScriptClass>> EntityClasses;
+		std::unordered_map<UUID, Ref<ScriptInstance>> EntityInstances;
+
+		//Runtime
+
+		Scene* SceneContext = nullptr;
 
 	};
 
 	static ScriptEngineData* s_Data = nullptr;
 
+#pragma region ScriptEngine
 	void ScriptEngine::Init()
 	{
 		s_Data = new ScriptEngineData();
+
+
 		InitMono();
 		LoadAssembly("Resources/Scripts/Gart-ScriptCore.dll");
 
 		ScriptGlue::RegisterFunction();
 
+		LoadAssemblyClasses(s_Data->CoreAssembly);
+		auto& classes = s_Data->EntityClasses;
 
 		// Create An Object That Call's Constructor
 
@@ -112,7 +123,7 @@ namespace Gart
 		
 		MonoObject* Instance = s_Data->EntityClass.Instantiate();
 		
-
+#if 0
 
 		// Call Function
 		MonoMethod* printFunction = s_Data->EntityClass.GetMethod("PrintMessage", 0);
@@ -131,8 +142,10 @@ namespace Gart
 		MonoMethod* printFunctionWithStringParameter = s_Data->EntityClass.GetMethod("PrintCustomMessage", 1);
 		void* stringParam = monostring;
 		s_Data->EntityClass.InvokeMethod(printFunctionWithStringParameter, Instance, &stringParam);
+#endif
 
 	}
+
 
 	void ScriptEngine::Shutdown()
 	{
@@ -184,6 +197,90 @@ namespace Gart
 		 return Instance;
 	}
 
+	void  ScriptEngine::LoadAssemblyClasses(MonoAssembly* assembly)
+	{
+		MonoImage* image = mono_assembly_get_image(assembly);
+		const MonoTableInfo* typeDefinitionsTable = mono_image_get_table_info(image, MONO_TABLE_TYPEDEF);
+		int32_t numTypes = mono_table_info_get_rows(typeDefinitionsTable);
+
+		MonoClass* entityClass = mono_class_from_name(image, "Gart", "Entity");
+
+		for (int32_t i = 0; i < numTypes; i++)
+		{
+			uint32_t cols[MONO_TYPEDEF_SIZE];
+			mono_metadata_decode_row(typeDefinitionsTable, i, cols, MONO_TYPEDEF_SIZE);
+
+			const char* nameSpace = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAMESPACE]);
+			const char* name = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAME]);
+
+			std::string fullname;
+			if (strlen(nameSpace) != 0)
+				fullname = fmt::format("{}.{}", nameSpace, name);
+			else
+				fullname = name;
+
+			MonoClass* monoClass = mono_class_from_name(image, nameSpace, name);
+
+			if (monoClass == entityClass)
+				continue;
+
+			bool IsEntity = mono_class_is_subclass_of(monoClass, entityClass, false);
+			if (IsEntity)
+				s_Data->EntityClasses[fullname] = std::make_shared<ScriptClass>(nameSpace, name);
+
+			printf("%s.%s\n", nameSpace, name);
+		}
+	}
+
+	std::unordered_map<std::string, Ref<ScriptClass>> ScriptEngine::GetClasses()
+	{
+		return s_Data->EntityClasses;
+	}
+
+	void ScriptEngine::OnRuntimeStart(Scene* scene)
+	{
+		s_Data->SceneContext = scene;
+	}
+
+
+	void ScriptEngine::OnRuntimeStop()
+	{
+		s_Data->SceneContext = nullptr;
+		s_Data->EntityInstances.clear();
+	}
+
+
+	bool ScriptEngine::ClassExist(std::string& classname)
+	{
+		return s_Data->EntityClasses.find(classname) != s_Data->EntityClasses.end();
+	}
+
+	void ScriptEngine::CreateEntity(Entity entity)
+	{
+		ScriptComponent script = entity.GetComponent<ScriptComponent>();
+		if (ClassExist(script.Name))
+		{
+			Ref<ScriptInstance> instance = std::make_shared<ScriptInstance>(s_Data->EntityClasses[script.Name],entity);
+			s_Data->EntityInstances[entity.GetUUID()] = instance;
+			instance->InvokeOnCreate();
+		}
+	}
+
+	void ScriptEngine::OnUpdateEntity(Entity entity, TimeStep ts)
+	{
+		Ref<ScriptInstance> instance = s_Data->EntityInstances[entity.GetUUID()];
+		instance->InvokeOnUpdate((float)ts);
+	}
+
+	Scene* ScriptEngine::GetContext()
+	{
+		return s_Data->SceneContext;
+	}
+
+#pragma endregion
+
+
+#pragma region ScriptClass
 	ScriptClass::ScriptClass(const std::string& nameSpace, const std::string& className)
 		:m_ClassNamespace(nameSpace), m_ClassName(className)
 	{
@@ -204,4 +301,39 @@ namespace Gart
 	{
 		return mono_runtime_invoke(method, instance, params, nullptr);
 	}
+
+#pragma endregion
+	
+	
+#pragma region ScriptInstance
+
+	ScriptInstance::ScriptInstance(Ref<ScriptClass> scriptClass, Entity entity)
+		:m_scriptClass(scriptClass)
+	{
+		instance = m_scriptClass->Instantiate();
+
+		m_Constructor = s_Data->EntityClass.GetMethod(".ctor", 1);
+		m_Create = m_scriptClass->GetMethod("OnCreate",0);
+		m_Update = m_scriptClass->GetMethod("OnUpdate",1);
+
+		UUID id = entity.GetUUID();
+		void* params = &id;
+		m_scriptClass->InvokeMethod(m_Constructor, instance, &params);
+	}
+
+	void ScriptInstance::InvokeOnCreate()
+	{
+		m_scriptClass->InvokeMethod(m_Create, instance, nullptr);
+
+	}
+
+	void ScriptInstance::InvokeOnUpdate(float ts)
+	{
+		void* params = &ts;
+		m_scriptClass->InvokeMethod(m_Update, instance, &params);
+	}
+
+#pragma endregion
+
+
 }

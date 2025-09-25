@@ -18,6 +18,8 @@ namespace Gart
 
 			Entity CreateEntity(const std::string& name = std::string());
 			Entity CreateEntityWithUUID(UUID uuid,const std::string& name = std::string());
+
+			Entity GetEntityWithUUID(UUID uuid);
 			void DestroyEntity(Entity entity);
 			/*entt::registry& GetReg() { return m_Registery; }*/
 			static Ref<Scene> Copy(Ref<Scene> other);
@@ -31,6 +33,10 @@ namespace Gart
 			void OnPhysicsStart();
 
 			void OnPhysicsStop();
+
+			void OnScriptStart();
+
+			void OnScriptStop();
 
 			void OnUpdateEditor(TimeStep ts,const EditorCamera& camera);
 			void OnUpdateSimulation(TimeStep ts,const EditorCamera& camera);
@@ -55,6 +61,7 @@ namespace Gart
 		private:
 			entt::registry m_Registery;
 			uint32_t m_ViewportWidth = 0, m_ViewportHeight = 0;
+			std::unordered_map<UUID, Entity> EntityMap;
 			friend class Entity;
 			friend class SceneHeirarchyPanel;
 			friend class SceneSerialization;

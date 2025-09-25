@@ -1,6 +1,7 @@
 #include "bsspch.h"
 #include "SceneHeirarchyPanel.h"
 #include "Scene/Components.h"
+#include "Scripting/ScriptEngine.h"
 #include  "imgui.h"
 #include <filesystem>
 #include <imgui_internal.h>
@@ -242,6 +243,15 @@ namespace Gart
 						ImGui::CloseCurrentPopup();
 					}
 				}
+
+				if (!m_SelectedEntity.HasComponent<ScriptComponent>())
+				{
+					if (ImGui::MenuItem("Script"))
+					{
+						m_SelectedEntity.AddComponent<ScriptComponent>();
+						ImGui::CloseCurrentPopup();
+					}
+				}
 				
 				if (!m_SelectedEntity.HasComponent<SpriteRenderer>())
 				{
@@ -414,6 +424,24 @@ namespace Gart
 				ImGui::Checkbox("Fixed Rotation", &component.FixedRotation);
 		});
 
+		DrawComponent<ScriptComponent>("Script", true, entity, [](auto& component)
+			{
+				bool IsScriptExist = ScriptEngine::ClassExist(component.Name);
+				
+				static char buffer[64];
+				strcpy(buffer, component.Name.c_str());
+
+				if (!IsScriptExist)
+					ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.341f, 0.341f, 0.341f, 1));
+
+				if (ImGui::InputText("Class", buffer, sizeof(buffer)))
+				{
+					component.Name = buffer;
+				}
+
+				if (!IsScriptExist)
+					ImGui::PopStyleColor();
+			});
 
 		DrawComponent<BoxCollider2DComponent>("Box Collider 2D", true, entity, [](auto& component)
 			{
@@ -426,7 +454,6 @@ namespace Gart
 				ImGui::DragFloat("Restitution ThreshHold", &component.RestitutionThreshHold, 0.01, 0.0);
 			});
 
-
 		DrawComponent<CircleCollider2DComponent>("Circle Collider 2D", true, entity, [](auto& component)
 			{
 
@@ -437,7 +464,6 @@ namespace Gart
 				ImGui::DragFloat("Restitution", &component.Restitution, 0.01, 0.0, 1.0);
 				ImGui::DragFloat("Restitution ThreshHold", &component.RestitutionThreshHold, 0.01, 0.0);
 			});
-
 
 		DrawComponent<CircleRendererComponent>("Circle Renderer", true, entity, [](auto& component)
 			{

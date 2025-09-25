@@ -1,27 +1,31 @@
 #include "bsspch.h"
 #include "Core/Log.h"
 #include "ScriptGlue.h"
+#include "Scripting/ScriptEngine.h"
+#include "Core/UUID.h"
 #include "mono/metadata/object.h"
 
 namespace Gart
 {
 #define GART_INTERANAL_CALL(Name) mono_add_internal_call("Gart.InternalCalls::" #Name, Name);
 
-	static void NativeVector(glm::vec3* Parameter, glm::vec3* OutResult)
+	static void Entity_GetTranslation(UUID id,glm::vec3* OutResult)
 	{
-		BSS_CORE_WARN("Value {0},{1},{2}", Parameter->x, Parameter->y, Parameter->z);
-
-		*OutResult = glm::normalize(*Parameter);
+		Scene* scene = ScriptEngine::GetContext();
+		Entity entity = scene->GetEntityWithUUID(id);
+		*OutResult = entity.GetComponent<TransformComponent>().Translate;
 	}
 
-	static float NativeVectorFloat(glm::vec3* Parameter)
+	static void Entity_SetTranslation(UUID id,glm::vec3* Parameter)
 	{
-		return glm::dot(*Parameter, *Parameter);
+		Scene* scene = ScriptEngine::GetContext();
+		Entity entity = scene->GetEntityWithUUID(id);
+		entity.GetComponent<TransformComponent>().Translate = *Parameter;
 	}
 
 	void ScriptGlue::RegisterFunction()
 	{
-		GART_INTERANAL_CALL(NativeVector)
-		GART_INTERANAL_CALL(NativeVectorFloat)
+		GART_INTERANAL_CALL(Entity_GetTranslation)
+		GART_INTERANAL_CALL(Entity_SetTranslation)
 	}
 }

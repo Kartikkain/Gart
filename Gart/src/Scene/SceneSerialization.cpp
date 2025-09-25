@@ -208,6 +208,15 @@ namespace Gart
 			out << YAML::EndMap;
 		}
 
+		if (entity.HasComponent<ScriptComponent>())
+		{
+			out << YAML::Key << "ScriptComponent";
+			out << YAML::BeginMap;
+			auto& scriptComponent = entity.GetComponent<ScriptComponent>();
+			out << YAML::Key << "Class" << YAML::Value << scriptComponent.Name;
+			out << YAML::EndMap;
+		}
+
 		if (entity.HasComponent<BoxCollider2DComponent>())
 		{
 			out << YAML::Key << "BoxCollider2DComponent";
@@ -340,6 +349,14 @@ namespace Gart
 					auto& rb2d = deSerialzeEntity.AddComponent<RigidBody2DComponent>();
 					rb2d.Type = RigidBodyTypeFromString(rigidBody2DComponent["BodyType"].as<std::string>());
 					rb2d.FixedRotation = rigidBody2DComponent["FixedRotation"].as<bool>();
+				}
+
+				auto scriptComponent = entity["ScriptComponent"];
+				if (scriptComponent)
+				{
+					auto& script = deSerialzeEntity.AddComponent<ScriptComponent>();
+					script.Name = scriptComponent["Class"].as<std::string>();
+					
 				}
 
 				auto boxCollider2DComponent = entity["BoxCollider2DComponent"];

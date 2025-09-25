@@ -73,6 +73,14 @@ namespace Gart
 		
 	};
 
+	struct ScriptComponent
+	{
+		std::string Name;
+
+		ScriptComponent() = default;
+		ScriptComponent(const ScriptComponent&) = default;
+	};
+
 	class ScriptableEntity;
 
 	struct NativeScriptComponent {
@@ -160,6 +168,6 @@ namespace Gart
 	};
 
 	using AllComponent = ComponentGroup<TransformComponent,SpriteRenderer,CameraComponent,CircleRendererComponent
-		,CircleCollider2DComponent,BoxCollider2DComponent,RigidBody2DComponent>;
+		,CircleCollider2DComponent,BoxCollider2DComponent,RigidBody2DComponent,ScriptComponent>;
 
 }

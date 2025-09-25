@@ -4,6 +4,7 @@
 #include "Renderer/Renderer2D.h"
 #include "Entity.h"
 #include "ScriptableEntity.h"
+#include "Scripting/ScriptEngine.h"
 #include "box2d/b2_world.h"
 #include "box2d/b2_body.h"
 #include "box2d/b2_fixture.h"
@@ -44,12 +45,19 @@ namespace Gart
 		entity.AddComponent<TransformComponent>();
 		auto& tag = entity.AddComponent<TagComponent>();
 		tag.m_Tag = name.empty() ? "Entity" : name;
-		return entity;
+		EntityMap[uuid] = entity;
+ 		return entity;
 	}
 	
+	Entity Scene::GetEntityWithUUID(UUID uuid)
+	{
+		return EntityMap[uuid];
+	}
+
 	void Scene::DestroyEntity(Entity entity)
 	{
 		m_Registery.destroy(entity);
+		EntityMap.erase(entity.GetUUID());
 	}
 
 	template<typename... component>
@@ -126,11 +134,13 @@ namespace Gart
 	void Scene::OnRuntimeStart()
 	{
 		OnPhysicsStart();
+		OnScriptStart();
 	}
 
 	void Scene::OnRuntimeStop()
 	{
 		OnPhysicsStop();
+		OnScriptStop();
 	}
 
 	void Scene::OnSimulationStart()
@@ -206,6 +216,24 @@ namespace Gart
 		m_PhysicsWorld = nullptr;
 	}
 
+
+	void Scene::OnScriptStart()
+	{
+		ScriptEngine::OnRuntimeStart(this);
+
+		auto view = m_Registery.view<ScriptComponent>();
+		for (auto e : view)
+		{
+			Entity entity = { e,this };
+			ScriptEngine::CreateEntity(entity);
+		}
+	}
+
+	void Scene::OnScriptStop()
+	{
+		ScriptEngine::OnRuntimeStop();
+	}
+
 	void Scene::OnUpdateSimulation(TimeStep ts, const EditorCamera& camera)
 	{
 		{
@@ -240,6 +268,17 @@ namespace Gart
 	void Scene::OnUpdateRuntime(TimeStep ts)
 	{
 		// Scripts
+
+		{
+			auto  view = m_Registery.view<ScriptComponent>();
+			for (auto e : view)
+			{
+				Entity entity = { e,this };
+				ScriptEngine::OnUpdateEntity(entity, ts);
+			}
+
+		}
+
 		m_Registery.view<NativeScriptComponent>().each([=](auto entity, auto& nsc)
 		{
 
@@ -403,6 +442,12 @@ namespace Gart
 
 	template<>
 	void Scene::OnComponentAdded<TransformComponent>(Entity entity, TransformComponent& component)
+	{
+
+	}
+
+	template<>
+	void Scene::OnComponentAdded<ScriptComponent>(Entity entity, ScriptComponent& component)
 	{
 
 	}
