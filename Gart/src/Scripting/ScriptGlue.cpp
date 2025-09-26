@@ -23,9 +23,15 @@ namespace Gart
 		entity.GetComponent<TransformComponent>().Translate = *Parameter;
 	}
 
+	static bool Input_GetKeyDown(KeyCode keycode)
+	{
+		return BSS::Input::IsKeyPressed(keycode);
+	}
+
 	void ScriptGlue::RegisterFunction()
 	{
 		GART_INTERANAL_CALL(Entity_GetTranslation)
 		GART_INTERANAL_CALL(Entity_SetTranslation)
+		GART_INTERANAL_CALL(Input_GetKeyDown)
 	}
 }

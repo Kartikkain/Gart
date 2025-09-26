@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Event.h"
+#include "Core/Input.h"
 
 
 namespace BSS
@@ -8,19 +9,19 @@ namespace BSS
 	class BSS_API KeyEvent :public Event
 	{
 	public:
-		KeyEvent(int keycode)
+		KeyEvent(Gart::KeyCode keycode)
 			:m_KeyCode(keycode){}
-		inline int GetKeyCode() const { return m_KeyCode; }
+		inline Gart::KeyCode GetKeyCode() const { return m_KeyCode; }
 
 		EVENT_CLASS_CATEGORY(EventCategoryKeyboard |EventCategoryKeyboard)
 	protected:
-		int m_KeyCode;
+		Gart::KeyCode m_KeyCode;
 	};
 
 	class BSS_API KeyPressedEvent :public KeyEvent
 	{
 	public:
-		KeyPressedEvent(int keycode,int repeatCount)
+		KeyPressedEvent(Gart::KeyCode keycode,int repeatCount)
 		:KeyEvent(keycode),m_RepeatCount(repeatCount) {}
 
 		inline int GetRepeatCount() const { return m_RepeatCount; }
@@ -43,7 +44,7 @@ namespace BSS
 	{
 	public :
 		
-		KeyRelesedEvent(int keycode)
+		KeyRelesedEvent(Gart::KeyCode keycode)
 			:KeyEvent(keycode){}
 
 		virtual std::string ToString() const override
@@ -61,7 +62,7 @@ namespace BSS
 	{
 	public:
 
-		KeyTypedEvent(int keycode)
+		KeyTypedEvent(Gart::KeyCode keycode)
 			:KeyEvent(keycode) {}
 
 		virtual std::string ToString() const override

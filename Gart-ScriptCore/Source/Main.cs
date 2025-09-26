@@ -23,6 +23,9 @@ namespace Gart
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         extern public static float Entity_SetTranslation(ulong id,ref Vector3 parameter);
 
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        extern public static bool Input_GetKeyDown(Keycode keycode);
+
     }
 
     public class Entity

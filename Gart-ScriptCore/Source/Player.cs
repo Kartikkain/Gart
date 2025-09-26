@@ -22,7 +22,14 @@ namespace Sandbox
 
             Vector3 translation = Translation;
             Console.WriteLine($"Player.OnUpdate: {ts}, {translation.x}");
-            translation.x -= speed * ts;
+
+
+
+            if (Input.GetKeyDown(Keycode.A)) translation.x -= speed * ts;
+            else if (Input.GetKeyDown(Keycode.D)) translation.x += speed * ts;
+            else if (Input.GetKeyDown(Keycode.W)) translation.y += speed * ts;
+            else if (Input.GetKeyDown(Keycode.S)) translation.y -= speed * ts;
+
             Translation = translation;
         }
     }

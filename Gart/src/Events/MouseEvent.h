@@ -1,5 +1,6 @@
 #pragma once
 #include "Event.h"
+#include "Core/Input.h"
 
 
 namespace BSS
@@ -51,20 +52,20 @@ namespace BSS
 	class BSS_API MouseButtonEvent :public Event
 	{
 	public :
-		inline int GetButton() const { return m_Button; }
+		inline Gart::MouseCode GetButton() const { return m_Button; }
 
 		EVENT_CLASS_CATEGORY(EventCategoryInput |EventCategoryMouse)
 
 	protected:
-		MouseButtonEvent(int button)
+		MouseButtonEvent(Gart::MouseCode button)
 			:m_Button(button) {}
-		int m_Button;
+		Gart::MouseCode m_Button;
 	};
 
 	class BSS_API MouseButtonPressedEvent :public MouseButtonEvent
 	{
 	public:
-		MouseButtonPressedEvent(int button)
+		MouseButtonPressedEvent(Gart::MouseCode button)
 			:MouseButtonEvent(button){}
 
 		virtual std::string ToString() const override
@@ -80,7 +81,7 @@ namespace BSS
 	class BSS_API MouseButtonReleasedEvent :public MouseButtonEvent
 	{
 	public:
-		MouseButtonReleasedEvent(int button)
+		MouseButtonReleasedEvent(Gart::MouseCode button)
 			:MouseButtonEvent(button) {}
 
 		virtual std::string ToString() const override

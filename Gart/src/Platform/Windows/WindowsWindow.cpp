@@ -90,19 +90,19 @@ namespace BSS
 			{
 			case GLFW_PRESS:
 			{
-				KeyPressedEvent e(key, 0);
+				KeyPressedEvent e(static_cast<Gart::KeyCode>(key), 0);
 				data.EventCallBack(e);
 				break;
 			}
 			case GLFW_RELEASE:
 			{
-				KeyRelesedEvent e(key);
+				KeyRelesedEvent e(static_cast<Gart::KeyCode>(key));
 				data.EventCallBack(e);
 				break;
 			}
 			case GLFW_REPEAT:
 			{
-				KeyPressedEvent e(key, 1);
+				KeyPressedEvent e(static_cast<Gart::KeyCode>(key), 1);
 				data.EventCallBack(e);
 				break;
 			}
@@ -113,7 +113,7 @@ namespace BSS
 		glfwSetCharCallback(m_Window, [](GLFWwindow* window, unsigned int keycode)
 		{
 			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-			KeyTypedEvent e(keycode);
+			KeyTypedEvent e(static_cast<Gart::KeyCode>(keycode));
 			data.EventCallBack(e);
 		});
 
@@ -125,13 +125,13 @@ namespace BSS
 			{
 			case GLFW_PRESS:
 			{
-				MouseButtonPressedEvent e(button);
+				MouseButtonPressedEvent e(static_cast<Gart::MouseCode>(button));
 				data.EventCallBack(e);
 				break;
 			}
 			case GLFW_RELEASE:
 			{
-				MouseButtonReleasedEvent e(button);
+				MouseButtonReleasedEvent e(static_cast<Gart::MouseCode>(button));
 				data.EventCallBack(e);
 				break;
 			}
