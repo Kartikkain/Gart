@@ -112,6 +112,7 @@ namespace Gart
 		LoadAssembly("Resources/Scripts/Gart-ScriptCore.dll");
 
 		ScriptGlue::RegisterFunction();
+		ScriptGlue::RegisterComponents();
 
 		LoadAssemblyClasses(s_Data->CoreAssembly);
 		auto& classes = s_Data->EntityClasses;
@@ -275,6 +276,11 @@ namespace Gart
 	Scene* ScriptEngine::GetContext()
 	{
 		return s_Data->SceneContext;
+	}
+
+	MonoImage* ScriptEngine::GetCoreAssemblyImage()
+	{
+		return s_Data->CoreAssemblyImage;
 	}
 
 #pragma endregion

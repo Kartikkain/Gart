@@ -8,7 +8,7 @@ namespace Gart
 	{
 	public:
 		static void RegisterFunction();
-
+		static void RegisterComponents();
 	};
 
 	

@@ -7,6 +7,7 @@ extern "C"
 	typedef struct _MonoObject MonoObject;
 	typedef struct _MonoMethod MonoMethod;
 	typedef struct _MonoAssembly MonoAssembly;
+	typedef struct _MonoImage MonoImage;
 }
 
 namespace Gart
@@ -65,6 +66,9 @@ namespace Gart
 		static void CreateEntity(Entity entity);
 		static void OnUpdateEntity(Entity entity, TimeStep ts);
 		static Scene* GetContext();
+
+		static MonoImage* GetCoreAssemblyImage();
+
 	private:
 		static void InitMono();
 		static void ShutDownMono();
@@ -72,7 +76,9 @@ namespace Gart
 		static MonoObject* InstantiateClass(MonoClass* monoClass);
 		static void LoadAssemblyClasses(MonoAssembly* assembly);
 
+		
 		friend class ScriptClass;
+		friend class ScriptGlue;
 
 	};
 
