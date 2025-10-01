@@ -18,7 +18,7 @@ namespace Gart
 	{
 	public:
 		ScriptClass() = default;
-		ScriptClass(const std::string& nameSpace, const std::string& className);
+		ScriptClass(const std::string& nameSpace, const std::string& className, bool IsCore = false);
 
 		MonoObject* Instantiate();
 		MonoMethod* GetMethod(const char* name, int parameter);
@@ -57,6 +57,7 @@ namespace Gart
 		static void Shutdown();
 		
 		static void LoadAssembly(const std::filesystem::path& filepath);
+		static void LoadAppAssembly(const std::filesystem::path& filepath);
 		static std::unordered_map<std::string, Ref<ScriptClass>> GetClasses();
 
 		static void OnRuntimeStart(Scene* scene);
@@ -74,7 +75,7 @@ namespace Gart
 		static void ShutDownMono();
 
 		static MonoObject* InstantiateClass(MonoClass* monoClass);
-		static void LoadAssemblyClasses(MonoAssembly* assembly);
+		static void LoadAssemblyClasses();
 
 		
 		friend class ScriptClass;

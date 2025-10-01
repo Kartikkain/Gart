@@ -32,8 +32,8 @@ namespace Sandbox
             else if (Input.GetKeyDown(Keycode.S)) translation.y -= speed * ts;*/
 
             if (Input.GetKeyDown(Keycode.W)) velocity.y += 1.0f;
-            if (Input.GetKeyDown(Keycode.A)) velocity.x -= 1.0f;
-            if (Input.GetKeyDown(Keycode.D)) velocity.x += 1.0f;
+            if (Input.GetKeyDown(Keycode.Left)) velocity.x -= 1.0f;
+            if (Input.GetKeyDown(Keycode.Right)) velocity.x += 1.0f;
 
             velocity *= speed;
 

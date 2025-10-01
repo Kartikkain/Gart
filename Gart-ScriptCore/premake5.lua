@@ -3,8 +3,8 @@ project "Gart-ScriptCore"
 	language "C#"
 	dotnetframework "4.7.2"
 
-	targetdir("%{wks.location}/Gart-Editor/Resources/Scripts")
-	objdir("%{wks.location}/Gart-Editor/Resources/Scripts/Intermediates")
+	targetdir("../Gart-Editor/Resources/Scripts")
+	objdir("../Gart-Editor/Resources/Scripts/Intermediates")
 
 	files
 	{

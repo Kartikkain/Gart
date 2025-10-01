@@ -90,6 +90,9 @@ namespace Gart
 		MonoAssembly* CoreAssembly = nullptr;
 		MonoImage* CoreAssemblyImage = nullptr;
 
+		MonoAssembly* AppAssembly = nullptr;
+		MonoImage* AppAssemblyImage = nullptr;
+
 		ScriptClass EntityClass;
 		std::unordered_map<std::string, Ref<ScriptClass>> EntityClasses;
 		std::unordered_map<UUID, Ref<ScriptInstance>> EntityInstances;
@@ -110,16 +113,17 @@ namespace Gart
 
 		InitMono();
 		LoadAssembly("Resources/Scripts/Gart-ScriptCore.dll");
+		LoadAppAssembly("SandboxProject/Assets/Scripts/Binaries/Sandbox.dll");
 
 		ScriptGlue::RegisterFunction();
 		ScriptGlue::RegisterComponents();
 
-		LoadAssemblyClasses(s_Data->CoreAssembly);
+		LoadAssemblyClasses();
 		auto& classes = s_Data->EntityClasses;
 
 		// Create An Object That Call's Constructor
 
-		s_Data->EntityClass = ScriptClass::ScriptClass("Gart", "Entity");
+		s_Data->EntityClass = ScriptClass::ScriptClass("Gart", "Entity",true);
 
 		
 		MonoObject* Instance = s_Data->EntityClass.Instantiate();
@@ -166,6 +170,13 @@ namespace Gart
 
 		
 	}
+	void ScriptEngine::LoadAppAssembly(const std::filesystem::path& filepath)
+	{
+		s_Data->AppAssembly = Utils::LoadMonoAssembly(filepath);
+		Utils::PrintAssemblyTypes(s_Data->AppAssembly);
+
+		s_Data->AppAssemblyImage = mono_assembly_get_image(s_Data->AppAssembly);
+	}
 	void ScriptEngine::InitMono()
 	{
 		mono_set_assemblies_path("mono/lib");
@@ -198,21 +209,20 @@ namespace Gart
 		 return Instance;
 	}
 
-	void  ScriptEngine::LoadAssemblyClasses(MonoAssembly* assembly)
+	void  ScriptEngine::LoadAssemblyClasses()
 	{
-		MonoImage* image = mono_assembly_get_image(assembly);
-		const MonoTableInfo* typeDefinitionsTable = mono_image_get_table_info(image, MONO_TABLE_TYPEDEF);
+		const MonoTableInfo* typeDefinitionsTable = mono_image_get_table_info(s_Data->AppAssemblyImage, MONO_TABLE_TYPEDEF);
 		int32_t numTypes = mono_table_info_get_rows(typeDefinitionsTable);
 
-		MonoClass* entityClass = mono_class_from_name(image, "Gart", "Entity");
+		MonoClass* entityClass = mono_class_from_name(s_Data->CoreAssemblyImage, "Gart", "Entity");
 
 		for (int32_t i = 0; i < numTypes; i++)
 		{
 			uint32_t cols[MONO_TYPEDEF_SIZE];
 			mono_metadata_decode_row(typeDefinitionsTable, i, cols, MONO_TYPEDEF_SIZE);
 
-			const char* nameSpace = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAMESPACE]);
-			const char* name = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAME]);
+			const char* nameSpace = mono_metadata_string_heap(s_Data->AppAssemblyImage, cols[MONO_TYPEDEF_NAMESPACE]);
+			const char* name = mono_metadata_string_heap(s_Data->AppAssemblyImage, cols[MONO_TYPEDEF_NAME]);
 
 			std::string fullname;
 			if (strlen(nameSpace) != 0)
@@ -220,7 +230,7 @@ namespace Gart
 			else
 				fullname = name;
 
-			MonoClass* monoClass = mono_class_from_name(image, nameSpace, name);
+			MonoClass* monoClass = mono_class_from_name(s_Data->AppAssemblyImage, nameSpace, name);
 
 			if (monoClass == entityClass)
 				continue;
@@ -287,10 +297,10 @@ namespace Gart
 
 
 #pragma region ScriptClass
-	ScriptClass::ScriptClass(const std::string& nameSpace, const std::string& className)
+	ScriptClass::ScriptClass(const std::string& nameSpace, const std::string& className, bool IsCore)
 		:m_ClassNamespace(nameSpace), m_ClassName(className)
 	{
-		m_MonoClass = mono_class_from_name(s_Data->CoreAssemblyImage, nameSpace.c_str(), className.c_str());
+		m_MonoClass = mono_class_from_name(IsCore ? s_Data->CoreAssemblyImage : s_Data->AppAssemblyImage, nameSpace.c_str(), className.c_str());
 	}
 
 	MonoObject* ScriptClass::Instantiate()
