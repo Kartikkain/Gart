@@ -424,7 +424,7 @@ namespace Gart
 				ImGui::Checkbox("Fixed Rotation", &component.FixedRotation);
 		});
 
-		DrawComponent<ScriptComponent>("Script", true, entity, [](auto& component)
+		DrawComponent<ScriptComponent>("Script", true, entity, [entity](auto& component) mutable
 			{
 				bool IsScriptExist = ScriptEngine::ClassExist(component.Name);
 				
@@ -437,6 +437,25 @@ namespace Gart
 				if (ImGui::InputText("Class", buffer, sizeof(buffer)))
 				{
 					component.Name = buffer;
+				}
+
+				Ref<ScriptInstance> Instance = ScriptEngine::GetEntityScriptInstance(entity.GetUUID());
+
+				if (Instance)
+				{
+					const auto& scriptFileds = Instance->GetScriptClass()->GetFields();
+
+					for (const auto& [name, field] : scriptFileds)
+					{
+						if (field.scriptFieldType == ScriptFieldType::Float)
+						{
+							float data = Instance->GetFieldValue<float>(name);
+							if (ImGui::DragFloat(field.FieldName, &data))
+							{
+								Instance->SetFieldValue(name, &data);
+							}
+						}
+					}
 				}
 
 				if (!IsScriptExist)

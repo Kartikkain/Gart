@@ -1,6 +1,7 @@
 #pragma once
 #include "Scene/Scene.h"
 #include "Scene/Entity.h"
+#include <map>
 extern "C"
 {
 	typedef struct _MonoClass MonoClass;
@@ -8,11 +9,23 @@ extern "C"
 	typedef struct _MonoMethod MonoMethod;
 	typedef struct _MonoAssembly MonoAssembly;
 	typedef struct _MonoImage MonoImage;
+	typedef struct _MonoClassField MonoClassField;
 }
 
 namespace Gart
 {
+	enum ScriptFieldType
+	{
+		none = 0,
+		Int,Float,Char,Bool,Byte,Long,Short,Double,Uint,Ulong,Ushort,Vector2,Vector3,Vector4,GEntity
+	};
 	
+	struct ScriptField
+	{
+		ScriptFieldType scriptFieldType;
+		const char* FieldName;
+		MonoClassField* m_fields;
+	};
 
 	class ScriptClass
 	{
@@ -25,11 +38,15 @@ namespace Gart
 
 		MonoObject* InvokeMethod(MonoMethod* method, MonoObject* instance, void** params);
 
-	private:
+		std::map<const char*, ScriptField> GetFields() const { return m_FiledBuffer; }
 
+	private:
+		std::map<const char*, ScriptField> m_FiledBuffer;
 		std::string m_ClassNamespace;
 		std::string m_ClassName;
 		MonoClass* m_MonoClass = nullptr;
+
+		friend class ScriptEngine;
 	};
 
 	class ScriptInstance
@@ -40,13 +57,36 @@ namespace Gart
 		void InvokeOnCreate();
 		void InvokeOnUpdate(float ts);
 
+		Ref<ScriptClass> GetScriptClass() const { return m_scriptClass; }
+
+		template<typename T>
+		T GetFieldValue(const char* name)
+		{
+			bool success = GetFieldValueInternal(name, s_FieldValueBuffer);
+
+			if (!success)
+				return T();
+			return *(T*)s_FieldValueBuffer;
+		}
+
+		template<typename T>
+		void SetFieldValue(const char* name, const T& value)
+		{
+			SetFieldValueInternal(name, value);
+		}
+
 	private:
 		Ref<ScriptClass> m_scriptClass;
-
+		const char* s_FieldValueBuffer[8];
 		MonoObject* instance = nullptr;
 		MonoMethod* m_Constructor = nullptr;
 		MonoMethod* m_Create = nullptr;
 		MonoMethod* m_Update = nullptr;
+
+	private:
+
+		bool GetFieldValueInternal(const char* name, void* buffer);
+		bool SetFieldValueInternal(const char* name, const void* value);
 	};
 
 
@@ -67,6 +107,7 @@ namespace Gart
 		static void CreateEntity(Entity entity);
 		static void OnUpdateEntity(Entity entity, TimeStep ts);
 		static Scene* GetContext();
+		static Ref<ScriptInstance> GetEntityScriptInstance(UUID id);
 
 		static MonoImage* GetCoreAssemblyImage();
 

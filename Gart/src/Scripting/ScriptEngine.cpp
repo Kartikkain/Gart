@@ -3,12 +3,31 @@
 #include "ScriptEngine.h"
 #include "mono/jit/jit.h"
 #include "mono/metadata/assembly.h"
+#include "mono/metadata/tabledefs.h"
 #include "ScriptGlue.h";
 
 #include<filesystem>
 
 namespace Gart
 {
+	static std::unordered_map<std::string, ScriptFieldType> m_FieldTypes =
+	{
+		{"System.Int32",ScriptFieldType::Int},
+		{"System.Single",ScriptFieldType::Float},
+		{"System.Boolean",ScriptFieldType::Bool},
+		{"System.Char",ScriptFieldType::Char},
+		{"System.Int64",ScriptFieldType::Long},
+		{"System.Int16",ScriptFieldType::Short},
+		{"System.Byte",ScriptFieldType::Byte},
+		{"System.Double",ScriptFieldType::Double},
+		{"System.UInt32",ScriptFieldType::Uint},
+		{"System.UInt64",ScriptFieldType::Ulong},
+		{"System.UInt16",ScriptFieldType::Ushort},
+		{"Gart.Vector2",ScriptFieldType::Vector2},
+		{"Gart.Vector3",ScriptFieldType::Vector3},
+		{"Gart.Vector4",ScriptFieldType::Vector4},
+		{"Gart.Entity",ScriptFieldType::GEntity},
+	};
 	namespace Utils
 	{
 		char* ReadBytes(const std::filesystem::path& filepath, uint32_t* outSize)
@@ -79,7 +98,39 @@ namespace Gart
 				printf("%s.%s\n", nameSpace, name);
 			}
 		}
-	
+		
+		ScriptFieldType MonoTypeToGartType(const char* monotype)
+		{
+			auto it = m_FieldTypes.find(monotype);
+			if (it == m_FieldTypes.end()) return ScriptFieldType::none;
+
+			return it->second;
+		}
+
+		const char* GartTypeToString(ScriptFieldType type)
+		{
+			switch (type)
+			{
+			case Gart::Int: return "int";
+			case Gart::Float: return "float";
+			case Gart::Char: return "char";
+			case Gart::Bool: return "bool";
+			case Gart::Byte: return "byte";
+			case Gart::Long: return "long";
+			case Gart::Short: return "short";
+			case Gart::Double: return "double";
+			case Gart::Uint: return "uint";
+			case Gart::Ulong: return "ulong";
+			case Gart::Ushort: return "ushort";
+			case Gart::Vector2: return "vector2";
+			case Gart::Vector3: return "vector3";
+			case Gart::Vector4: return "vector4";
+			case Gart::GEntity: return "Entity";
+			}
+
+			return "<Inavalid>";
+		}
+
 	}
 
 	struct ScriptEngineData
@@ -236,11 +287,35 @@ namespace Gart
 				continue;
 
 			bool IsEntity = mono_class_is_subclass_of(monoClass, entityClass, false);
-			if (IsEntity)
-				s_Data->EntityClasses[fullname] = std::make_shared<ScriptClass>(nameSpace, name);
+			
+			if (!IsEntity)
+				continue;
 
-			printf("%s.%s\n", nameSpace, name);
+			Ref<ScriptClass> scriptClass = std::make_shared<ScriptClass>(nameSpace, name);
+
+			s_Data->EntityClasses[fullname] = scriptClass;
+
+			void* Iterator = nullptr;
+
+			while (MonoClassField* fields = mono_class_get_fields(monoClass, &Iterator))
+			{
+				const char* fieldName = mono_field_get_name(fields);
+				uint32_t fieldFlag = mono_field_get_flags(fields);
+				MonoType* fieldType = mono_field_get_type(fields);
+				
+				
+				if (fieldFlag & FIELD_ATTRIBUTE_PUBLIC)
+				{
+					const char* monotypename = mono_type_get_name(fieldType);
+					ScriptFieldType l_types = Utils::MonoTypeToGartType(monotypename);
+					BSS_CORE_WARN("{0} - {1}", fieldName,Utils::GartTypeToString(l_types));
+					scriptClass->m_FiledBuffer[fieldName] = { l_types,fieldName, fields };
+				}
+			}
+
 		}
+
+		auto& EntityClass = s_Data->EntityClasses;
 	}
 
 	std::unordered_map<std::string, Ref<ScriptClass>> ScriptEngine::GetClasses()
@@ -291,6 +366,13 @@ namespace Gart
 	MonoImage* ScriptEngine::GetCoreAssemblyImage()
 	{
 		return s_Data->CoreAssemblyImage;
+	}
+
+	Ref<ScriptInstance> ScriptEngine::GetEntityScriptInstance(UUID id)
+	{
+		auto it = s_Data->EntityInstances.find(id);
+		if (it == s_Data->EntityInstances.end()) return nullptr;
+		return it->second;
 	}
 
 #pragma endregion
@@ -347,6 +429,30 @@ namespace Gart
 	{
 		void* params = &ts;
 		m_scriptClass->InvokeMethod(m_Update, instance, &params);
+	}
+
+	bool ScriptInstance::GetFieldValueInternal(const char* name, void* buffer)
+	{
+		const auto& fields = m_scriptClass->GetFields();
+		auto it = fields.find(name);
+
+		if (it == fields.end())
+			return false;
+
+		mono_field_get_value(instance, it->second.m_fields, buffer);
+		return true;
+	}
+
+	bool ScriptInstance::SetFieldValueInternal(const char* name, const void* value)
+	{
+		const auto& fields = m_scriptClass->GetFields();
+		auto it = fields.find(name);
+
+		if (it == fields.end())
+			return false;
+
+		mono_field_set_value(instance, it->second.m_fields, (void*)value);
+		return true;
 	}
 
 #pragma endregion
