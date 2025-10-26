@@ -424,7 +424,7 @@ namespace Gart
 				ImGui::Checkbox("Fixed Rotation", &component.FixedRotation);
 		});
 
-		DrawComponent<ScriptComponent>("Script", true, entity, [entity](auto& component) mutable
+		DrawComponent<ScriptComponent>("Script", true, entity, [entity,scene = m_Context](auto& component) mutable
 			{
 				bool IsScriptExist = ScriptEngine::ClassExist(component.Name);
 				
@@ -439,20 +439,61 @@ namespace Gart
 					component.Name = buffer;
 				}
 
-				Ref<ScriptInstance> Instance = ScriptEngine::GetEntityScriptInstance(entity.GetUUID());
-
-				if (Instance)
+				bool scriptRunning = scene->IsRunning();
+				if(scriptRunning)
 				{
-					const auto& scriptFileds = Instance->GetScriptClass()->GetFields();
+					Ref<ScriptInstance> Instance = ScriptEngine::GetEntityScriptInstance(entity.GetUUID());
 
-					for (const auto& [name, field] : scriptFileds)
+					if (Instance)
 					{
-						if (field.scriptFieldType == ScriptFieldType::Float)
+						const auto& scriptFileds = Instance->GetScriptClass()->GetFields();
+
+						for (const auto& [name, field] : scriptFileds)
 						{
-							float data = Instance->GetFieldValue<float>(name);
-							if (ImGui::DragFloat(field.FieldName, &data))
+							if (field.scriptFieldType == ScriptFieldType::Float)
 							{
-								Instance->SetFieldValue(name, &data);
+								float data = Instance->GetFieldValue<float>(name);
+								if (ImGui::DragFloat(field.FieldName, &data))
+								{
+									Instance->SetFieldValue(name, &data);
+								}
+							}
+						}
+					}
+				}
+				else
+				{
+					if (IsScriptExist)
+					{
+						Ref<ScriptClass> entityClass = ScriptEngine::GetClass(component.Name);
+						auto& fields = entityClass->GetFields();
+						auto& entityFields = ScriptEngine::GetFieldMap(entity);
+
+						for (auto& [name, field] : fields)
+						{
+							if (entityFields.find(name) != entityFields.end())
+							{
+								ScriptFieldInstance& scriptFieldInstance = entityFields.at(name);
+
+								if (field.scriptFieldType == ScriptFieldType::Float)
+								{
+									float data = scriptFieldInstance.GetValue<float>();
+									if (ImGui::DragFloat(name, &data))
+									{
+										scriptFieldInstance.SetValue(data);
+									}
+								}
+							}
+							else
+							{
+								if (field.scriptFieldType == ScriptFieldType::Float)
+								{
+									float data = 0.0f;
+									if (ImGui::DragFloat(name, &data))
+									{
+										entityFields[name].SetValue(data);
+									}
+								}
 							}
 						}
 					}

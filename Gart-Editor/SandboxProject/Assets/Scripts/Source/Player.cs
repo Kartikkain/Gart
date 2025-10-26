@@ -9,7 +9,8 @@ namespace Sandbox
         private TransformComponent m_Transform;
         private RigidBody2DComponent m_rigidBody2D;
         public Vector3 translation;
-        public float Speed = 5.0f;
+        public float Speed = 3.0f;
+        public float Time = 0.0f;
         void OnCreate()
         {
             Console.WriteLine($"Player.OnCreated - {ID}");
@@ -20,7 +21,7 @@ namespace Sandbox
 
         void OnUpdate(float ts)
         {
-            
+            Time += ts;
             Vector2 velocity = Vector2.Zero;
 
             translation = m_Transform.Translation;
@@ -35,7 +36,7 @@ namespace Sandbox
             if (Input.GetKeyDown(Keycode.Left)) velocity.x -= 1.0f;
             if (Input.GetKeyDown(Keycode.Right)) velocity.x += 1.0f;
 
-            velocity *= Speed;
+            velocity *= Speed * ts;
 
             m_rigidBody2D.ApplyImpulse(velocity, true);
 

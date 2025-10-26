@@ -147,6 +147,7 @@ namespace Gart
 		ScriptClass EntityClass;
 		std::unordered_map<std::string, Ref<ScriptClass>> EntityClasses;
 		std::unordered_map<UUID, Ref<ScriptInstance>> EntityInstances;
+		std::unordered_map<UUID, ScriptFieldMap> EntityFieldMap;
 
 		//Runtime
 
@@ -323,6 +324,11 @@ namespace Gart
 		return s_Data->EntityClasses;
 	}
 
+	Ref<ScriptClass> ScriptEngine::GetClass(std::string& name)
+	{
+		return s_Data->EntityClasses[name];
+	}
+
 	void ScriptEngine::OnRuntimeStart(Scene* scene)
 	{
 		s_Data->SceneContext = scene;
@@ -346,8 +352,15 @@ namespace Gart
 		ScriptComponent script = entity.GetComponent<ScriptComponent>();
 		if (ClassExist(script.Name))
 		{
+			UUID id = entity.GetUUID();
 			Ref<ScriptInstance> instance = std::make_shared<ScriptInstance>(s_Data->EntityClasses[script.Name],entity);
-			s_Data->EntityInstances[entity.GetUUID()] = instance;
+			s_Data->EntityInstances[id] = instance;
+			if (s_Data->EntityFieldMap.find(id) != s_Data->EntityFieldMap.end())
+			{
+				ScriptFieldMap& fieldMap = s_Data->EntityFieldMap.at(id);
+				for (auto& [name, fieldInstance] : fieldMap)
+					instance->SetFieldValueInternal(name.c_str(), fieldInstance.m_Buffer);
+			}
 			instance->InvokeOnCreate();
 		}
 	}
@@ -375,6 +388,12 @@ namespace Gart
 		return it->second;
 	}
 
+	ScriptFieldMap& ScriptEngine::GetFieldMap(Entity entity)
+	{
+		BSS_CORE_ASSERT(entity, "There is no such entity");
+		UUID id = entity.GetUUID();
+		return s_Data->EntityFieldMap[id];
+	}
 #pragma endregion
 
 

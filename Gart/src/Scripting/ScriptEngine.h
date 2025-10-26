@@ -27,6 +27,38 @@ namespace Gart
 		MonoClassField* m_fields;
 	};
 
+	struct ScriptFieldInstance
+	{
+		ScriptFieldInstance()
+		{
+			memset(m_Buffer, 0, sizeof(m_Buffer));
+		}
+
+		ScriptField field;
+
+		template<typename T>
+		T GetValue()
+		{
+			static_assert(sizeof(T) <= 8, "Type Is Too Large.");
+			return *(T*)m_Buffer;
+		}
+
+		template<typename T>
+		void SetValue(T value)
+		{
+			static_assert(sizeof(T) <= 8, "Type Is Too Large.");
+			memcpy(m_Buffer, &value, sizeof(T));
+		}
+	private:
+		char m_Buffer[8];
+
+		friend class ScriptEngine;
+		friend class ScriptInstance;
+		
+	};
+
+	using ScriptFieldMap = std::unordered_map<std::string, ScriptFieldInstance>;
+
 	class ScriptClass
 	{
 	public:
@@ -87,6 +119,9 @@ namespace Gart
 
 		bool GetFieldValueInternal(const char* name, void* buffer);
 		bool SetFieldValueInternal(const char* name, const void* value);
+
+		friend class ScriptEngine;
+		friend class ScriptFieldInstance;
 	};
 
 
@@ -99,7 +134,7 @@ namespace Gart
 		static void LoadAssembly(const std::filesystem::path& filepath);
 		static void LoadAppAssembly(const std::filesystem::path& filepath);
 		static std::unordered_map<std::string, Ref<ScriptClass>> GetClasses();
-
+		static Ref<ScriptClass> GetClass(std::string& name);
 		static void OnRuntimeStart(Scene* scene);
 		static void OnRuntimeStop();
 
@@ -108,8 +143,8 @@ namespace Gart
 		static void OnUpdateEntity(Entity entity, TimeStep ts);
 		static Scene* GetContext();
 		static Ref<ScriptInstance> GetEntityScriptInstance(UUID id);
-
 		static MonoImage* GetCoreAssemblyImage();
+		static ScriptFieldMap& GetFieldMap(Entity entity);
 
 	private:
 		static void InitMono();

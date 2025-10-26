@@ -135,12 +135,14 @@ namespace Gart
 	{
 		OnPhysicsStart();
 		OnScriptStart();
+		m_IsRunning = true;
 	}
 
 	void Scene::OnRuntimeStop()
 	{
 		OnPhysicsStop();
 		OnScriptStop();
+		m_IsRunning = false;
 	}
 
 	void Scene::OnSimulationStart()
