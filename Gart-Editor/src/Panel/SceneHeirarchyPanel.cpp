@@ -3,6 +3,7 @@
 #include "Scene/Components.h"
 #include "Scripting/ScriptEngine.h"
 #include  "imgui.h"
+#include "Core/Log.h"
 #include <filesystem>
 #include <imgui_internal.h>
 #include <glm/gtc/type_ptr.hpp>
@@ -424,7 +425,7 @@ namespace Gart
 				ImGui::Checkbox("Fixed Rotation", &component.FixedRotation);
 		});
 
-		DrawComponent<ScriptComponent>("Script", true, entity, [entity,scene = m_Context](auto& component) mutable
+		DrawComponent<ScriptComponent>("Script", true, entity, [entity,this](auto& component) mutable
 			{
 				bool IsScriptExist = ScriptEngine::ClassExist(component.Name);
 				
@@ -439,7 +440,8 @@ namespace Gart
 					component.Name = buffer;
 				}
 
-				bool scriptRunning = scene->IsRunning();
+				bool scriptRunning = m_Context->IsRunning();
+				//BSS_CORE_WARN(" Scene is running : {0}", scriptRunning);
 				if(scriptRunning)
 				{
 					Ref<ScriptInstance> Instance = ScriptEngine::GetEntityScriptInstance(entity.GetUUID());
@@ -491,7 +493,9 @@ namespace Gart
 									float data = 0.0f;
 									if (ImGui::DragFloat(name, &data))
 									{
-										entityFields[name].SetValue(data);
+										ScriptFieldInstance& fieldInstnce = entityFields[name];
+										fieldInstnce.field = field;
+										fieldInstnce.SetValue(data);
 									}
 								}
 							}

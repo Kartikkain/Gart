@@ -10,6 +10,7 @@
 #include "box2d/b2_fixture.h"
 #include "box2d/b2_polygon_shape.h"
 #include "box2d/b2_circle_shape.h"
+#include "Core/Log.h"
 #include<glm/gtc/matrix_transform.hpp>
 
 namespace Gart
@@ -133,16 +134,18 @@ namespace Gart
 
 	void Scene::OnRuntimeStart()
 	{
+		m_IsRunning = true;
 		OnPhysicsStart();
 		OnScriptStart();
-		m_IsRunning = true;
+		BSS_CORE_WARN(" Scene is running : {0}", m_IsRunning);
 	}
 
 	void Scene::OnRuntimeStop()
 	{
+		m_IsRunning = false;
 		OnPhysicsStop();
 		OnScriptStop();
-		m_IsRunning = false;
+		BSS_CORE_WARN(" Scene is running : {0}", m_IsRunning);
 	}
 
 	void Scene::OnSimulationStart()

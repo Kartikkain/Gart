@@ -71,7 +71,7 @@ namespace BSS
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<WindowCloseEvent>(BSS_EVENT_FN(OnWindowClose));
 		dispatcher.Dispatch<WindowResizeEvent>(BSS_EVENT_FN(OnWindowResize));
-		BSS_CORE_INFO("{0}", e);
+		//BSS_CORE_INFO("{0}", e);
 		
 		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();)
 		{

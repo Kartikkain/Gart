@@ -349,7 +349,7 @@ namespace Gart
 
 	void ScriptEngine::CreateEntity(Entity entity)
 	{
-		ScriptComponent script = entity.GetComponent<ScriptComponent>();
+		ScriptComponent& script = entity.GetComponent<ScriptComponent>();
 		if (ClassExist(script.Name))
 		{
 			UUID id = entity.GetUUID();
@@ -357,9 +357,11 @@ namespace Gart
 			s_Data->EntityInstances[id] = instance;
 			if (s_Data->EntityFieldMap.find(id) != s_Data->EntityFieldMap.end())
 			{
-				ScriptFieldMap& fieldMap = s_Data->EntityFieldMap.at(id);
-				for (auto& [name, fieldInstance] : fieldMap)
-					instance->SetFieldValueInternal(name.c_str(), fieldInstance.m_Buffer);
+				const ScriptFieldMap& fieldMap = s_Data->EntityFieldMap.at(id);
+				for (const auto& [name, fieldInstance] : fieldMap)
+				{
+					instance->SetFieldValueInternal(name, fieldInstance.m_Buffer);
+				}
 			}
 			instance->InvokeOnCreate();
 		}
@@ -452,6 +454,7 @@ namespace Gart
 
 	bool ScriptInstance::GetFieldValueInternal(const char* name, void* buffer)
 	{
+		
 		const auto& fields = m_scriptClass->GetFields();
 		auto it = fields.find(name);
 
@@ -465,10 +468,12 @@ namespace Gart
 	bool ScriptInstance::SetFieldValueInternal(const char* name, const void* value)
 	{
 		const auto& fields = m_scriptClass->GetFields();
+
 		auto it = fields.find(name);
 
 		if (it == fields.end())
 			return false;
+
 
 		mono_field_set_value(instance, it->second.m_fields, (void*)value);
 		return true;

@@ -230,7 +230,7 @@ namespace Gart
 		{
 			int pixel = m_framebuffer->ReadPixel(1, mousex, mousey);
 			m_HoveredEntity = pixel == -1 && pixel < -1 ? Entity() : Entity((entt::entity)pixel, m_ActiveScene.get());
-			BSS_CLIENT_INFO("pixel {0}", pixel);
+			//BSS_CLIENT_INFO("pixel {0}", pixel);
 		}
 		OnOverlayRender();
 
@@ -361,8 +361,8 @@ namespace Gart
 			m_ActiveScene->OnViewportResize(l_ViewPortSize.x, l_ViewPortSize.y);
 		}
 		
-		if(m_ViewPortFocus) BSS_CORE_INFO("Scene View port Size : ({0}, {1}) Focused", l_ViewPortSize.x, l_ViewPortSize.y);
-		else BSS_CORE_INFO("Scene View port Size : ({0}, {1})", l_ViewPortSize.x, l_ViewPortSize.y);
+		/*if(m_ViewPortFocus) BSS_CORE_INFO("Scene View port Size : ({0}, {1}) Focused", l_ViewPortSize.x, l_ViewPortSize.y);
+		else BSS_CORE_INFO("Scene View port Size : ({0}, {1})", l_ViewPortSize.x, l_ViewPortSize.y);*/
 		uint32_t texture = m_framebuffer->GetColorAttachmetID(0);
 		ImGui::Image((void*)texture, { m_ViewPortSize.x,m_ViewPortSize.y },ImVec2(0,1),ImVec2(1,0));
 
@@ -639,7 +639,7 @@ namespace Gart
 		m_SceneState = SceneState::Play;
 		m_ActiveScene = Scene::Copy(m_EditorScene);
 		m_ActiveScene->OnRuntimeStart();
-		
+		m_HierarchyPanel.SetContext(m_ActiveScene);
 	}
 
 	void EditorLayer::OnSimulation()
@@ -650,6 +650,7 @@ namespace Gart
 		m_SceneState = SceneState::Simulation;
 		m_ActiveScene = Scene::Copy(m_EditorScene);
 		m_ActiveScene->OnSimulationStart();
+		m_HierarchyPanel.SetContext(m_ActiveScene);
 	}
 
 	void EditorLayer::OnScreenStop()
@@ -661,6 +662,7 @@ namespace Gart
 
 		m_SceneState = SceneState::Edit;
 		m_ActiveScene = m_EditorScene;
+		m_HierarchyPanel.SetContext(m_ActiveScene);
 	}
 
 	void EditorLayer::OnDuplicateEntity()

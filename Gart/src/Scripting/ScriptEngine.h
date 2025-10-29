@@ -29,12 +29,13 @@ namespace Gart
 
 	struct ScriptFieldInstance
 	{
+		ScriptField field;
 		ScriptFieldInstance()
 		{
 			memset(m_Buffer, 0, sizeof(m_Buffer));
 		}
 
-		ScriptField field;
+		
 
 		template<typename T>
 		T GetValue()
@@ -50,14 +51,14 @@ namespace Gart
 			memcpy(m_Buffer, &value, sizeof(T));
 		}
 	private:
-		char m_Buffer[8];
+		uint8_t m_Buffer[8];
 
 		friend class ScriptEngine;
 		friend class ScriptInstance;
 		
 	};
 
-	using ScriptFieldMap = std::unordered_map<std::string, ScriptFieldInstance>;
+	using ScriptFieldMap = std::unordered_map<const char*, ScriptFieldInstance>;
 
 	class ScriptClass
 	{

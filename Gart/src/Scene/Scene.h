@@ -46,7 +46,7 @@ namespace Gart
 			void RenderScene(const EditorCamera& camera);
 			void DuplicateEntity(Entity entity);
 
-			bool IsRunning() const { return m_IsRunning; }
+			bool IsRunning()  { return m_IsRunning; }
 
 			template<typename... Components>
 			auto GetAllEntityWith()
