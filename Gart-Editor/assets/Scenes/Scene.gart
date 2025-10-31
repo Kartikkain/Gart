@@ -75,6 +75,10 @@ Entities:
       FixedRotation: false
     ScriptComponent:
       Class: Sandbox.Player
+      ScriptFields:
+        - Name: Speed
+          Type: Float
+          Data: 50
     BoxCollider2DComponent:
       Offset: [0, 0]
       Size: [0.5, 0.5]

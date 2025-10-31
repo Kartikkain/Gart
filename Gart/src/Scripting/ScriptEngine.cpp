@@ -452,7 +452,7 @@ namespace Gart
 		m_scriptClass->InvokeMethod(m_Update, instance, &params);
 	}
 
-	bool ScriptInstance::GetFieldValueInternal(const char* name, void* buffer)
+	bool ScriptInstance::GetFieldValueInternal(const std::string& name, void* buffer)
 	{
 		
 		const auto& fields = m_scriptClass->GetFields();
@@ -465,7 +465,7 @@ namespace Gart
 		return true;
 	}
 
-	bool ScriptInstance::SetFieldValueInternal(const char* name, const void* value)
+	bool ScriptInstance::SetFieldValueInternal(const std::string& name, const void* value)
 	{
 		const auto& fields = m_scriptClass->GetFields();
 

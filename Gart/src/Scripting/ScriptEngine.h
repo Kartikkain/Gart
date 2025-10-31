@@ -40,25 +40,28 @@ namespace Gart
 		template<typename T>
 		T GetValue()
 		{
-			static_assert(sizeof(T) <= 8, "Type Is Too Large.");
+			static_assert(sizeof(T) <= 16, "Type Is Too Large.");
 			return *(T*)m_Buffer;
 		}
 
 		template<typename T>
 		void SetValue(T value)
 		{
-			static_assert(sizeof(T) <= 8, "Type Is Too Large.");
+			std::cout << "Coping" << std::endl;
+			static_assert(sizeof(T) <= 16, "Type Is Too Large.");
 			memcpy(m_Buffer, &value, sizeof(T));
 		}
 	private:
-		uint8_t m_Buffer[8];
+		uint8_t m_Buffer[16];
 
 		friend class ScriptEngine;
 		friend class ScriptInstance;
 		
 	};
 
-	using ScriptFieldMap = std::unordered_map<const char*, ScriptFieldInstance>;
+	
+
+	using ScriptFieldMap = std::unordered_map<std::string, ScriptFieldInstance>;
 
 	class ScriptClass
 	{
@@ -71,10 +74,10 @@ namespace Gart
 
 		MonoObject* InvokeMethod(MonoMethod* method, MonoObject* instance, void** params);
 
-		std::map<const char*, ScriptField> GetFields() const { return m_FiledBuffer; }
+		std::map<std::string, ScriptField> GetFields() const { return m_FiledBuffer; }
 
 	private:
-		std::map<const char*, ScriptField> m_FiledBuffer;
+		std::map<std::string, ScriptField> m_FiledBuffer;
 		std::string m_ClassNamespace;
 		std::string m_ClassName;
 		MonoClass* m_MonoClass = nullptr;
@@ -93,7 +96,7 @@ namespace Gart
 		Ref<ScriptClass> GetScriptClass() const { return m_scriptClass; }
 
 		template<typename T>
-		T GetFieldValue(const char* name)
+		T GetFieldValue(const std::string& name)
 		{
 			bool success = GetFieldValueInternal(name, s_FieldValueBuffer);
 
@@ -103,14 +106,14 @@ namespace Gart
 		}
 
 		template<typename T>
-		void SetFieldValue(const char* name, const T& value)
+		void SetFieldValue(const std::string& name, const T& value)
 		{
 			SetFieldValueInternal(name, value);
 		}
 
 	private:
 		Ref<ScriptClass> m_scriptClass;
-		const char* s_FieldValueBuffer[8];
+		inline static char s_FieldValueBuffer[16];
 		MonoObject* instance = nullptr;
 		MonoMethod* m_Constructor = nullptr;
 		MonoMethod* m_Create = nullptr;
@@ -118,8 +121,8 @@ namespace Gart
 
 	private:
 
-		bool GetFieldValueInternal(const char* name, void* buffer);
-		bool SetFieldValueInternal(const char* name, const void* value);
+		bool GetFieldValueInternal(const std::string& name, void* buffer);
+		bool SetFieldValueInternal(const std::string& name, const void* value);
 
 		friend class ScriptEngine;
 		friend class ScriptFieldInstance;
@@ -160,5 +163,53 @@ namespace Gart
 
 	};
 
-	
+	namespace Utils
+	{
+		inline const char* GetScriptFieldTypeToString(ScriptFieldType Type)
+		{
+			switch (Type)
+			{
+			case ScriptFieldType::Int: return "Int";
+			case ScriptFieldType::Float: return "Float";
+			case ScriptFieldType::Char: return "Char";
+			case ScriptFieldType::Bool: return "Bool";
+			case ScriptFieldType::Byte: return "Byte";
+			case ScriptFieldType::Long: return "Long";
+			case ScriptFieldType::Short: return "Short";
+			case ScriptFieldType::Double: return "Double";
+			case ScriptFieldType::Uint: return "Uint";
+			case ScriptFieldType::Ulong: return "Ulong";
+			case ScriptFieldType::Ushort: return "Ushort";
+			case ScriptFieldType::Vector2: return "Vector2";
+			case ScriptFieldType::Vector3: return "Vector3";
+			case ScriptFieldType::Vector4: return "Vector4";
+			case ScriptFieldType::GEntity: return "GEntity";
+			}
+
+			//BSS_CORE_ASSERT(false, "Unknown ScriptFieldType");
+			return "None";
+		}
+
+		inline ScriptFieldType GetScriptFieldTypeFromString(std::string_view Type)
+		{
+			if( Type == "Int" ) return ScriptFieldType::Int;
+			if( Type == "Float" ) return ScriptFieldType::Float;
+			if( Type == "Char" ) return ScriptFieldType::Char;
+			if( Type == "Bool" ) return ScriptFieldType::Bool;
+			if( Type == "Byte" ) return ScriptFieldType::Byte;
+			if( Type == "Long" ) return ScriptFieldType::Long;
+			if( Type == "Short" ) return ScriptFieldType::Short;
+			if( Type == "Double" ) return ScriptFieldType::Double;
+			if( Type == "Uint" ) return ScriptFieldType::Uint;
+			if( Type == "Ulong" ) return ScriptFieldType::Ulong;
+			if( Type == "Ushort" ) return ScriptFieldType::Ushort;
+			if( Type == "Vector2" ) return ScriptFieldType::Vector2;
+			if( Type == "Vector3" ) return ScriptFieldType::Vector3;
+			if( Type == "Vector4" ) return ScriptFieldType::Vector4;
+			if( Type == "GEntity" ) return ScriptFieldType::GEntity;
+
+			//BSS_CORE_ASSERT(false, "Unknown ScriptFieldType");
+			return ScriptFieldType::none;
+		}
+	}
 }

@@ -564,6 +564,7 @@ namespace Gart
 	{
 		if (!m_EditorScenePath.empty())
 		{
+			BSS_CORE_INFO("Save Scene");
 			SerializeScene(m_ActiveScene, m_EditorScenePath);
 		}
 		else SaveScene();

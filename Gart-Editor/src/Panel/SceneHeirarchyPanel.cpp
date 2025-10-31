@@ -480,7 +480,7 @@ namespace Gart
 								if (field.scriptFieldType == ScriptFieldType::Float)
 								{
 									float data = scriptFieldInstance.GetValue<float>();
-									if (ImGui::DragFloat(name, &data))
+									if (ImGui::DragFloat(name.c_str(), &data))
 									{
 										scriptFieldInstance.SetValue(data);
 									}
@@ -491,7 +491,7 @@ namespace Gart
 								if (field.scriptFieldType == ScriptFieldType::Float)
 								{
 									float data = 0.0f;
-									if (ImGui::DragFloat(name, &data))
+									if (ImGui::DragFloat(name.c_str(), &data))
 									{
 										ScriptFieldInstance& fieldInstnce = entityFields[name];
 										fieldInstnce.field = field;

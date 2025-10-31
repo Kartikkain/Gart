@@ -16,6 +16,7 @@ namespace Gart
 
 	private:
 
+
 		uint64_t m_UUID;
 	};
 

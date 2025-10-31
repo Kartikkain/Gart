@@ -2,6 +2,8 @@
 #include "SceneSerialization.h"
 #include "Entity.h"
 #include "Scene/Components.h"
+#include "Scripting/ScriptEngine.h"
+#include "Core/UUID.h"
 #include <fstream>
 #include<yaml-cpp/yaml.h>
 
@@ -84,10 +86,41 @@ namespace YAML
 			return true;
 		}
 	};
+
+	template<>
+	struct convert<Gart::UUID>
+	{
+		static Node encode(const Gart::UUID& uuid)
+		{
+			Node node;
+			node.push_back((uint32_t)uuid);
+			return node;
+		}
+
+		static bool decode(const Node& node, Gart::UUID& uuid)
+		{
+			uuid = node.as<uint64_t>(uuid);
+			return true;
+		}
+	};
 }
 
 namespace Gart
 {
+#define WRITE_SCRIPT_FIELDS(FieldType,Type)\
+	 case ScriptFieldType::FieldType:\
+		out << instance.GetValue<Type>();\
+		break\
+	
+
+#define READ_SCRIPT_FIELDS(FieldType,Type)\
+	case ScriptFieldType::FieldType:\
+	{\
+		Type l_data = scriptField["Data"].as<Type>();;\
+		l_Instance.SetValue(l_data);\
+		break;\
+	}\
+
 	static std::string RigidBodyTypeToString(RigidBody2DComponent::BodyType bodytype)
 	{
 		switch (bodytype)
@@ -210,10 +243,55 @@ namespace Gart
 
 		if (entity.HasComponent<ScriptComponent>())
 		{
+			
 			out << YAML::Key << "ScriptComponent";
 			out << YAML::BeginMap;
 			auto& scriptComponent = entity.GetComponent<ScriptComponent>();
 			out << YAML::Key << "Class" << YAML::Value << scriptComponent.Name;
+
+			Ref<ScriptClass> scriptClass = ScriptEngine::GetClass(scriptComponent.Name);
+			auto& fields = scriptClass->GetFields();
+
+			if (fields.size() > 0)
+			{
+				out << YAML::Key << "ScriptFields" << YAML::Value;
+				auto& entityFields = ScriptEngine::GetFieldMap(entity);
+				out << YAML::BeginSeq;
+				for (auto& [name, field] : fields)
+				{
+					if (entityFields.find(name) != entityFields.end())
+					{
+						out << YAML::BeginMap;
+						out << YAML::Key << "Name" << YAML::Value << name;
+						out << YAML::Key << "Type" << YAML::Value << Utils::GetScriptFieldTypeToString(field.scriptFieldType);
+
+						out << YAML::Key << "Data" << YAML::Value;
+						ScriptFieldInstance& instance = entityFields.at(name);
+						switch (field.scriptFieldType)
+						{
+							WRITE_SCRIPT_FIELDS(Int, int32_t);
+							WRITE_SCRIPT_FIELDS(Float, float);
+							WRITE_SCRIPT_FIELDS(Char, char);
+							WRITE_SCRIPT_FIELDS(Bool, bool);
+							WRITE_SCRIPT_FIELDS(Byte, int8_t);
+							WRITE_SCRIPT_FIELDS(Long, int64_t);
+							WRITE_SCRIPT_FIELDS(Short, int16_t);
+							WRITE_SCRIPT_FIELDS(Double, double);
+							WRITE_SCRIPT_FIELDS(Uint, uint32_t);
+							WRITE_SCRIPT_FIELDS(Ulong, uint64_t);
+							WRITE_SCRIPT_FIELDS(Ushort, uint16_t);
+							WRITE_SCRIPT_FIELDS(Vector2, glm::vec2);
+							WRITE_SCRIPT_FIELDS(Vector3, glm::vec3);
+							WRITE_SCRIPT_FIELDS(Vector4, glm::vec4);
+							WRITE_SCRIPT_FIELDS(GEntity, UUID);
+						}
+
+						out << YAML::EndMap;
+					}
+				}
+				out << YAML::EndSeq;
+			}
+
 			out << YAML::EndMap;
 		}
 
@@ -356,6 +434,46 @@ namespace Gart
 				{
 					auto& script = deSerialzeEntity.AddComponent<ScriptComponent>();
 					script.Name = scriptComponent["Class"].as<std::string>();
+					auto scriptFields = scriptComponent["ScriptFields"];
+					if (scriptFields)
+					{
+						Ref<ScriptClass> scriptClass = ScriptEngine::GetClass(script.Name);
+						auto& fields = scriptClass->GetFields();
+						auto& entityScriptField = ScriptEngine::GetFieldMap(deSerialzeEntity);
+
+						for (auto& scriptField : scriptFields)
+						{
+							std::string fieldname = scriptField["Name"].as<std::string>();
+							std::string typeString = scriptField["Type"].as<std::string>();
+							ScriptFieldType Type = Utils::GetScriptFieldTypeFromString(typeString);
+
+							ScriptFieldInstance& l_Instance = entityScriptField[fieldname];
+
+							if (fields.find(fieldname) == fields.end())
+								continue;
+
+							l_Instance.field = fields.at(fieldname);
+
+							switch (Type)
+							{
+								READ_SCRIPT_FIELDS(Int, int32_t)
+								READ_SCRIPT_FIELDS(Float, float)
+								READ_SCRIPT_FIELDS(Char, char)
+								READ_SCRIPT_FIELDS(Bool, bool)
+								READ_SCRIPT_FIELDS(Byte, int8_t)
+								READ_SCRIPT_FIELDS(Long, int64_t)
+								READ_SCRIPT_FIELDS(Short, int16_t)
+								READ_SCRIPT_FIELDS(Double, double)
+								READ_SCRIPT_FIELDS(Uint, uint32_t)
+								READ_SCRIPT_FIELDS(Ulong, uint64_t)
+								READ_SCRIPT_FIELDS(Ushort, uint16_t)
+								READ_SCRIPT_FIELDS(Vector2, glm::vec2)
+								READ_SCRIPT_FIELDS(Vector3, glm::vec3)
+								READ_SCRIPT_FIELDS(Vector4, glm::vec4)
+								READ_SCRIPT_FIELDS(GEntity, UUID)
+							}
+						}
+					}
 					
 				}
 
