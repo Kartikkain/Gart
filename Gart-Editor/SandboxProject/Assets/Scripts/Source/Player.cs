@@ -11,6 +11,13 @@ namespace Sandbox
         public Vector3 translation;
         public float Speed = 0.0f;
         public float Time = 0.0f;
+        public float offset = 0.5f;
+
+        Entity m_Camera;
+        TransformComponent m_cameraTransform;
+        Vector3 m_CameraTranslation;
+
+        Ball m_ball;
         void OnCreate()
         {
             Console.WriteLine($"Player.OnCreated - {ID}");
@@ -18,20 +25,44 @@ namespace Sandbox
             m_Transform = GetComponent<TransformComponent>();
             m_rigidBody2D = GetComponent<RigidBody2DComponent>();
             if (m_rigidBody2D != null) Console.WriteLine("RigidBody Component Present");
+
+            m_Camera = FindEntityByName("Main Camera");
+
+            if(m_Camera != null)
+            {
+                Console.WriteLine("camera present");
+                m_cameraTransform = m_Camera.GetComponent<TransformComponent>();
+            }
+            else
+            {
+                Console.WriteLine("camera not found");
+            }
+            Entity ballEntity = FindEntityByName("Circle");
+            if(ballEntity != null)
+            {
+                Console.WriteLine("ball entity");
+                m_ball = ballEntity.As<Ball>();
+            }
+
+            if(m_ball!=null)
+            {
+                Console.WriteLine("got the ball script refrence");
+            }
         }
 
         void OnUpdate(float ts)
         {
             Time += ts;
             Vector2 velocity = Vector2.Zero;
-
+            
             translation = m_Transform.Translation;
-            //Console.WriteLine($"Player.OnUpdate: {ts}");
-
-            /*if (Input.GetKeyDown(Keycode.A)) translation.x -= speed * ts;
-            else if (Input.GetKeyDown(Keycode.D)) translation.x += speed * ts;
-            else if (Input.GetKeyDown(Keycode.W)) translation.y += speed * ts;
-            else if (Input.GetKeyDown(Keycode.S)) translation.y -= speed * ts;*/
+            if(m_cameraTransform != null)
+            {
+                m_CameraTranslation = m_cameraTransform.Translation;
+                m_CameraTranslation.xy = m_Transform.Translation.xy;
+                m_cameraTransform.Translation = m_CameraTranslation;
+            }
+            
 
             if (Input.GetKeyDown(Keycode.Space)) Console.WriteLine("Working");
 
@@ -43,8 +74,6 @@ namespace Sandbox
 
             m_rigidBody2D.ApplyImpulse(velocity, true);
 
-
-            /* m_Transform.Translation = translation;*/
         }
     }
 }

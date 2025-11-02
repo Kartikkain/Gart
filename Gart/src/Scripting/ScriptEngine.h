@@ -94,6 +94,7 @@ namespace Gart
 		void InvokeOnUpdate(float ts);
 
 		Ref<ScriptClass> GetScriptClass() const { return m_scriptClass; }
+		MonoObject* GetManagedObject() { return instance; }
 
 		template<typename T>
 		T GetFieldValue(const std::string& name)
@@ -147,6 +148,7 @@ namespace Gart
 		static void OnUpdateEntity(Entity entity, TimeStep ts);
 		static Scene* GetContext();
 		static Ref<ScriptInstance> GetEntityScriptInstance(UUID id);
+		static MonoObject* GetManagedInstance(UUID id);
 		static MonoImage* GetCoreAssemblyImage();
 		static ScriptFieldMap& GetFieldMap(Entity entity);
 

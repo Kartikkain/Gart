@@ -28,6 +28,12 @@ namespace Gart
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         extern public static bool Entity_Has_Component(ulong id, Type componentType);
 
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        extern public static ulong Find_Entity_By_Name(string name);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        extern public static object GetScriptInstance(ulong entityID);
+
         #endregion
 
         #region RigidBody2d

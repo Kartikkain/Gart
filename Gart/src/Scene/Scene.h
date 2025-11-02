@@ -20,6 +20,7 @@ namespace Gart
 			Entity CreateEntityWithUUID(UUID uuid,const std::string& name = std::string());
 
 			Entity GetEntityWithUUID(UUID uuid);
+			Entity FindEntityByName(std::string_view entityName);
 			void DestroyEntity(Entity entity);
 			/*entt::registry& GetReg() { return m_Registery; }*/
 			static Ref<Scene> Copy(Ref<Scene> other);

@@ -390,6 +390,13 @@ namespace Gart
 		return it->second;
 	}
 
+	MonoObject* ScriptEngine::GetManagedInstance(UUID id)
+	{
+		
+		BSS_CORE_ASSERT(s_Data->EntityInstances.find(id) != s_Data->EntityInstances.end(), "Not able to find entity.");
+		return s_Data->EntityInstances.at(id)->GetManagedObject();
+	}
+
 	ScriptFieldMap& ScriptEngine::GetFieldMap(Entity entity)
 	{
 		BSS_CORE_ASSERT(entity, "There is no such entity");

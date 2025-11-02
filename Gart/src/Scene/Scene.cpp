@@ -55,6 +55,22 @@ namespace Gart
 		return EntityMap[uuid];
 	}
 
+	Entity Scene::FindEntityByName(std::string_view entityName)
+	{
+		auto view = m_Registery.view<TagComponent>();
+
+		for (auto entity : view)
+		{
+			const TagComponent& tc = view.get<TagComponent>(entity);
+
+			if (tc.m_Tag == entityName)
+				return Entity{ entity,this };
+		}
+
+		return {};
+
+	}
+
 	void Scene::DestroyEntity(Entity entity)
 	{
 		m_Registery.destroy(entity);

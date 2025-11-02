@@ -50,6 +50,29 @@ namespace Gart
 		return m_EntitHasComponentFun.at(manageType)(entity);
 	}
 
+	static uint64_t Find_Entity_By_Name(MonoString* entityname)
+	{
+		char* nameCstr = mono_string_to_utf8(entityname);
+		std::string str(nameCstr);
+
+		Scene* scene = ScriptEngine::GetContext();
+		BSS_CORE_ASSERT(scene, "No Scene Context");
+
+		Entity entity = scene->FindEntityByName(str);
+		mono_free(nameCstr);
+
+		if (!entity)
+			return 0;
+
+		return entity.GetUUID();
+
+	}
+
+	static MonoObject* GetScriptInstance(UUID entityID)
+	{
+		return ScriptEngine::GetManagedInstance(entityID);
+	}
+
 	static void RigidBody2DComponent_ApplyImpulse(UUID id,glm::vec3* impulse, glm::vec3* worldposition, bool wake)
 	{
 		Scene* scene = ScriptEngine::GetContext();
@@ -85,6 +108,8 @@ namespace Gart
 		GART_INTERANAL_CALL(Transform_GetTranslation)
 		GART_INTERANAL_CALL(Transform_SetTranslation)
 		GART_INTERANAL_CALL(Entity_Has_Component)
+		GART_INTERANAL_CALL(Find_Entity_By_Name)
+		GART_INTERANAL_CALL(GetScriptInstance)
 		GART_INTERANAL_CALL(RigidBody2DComponent_ApplyImpulse)
 		GART_INTERANAL_CALL(RigidBody2DComponent_ApplyImpulseToCenter)
 		GART_INTERANAL_CALL(Input_GetKeyDown)

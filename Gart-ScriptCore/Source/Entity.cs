@@ -40,5 +40,19 @@ namespace Gart
             T component =  new T(){ Entity = this};
             return component;
         }
+
+        public Entity FindEntityByName(string name)
+        {
+            ulong entityID = InternalCalls.Find_Entity_By_Name(name);
+            if(entityID == 0) 
+                return null;
+            return new Entity(entityID);
+        }
+
+        public T As<T>() where T : Entity, new()
+        {
+            object scriptInstance = InternalCalls.GetScriptInstance(ID);
+            return scriptInstance as T;
+        }
     }
 }
