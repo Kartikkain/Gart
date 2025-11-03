@@ -138,6 +138,8 @@ namespace Gart
 		
 		static void LoadAssembly(const std::filesystem::path& filepath);
 		static void LoadAppAssembly(const std::filesystem::path& filepath);
+
+		static void ReloadAssemblies();
 		static std::unordered_map<std::string, Ref<ScriptClass>> GetClasses();
 		static Ref<ScriptClass> GetClass(std::string& name);
 		static void OnRuntimeStart(Scene* scene);

@@ -5,7 +5,7 @@ namespace Sandbox
 {
     public class Ball: Entity
     {
-        
+       
         void OnCreate()
         {
             Console.WriteLine("Ball");

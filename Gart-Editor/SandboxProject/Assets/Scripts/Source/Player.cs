@@ -17,7 +17,7 @@ namespace Sandbox
         TransformComponent m_cameraTransform;
         Vector3 m_CameraTranslation;
 
-        Ball m_ball;
+       
         void OnCreate()
         {
             Console.WriteLine($"Player.OnCreated - {ID}");
@@ -37,17 +37,7 @@ namespace Sandbox
             {
                 Console.WriteLine("camera not found");
             }
-            Entity ballEntity = FindEntityByName("Circle");
-            if(ballEntity != null)
-            {
-                Console.WriteLine("ball entity");
-                m_ball = ballEntity.As<Ball>();
-            }
-
-            if(m_ball!=null)
-            {
-                Console.WriteLine("got the ball script refrence");
-            }
+            
         }
 
         void OnUpdate(float ts)

@@ -142,6 +142,7 @@ namespace Gart
 
 	void ScriptGlue::RegisterComponents()
 	{
+		m_EntitHasComponentFun.clear();
 		RegisterComponent(AllComponent{});
 	}
 }

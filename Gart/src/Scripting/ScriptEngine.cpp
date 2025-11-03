@@ -144,6 +144,9 @@ namespace Gart
 		MonoAssembly* AppAssembly = nullptr;
 		MonoImage* AppAssemblyImage = nullptr;
 
+		std::filesystem::path CoreAssemblyPath;
+		std::filesystem::path AppAssemblyPath;
+
 		ScriptClass EntityClass;
 		std::unordered_map<std::string, Ref<ScriptClass>> EntityClasses;
 		std::unordered_map<UUID, Ref<ScriptInstance>> EntityInstances;
@@ -164,10 +167,11 @@ namespace Gart
 
 
 		InitMono();
+		ScriptGlue::RegisterFunction();
+
 		LoadAssembly("Resources/Scripts/Gart-ScriptCore.dll");
 		LoadAppAssembly("SandboxProject/Assets/Scripts/Binaries/Sandbox.dll");
 
-		ScriptGlue::RegisterFunction();
 		ScriptGlue::RegisterComponents();
 
 		LoadAssemblyClasses();
@@ -212,6 +216,7 @@ namespace Gart
 
 	void ScriptEngine::LoadAssembly(const std::filesystem::path& filepath)
 	{
+		s_Data->CoreAssemblyPath = filepath;
 		s_Data->AppDomain = mono_domain_create_appdomain("GartScriptRuntime", nullptr);
 		mono_domain_set(s_Data->AppDomain, true);
 
@@ -224,6 +229,7 @@ namespace Gart
 	}
 	void ScriptEngine::LoadAppAssembly(const std::filesystem::path& filepath)
 	{
+		s_Data->AppAssemblyPath = filepath;
 		s_Data->AppAssembly = Utils::LoadMonoAssembly(filepath);
 		Utils::PrintAssemblyTypes(s_Data->AppAssembly);
 
@@ -247,9 +253,10 @@ namespace Gart
 
 	void ScriptEngine::ShutDownMono()
 	{
-		//mono_domain_unload(s_Data->AppDomain);
+		mono_domain_set(mono_get_root_domain(), false);
+		mono_domain_unload(s_Data->AppDomain);
 		s_Data->AppDomain = nullptr;
-		//mono_jit_cleanup(s_Data->RootDomain);
+		mono_jit_cleanup(s_Data->RootDomain);
 		s_Data->RootDomain = nullptr;
 
 	}
@@ -317,6 +324,23 @@ namespace Gart
 		}
 
 		auto& EntityClass = s_Data->EntityClasses;
+	}
+
+	void  ScriptEngine::ReloadAssemblies()
+	{
+		mono_domain_set(mono_get_root_domain(), false);
+
+		mono_domain_unload(s_Data->AppDomain);
+
+		LoadAssembly(s_Data->CoreAssemblyPath);
+		LoadAppAssembly(s_Data->AppAssemblyPath);
+
+		LoadAssemblyClasses();
+
+		ScriptGlue::RegisterComponents();
+
+		s_Data->EntityClass = ScriptClass::ScriptClass("Gart", "Entity", true);
+
 	}
 
 	std::unordered_map<std::string, Ref<ScriptClass>> ScriptEngine::GetClasses()

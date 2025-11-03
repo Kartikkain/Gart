@@ -3,6 +3,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <chrono>
 #include "Scene/SceneSerialization.h"
+#include "Scripting/ScriptEngine.h"
 #include "Utils/PlatformUtils.h"
 #include "ImGuizmo.h"
 #include "Math/Math.h"
@@ -308,6 +309,11 @@ namespace Gart
 				if (ImGui::MenuItem("Open...", "Ctrl+O")) OpenDialog();
 				if (ImGui::MenuItem("Save as...", "Ctrl+Shift+S")) SaveScene();
 				if (ImGui::MenuItem("Exit")) BSS::Application::Get().Close();
+				ImGui::EndMenu();
+			}
+			if (ImGui::BeginMenu("Script"))
+			{
+				if (ImGui::MenuItem("Reload Assemblies")) ScriptEngine::ReloadAssemblies();
 				ImGui::EndMenu();
 			}
 			ImGui::EndMenuBar();
