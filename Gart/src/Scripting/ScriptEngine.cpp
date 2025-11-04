@@ -5,6 +5,8 @@
 #include "mono/metadata/assembly.h"
 #include "mono/metadata/tabledefs.h"
 #include "ScriptGlue.h";
+#include "Filewatcher.h"
+#include "Core/Application.h"
 
 #include<filesystem>
 
@@ -147,6 +149,9 @@ namespace Gart
 		std::filesystem::path CoreAssemblyPath;
 		std::filesystem::path AppAssemblyPath;
 
+		Ref<filewatch::FileWatch<std::string>> AppAssemblyFilewatcher;
+
+		bool AppAssemblyLoadPending = false;
 		ScriptClass EntityClass;
 		std::unordered_map<std::string, Ref<ScriptClass>> EntityClasses;
 		std::unordered_map<UUID, Ref<ScriptInstance>> EntityInstances;
@@ -159,6 +164,28 @@ namespace Gart
 	};
 
 	static ScriptEngineData* s_Data = nullptr;
+
+
+#pragma region Filewatch
+
+
+	static void OnAppAssemblyFileSystemEvent(const std::string& path, const filewatch::Event change_type)
+	{
+		if (change_type == filewatch::Event::modified && !s_Data->AppAssemblyLoadPending)
+		{
+			s_Data->AppAssemblyLoadPending = true;
+			
+			std::cout << path << "-" << (int)change_type << std::endl;
+
+			BSS::Application::Get().SubmitToMainThreadQueue([]() { 
+				s_Data->AppAssemblyFilewatcher.reset();
+				ScriptEngine::ReloadAssemblies(); 
+				});
+		}
+	}
+
+#pragma endregion
+
 
 #pragma region ScriptEngine
 	void ScriptEngine::Init()
@@ -205,6 +232,7 @@ namespace Gart
 		s_Data->EntityClass.InvokeMethod(printFunctionWithStringParameter, Instance, &stringParam);
 #endif
 
+		
 	}
 
 
@@ -234,6 +262,10 @@ namespace Gart
 		Utils::PrintAssemblyTypes(s_Data->AppAssembly);
 
 		s_Data->AppAssemblyImage = mono_assembly_get_image(s_Data->AppAssembly);
+
+
+		s_Data->AppAssemblyFilewatcher = std::make_shared<filewatch::FileWatch<std::string>>(filepath.string(), OnAppAssemblyFileSystemEvent );
+		s_Data->AppAssemblyLoadPending = false;
 	}
 	void ScriptEngine::InitMono()
 	{
@@ -511,6 +543,11 @@ namespace Gart
 	}
 
 #pragma endregion
+
+
+
+
+
 
 
 }

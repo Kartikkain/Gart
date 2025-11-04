@@ -30,12 +30,12 @@ namespace Sandbox
 
             if(m_Camera != null)
             {
-                Console.WriteLine("camera present");
+                Console.WriteLine("camera present.");
                 m_cameraTransform = m_Camera.GetComponent<TransformComponent>();
             }
             else
             {
-                Console.WriteLine("camera not found");
+                Console.WriteLine("camera not found...");
             }
             
         }
@@ -54,7 +54,6 @@ namespace Sandbox
             }
             
 
-            if (Input.GetKeyDown(Keycode.Space)) Console.WriteLine("Working");
 
             if (Input.GetKeyDown(Keycode.W)) velocity.y += 1.0f;
             if (Input.GetKeyDown(Keycode.Left)) velocity.x -= 1.0f;

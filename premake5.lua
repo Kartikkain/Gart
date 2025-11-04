@@ -59,6 +59,7 @@ project "Gart"
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.stb_image}",
 		"%{IncludeDir.entt}",
+		"%{IncludeDir.Filewatcher}",
 		"%{IncludeDir.yaml_cpp}",
 		"%{IncludeDir.mono}",
 		"%{IncludeDir.ImGuizmo}",
@@ -170,6 +171,7 @@ project "Gart-Editor"
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.entt}",
+		"%{IncludeDir.Filewatcher}",
 		"%{IncludeDir.ImGuizmo}"
 	}
 

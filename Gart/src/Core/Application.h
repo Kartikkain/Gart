@@ -50,19 +50,26 @@ namespace BSS
 		inline static Application& Get() { return *s_Instance; }
 		inline Window& GetWindow() { return *m_Window; }
 
+		void SubmitToMainThreadQueue(const std::function<void()>& func);
 		ApplicationCommandLineArgs GetCommandLineArgs() const { return m_Specification.ComandLineArgs; }
 	private:
 
-		float m_LastFrameTime = 0.0f;
 
 		bool OnWindowClose(WindowCloseEvent& e);
 		bool OnWindowResize(WindowResizeEvent& e);
+
+		void ExecuteMainThreadQueue();
+
+	private:
+
+		float m_LastFrameTime = 0.0f;
 		Gart::Scope<Window> m_Window;
 		ImGuiLayer* m_ImGuiLayer;
 		bool m_Running = true;
 		bool m_Minimize = false;
 		LayerStack m_LayerStack;
-
+		std::vector<std::function<void()>> m_MainThreadQueue;
+		std::mutex m_MainThreadQueueMutex;
 		ApplicationSpecification m_Specification;
 		static Application* s_Instance;
 		

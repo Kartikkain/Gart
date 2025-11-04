@@ -87,10 +87,14 @@ namespace BSS
 		while (m_Running)
 		{
 			GART_PROFILE_SCOPE("Run Loop");
+
 			float l_time = (float)glfwGetTime();
 			Gart::TimeStep timestep = l_time - m_LastFrameTime;
 			m_LastFrameTime = l_time;
 			glClear(GL_COLOR_BUFFER_BIT);
+
+			
+			ExecuteMainThreadQueue(); // executing mainthread jobs
 
 			if (!m_Minimize)
 			{
@@ -152,4 +156,21 @@ namespace BSS
 		return false;
 	}
 
+	void Application::ExecuteMainThreadQueue()
+	{
+		std::scoped_lock<std::mutex> lock(m_MainThreadQueueMutex);
+
+		for (auto func : m_MainThreadQueue)
+		{
+			func();
+		}
+
+		m_MainThreadQueue.clear();
+	}
+
+	void Application::SubmitToMainThreadQueue(const std::function<void()>& func)
+	{
+		std::scoped_lock<std::mutex> lock(m_MainThreadQueueMutex);
+		m_MainThreadQueue.emplace_back(func);
+	}
 }
