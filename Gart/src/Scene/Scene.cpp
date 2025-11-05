@@ -159,6 +159,7 @@ namespace Gart
 	void Scene::OnRuntimeStop()
 	{
 		m_IsRunning = false;
+		m_IsPause = false;
 		OnPhysicsStop();
 		OnScriptStop();
 		BSS_CORE_WARN(" Scene is running : {0}", m_IsRunning);
@@ -257,92 +258,100 @@ namespace Gart
 
 	void Scene::OnUpdateSimulation(TimeStep ts, const EditorCamera& camera)
 	{
+		if (!m_IsPause || m_StepFrames-- > 0)
 		{
-			const int32_t velocityIterations = 6;
-			const int32_t positionIterations = 2;
-
-			m_PhysicsWorld->Step(ts, velocityIterations, positionIterations);
-
-			auto& view = m_Registery.view<RigidBody2DComponent>();
-
-			for (auto e : view)
 			{
-				Entity entity = { e,this };
+				const int32_t velocityIterations = 6;
+				const int32_t positionIterations = 2;
 
-				auto& rb2d = entity.GetComponent<RigidBody2DComponent>();
-				auto& transform = entity.GetComponent<TransformComponent>();
+				m_PhysicsWorld->Step(ts, velocityIterations, positionIterations);
 
-				b2Body* body = (b2Body*)rb2d.RuntimeBody;
+				auto& view = m_Registery.view<RigidBody2DComponent>();
 
-				const auto& position = body->GetPosition();
+				for (auto e : view)
+				{
+					Entity entity = { e,this };
 
-				transform.Translate.x = position.x;
-				transform.Translate.y = position.y;
-				transform.Rotation.z = body->GetAngle();
+					auto& rb2d = entity.GetComponent<RigidBody2DComponent>();
+					auto& transform = entity.GetComponent<TransformComponent>();
+
+					b2Body* body = (b2Body*)rb2d.RuntimeBody;
+
+					const auto& position = body->GetPosition();
+
+					transform.Translate.x = position.x;
+					transform.Translate.y = position.y;
+					transform.Rotation.z = body->GetAngle();
+
+				}
 
 			}
-
 		}
 		RenderScene(camera);
 	}
 
 	void Scene::OnUpdateRuntime(TimeStep ts)
 	{
-		// Scripts
-
+		if (!m_IsPause || m_StepFrames-- > 0)
 		{
-			auto  view = m_Registery.view<ScriptComponent>();
-			for (auto e : view)
+
+
+			// Scripts
+
 			{
-				Entity entity = { e,this };
-				ScriptEngine::OnUpdateEntity(entity, ts);
-			}
-
-		}
-
-		m_Registery.view<NativeScriptComponent>().each([=](auto entity, auto& nsc)
-		{
-
-				if (!nsc.Instance)
+				auto  view = m_Registery.view<ScriptComponent>();
+				for (auto e : view)
 				{
-					nsc.Instance = nsc.InstanciateScript();
-					nsc.Instance->m_entity = Entity{ entity,this };
-					nsc.Instance->OnCreate();
+					Entity entity = { e,this };
+					ScriptEngine::OnUpdateEntity(entity, ts);
 				}
 
-				nsc.Instance->OnUpdate(ts);
+			}
 
-		});
+			m_Registery.view<NativeScriptComponent>().each([=](auto entity, auto& nsc)
+				{
 
-		//Physics
+					if (!nsc.Instance)
+					{
+						nsc.Instance = nsc.InstanciateScript();
+						nsc.Instance->m_entity = Entity{ entity,this };
+						nsc.Instance->OnCreate();
+					}
 
-		{
-			const int32_t velocityIterations = 6;
-			const int32_t positionIterations = 2;
+					nsc.Instance->OnUpdate(ts);
 
-			m_PhysicsWorld->Step(ts,velocityIterations, positionIterations);
+				});
 
-			auto& view = m_Registery.view<RigidBody2DComponent>();
+			//Physics
 
-			for (auto e : view)
 			{
-				Entity entity = { e,this };
-				
-				auto& rb2d = entity.GetComponent<RigidBody2DComponent>();
-				auto& transform = entity.GetComponent<TransformComponent>();
+				const int32_t velocityIterations = 6;
+				const int32_t positionIterations = 2;
 
-				b2Body* body = (b2Body*)rb2d.RuntimeBody;
+				m_PhysicsWorld->Step(ts, velocityIterations, positionIterations);
 
-				const auto& position = body->GetPosition();
+				auto& view = m_Registery.view<RigidBody2DComponent>();
 
-				transform.Translate.x = position.x;
-				transform.Translate.y = position.y;
-				transform.Rotation.z = body->GetAngle();
+				for (auto e : view)
+				{
+					Entity entity = { e,this };
+
+					auto& rb2d = entity.GetComponent<RigidBody2DComponent>();
+					auto& transform = entity.GetComponent<TransformComponent>();
+
+					b2Body* body = (b2Body*)rb2d.RuntimeBody;
+
+					const auto& position = body->GetPosition();
+
+					transform.Translate.x = position.x;
+					transform.Translate.y = position.y;
+					transform.Rotation.z = body->GetAngle();
+
+				}
 
 			}
 
 		}
-
 		// Render 2D
 		Camera* maincamera = nullptr;
 		glm::mat4* mainCameraTransform = nullptr;
@@ -433,6 +442,11 @@ namespace Gart
 		Entity newEntity = CreateEntity(entityName);
 
 		CopyComponentIfExist(AllComponent{}, entity, newEntity);
+	}
+
+	void Scene::Step(int frame)
+	{
+		m_StepFrames = frame;
 	}
 
 	Entity Scene::GetPrimaryCamera()

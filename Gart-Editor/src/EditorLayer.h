@@ -83,6 +83,6 @@ namespace Gart
 		SceneHeirarchyPanel m_HierarchyPanel;
 		ContentBrowserPanel m_ContentBrowserPanel;
 
-		Ref<Texture2D> m_IconPlay, m_IconStop, m_IconSimulate;
+		Ref<Texture2D> m_IconPlay, m_IconStop, m_IconSimulate,m_IconSimulateStop,m_IconPause,m_IconStep;
 	};
 }

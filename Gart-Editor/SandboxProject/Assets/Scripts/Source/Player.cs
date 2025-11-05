@@ -30,7 +30,7 @@ namespace Sandbox
 
             if(m_Camera != null)
             {
-                Console.WriteLine("camera present.");
+                Console.WriteLine("camera present....");
                 m_cameraTransform = m_Camera.GetComponent<TransformComponent>();
             }
             else

@@ -49,6 +49,12 @@ namespace Gart
 
 			bool IsRunning()  { return m_IsRunning; }
 
+			bool IsPause() { return m_IsPause; }
+
+			void SetIsPause(bool state) { m_IsPause = state; }
+
+			void Step(int frame = 1);
+
 			template<typename... Components>
 			auto GetAllEntityWith()
 			{
@@ -63,6 +69,8 @@ namespace Gart
 			b2World* m_PhysicsWorld = nullptr;
 		private:
 			bool m_IsRunning = false;
+			bool m_IsPause = false;
+			int m_StepFrames = 0;
 			entt::registry m_Registery;
 			uint32_t m_ViewportWidth = 0, m_ViewportHeight = 0;
 			std::unordered_map<UUID, Entity> EntityMap;
