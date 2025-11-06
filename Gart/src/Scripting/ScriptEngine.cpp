@@ -4,6 +4,7 @@
 #include "mono/jit/jit.h"
 #include "mono/metadata/assembly.h"
 #include "mono/metadata/tabledefs.h"
+#include "mono/metadata/mono-debug.h"
 #include "ScriptGlue.h";
 #include "Filewatcher.h"
 #include "Core/Application.h"
@@ -57,7 +58,7 @@ namespace Gart
 			return buffer;
 		}
 
-		MonoAssembly* LoadMonoAssembly(const std::filesystem::path& assemblyPath)
+		MonoAssembly* LoadMonoAssembly(const std::filesystem::path& assemblyPath, bool loadPDB)
 		{
 			uint32_t fileSize = 0;
 			char* fileData = ReadBytes(assemblyPath, &fileSize);
@@ -73,6 +74,22 @@ namespace Gart
 				return nullptr;
 			}
 
+			if (loadPDB)
+			{
+				std::filesystem::path pdbPath = assemblyPath;
+				pdbPath.replace_extension(".pdb");
+
+				if (std::filesystem::exists(pdbPath))
+				{
+					uint32_t pdbFileSize = 0;
+					char* pdbFileData = ReadBytes(pdbPath, &pdbFileSize);
+
+					mono_debug_open_image_from_memory(image, (const mono_byte*)pdbFileData, pdbFileSize);
+					BSS_CORE_INFO("Loaded PDB {0}", pdbPath);
+
+					delete[] pdbFileData;
+				}
+			}
 			std::string assemblypathstr = assemblyPath.string();
 			MonoAssembly* assembly = mono_assembly_load_from_full(image, assemblypathstr.c_str(), &status, 0);
 			mono_image_close(image);
@@ -152,6 +169,7 @@ namespace Gart
 		Ref<filewatch::FileWatch<std::string>> AppAssemblyFilewatcher;
 
 		bool AppAssemblyLoadPending = false;
+		bool EnableDebugging = true;
 		ScriptClass EntityClass;
 		std::unordered_map<std::string, Ref<ScriptClass>> EntityClasses;
 		std::unordered_map<UUID, Ref<ScriptInstance>> EntityInstances;
@@ -248,7 +266,7 @@ namespace Gart
 		s_Data->AppDomain = mono_domain_create_appdomain("GartScriptRuntime", nullptr);
 		mono_domain_set(s_Data->AppDomain, true);
 
-		s_Data->CoreAssembly = Utils::LoadMonoAssembly(filepath);
+		s_Data->CoreAssembly = Utils::LoadMonoAssembly(filepath,s_Data->EnableDebugging);
 		Utils::PrintAssemblyTypes(s_Data->CoreAssembly);
 
 		s_Data->CoreAssemblyImage = mono_assembly_get_image(s_Data->CoreAssembly);
@@ -258,7 +276,7 @@ namespace Gart
 	void ScriptEngine::LoadAppAssembly(const std::filesystem::path& filepath)
 	{
 		s_Data->AppAssemblyPath = filepath;
-		s_Data->AppAssembly = Utils::LoadMonoAssembly(filepath);
+		s_Data->AppAssembly = Utils::LoadMonoAssembly(filepath,s_Data->EnableDebugging);
 		Utils::PrintAssemblyTypes(s_Data->AppAssembly);
 
 		s_Data->AppAssemblyImage = mono_assembly_get_image(s_Data->AppAssembly);
@@ -271,6 +289,17 @@ namespace Gart
 	{
 		mono_set_assemblies_path("mono/lib");
 
+		if (s_Data->EnableDebugging)
+		{
+			const char* argv[2] = {
+				"--debugger-agent=transport=dt_socket,address=127.0.0.1:2550,server=y,suspend=n,loglevel=3,logfile=MonoDebugger.log",
+				"--soft-breakpoints" 
+			};
+
+			mono_jit_parse_options(2, (char**)argv);
+			mono_debug_init(MONO_DEBUG_FORMAT_MONO);
+		}
+
 		MonoDomain* RootDomain = mono_jit_init("GartJITRuntime");
 
 		if (RootDomain == nullptr)
@@ -280,6 +309,9 @@ namespace Gart
 		}
 
 		s_Data->RootDomain = RootDomain;
+
+		if (s_Data->EnableDebugging)
+			mono_debug_domain_create(s_Data->RootDomain);
 
 	}
 
@@ -481,7 +513,8 @@ namespace Gart
 
 	MonoObject* ScriptClass::InvokeMethod(MonoMethod* method, MonoObject* instance, void** params)
 	{
-		return mono_runtime_invoke(method, instance, params, nullptr);
+		MonoObject* exception = nullptr;
+		return mono_runtime_invoke(method, instance, params, &exception);
 	}
 
 #pragma endregion
