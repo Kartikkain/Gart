@@ -12,6 +12,7 @@ namespace Gart
 
 		void OnimGuiRender();
 	private:
+		std::filesystem::path m_BaseDirectory;
 		std::filesystem::path m_currentDirectory;
 		Ref<Texture2D> m_DirectoryIcon;
 		Ref<Texture2D> m_FileIcon;

@@ -89,7 +89,7 @@ Entities:
       Scale: [2.31, 2.5, 1]
     SpriteRenderer:
       Color: [0, 1, 0, 1]
-      TexturePath: assets\textures\smile.png
+      TexturePath: Textures\smile.png
       TillingFactor: 1
     RigidBody2DComponent:
       BodyType: Dynamic

@@ -1,14 +1,14 @@
 #include "bsspch.h"
 #include "ContentBrowserPanel.h"
+#include "Project/Project.h"
 #include "imgui.h"
 
 
 namespace Gart
 {
-	extern const std::filesystem::path s_AssetPath = "assets";
 
 	ContentBrowserPanel::ContentBrowserPanel()
-		:m_currentDirectory(s_AssetPath)
+		:m_BaseDirectory(Project::GetAssetDirectory()), m_currentDirectory(Project::GetAssetDirectory())
 	{
 		m_DirectoryIcon = Texture2D::Create("Resources/Icons/ContentBrowser/DirectoryIcon.png");
 		m_FileIcon = Texture2D::Create("Resources/Icons/ContentBrowser/FileIcon.png");
@@ -18,7 +18,7 @@ namespace Gart
 	{
 		ImGui::Begin("Content Browser");
 
-		if (m_currentDirectory != std::filesystem::path(s_AssetPath))
+		if (m_currentDirectory != std::filesystem::path(m_BaseDirectory))
 		{
 			if (ImGui::Button("<-"))
 			{
@@ -40,7 +40,7 @@ namespace Gart
 		for (auto& directoryEntry : std::filesystem::directory_iterator(m_currentDirectory))
 		{
 			const auto& path = directoryEntry.path();
-			auto relPath = std::filesystem::relative(path,s_AssetPath);
+			auto relPath = std::filesystem::relative(path);
 			std::string filename = relPath.filename().string();
 
 			ImGui::PushID(filename.c_str());

@@ -134,6 +134,6 @@ BSS::Application* BSS::CreateApplication(ApplicationCommandLineArgs args)
 	BSS::ApplicationSpecification spec;
 	spec.Name = "Gart Engine";
 	spec.ComandLineArgs = args;
-
+	
 	return new Gart::GartEditor(spec);
 }

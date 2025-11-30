@@ -9,7 +9,6 @@
 #include <glm/gtc/type_ptr.hpp>
 namespace Gart
 {
-	const std::filesystem::path s_AssetPath = "assets";
 
 	SceneHeirarchyPanel::SceneHeirarchyPanel(const Ref<Scene>& context)
 	{
@@ -389,7 +388,7 @@ namespace Gart
 					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
 					{
 						const wchar_t* path = (const wchar_t*)payload->Data;
-						std::filesystem::path texturePath = std::filesystem::path(s_AssetPath) / path;
+						std::filesystem::path texturePath = std::filesystem::path(path);
 						component.Texture = Texture2D::Create(texturePath.string());
 					}
 					ImGui::EndDragDropTarget();

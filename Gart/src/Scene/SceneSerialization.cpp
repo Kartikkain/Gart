@@ -4,6 +4,7 @@
 #include "Scene/Components.h"
 #include "Scripting/ScriptEngine.h"
 #include "Core/UUID.h"
+#include "Project/Project.h"
 #include <fstream>
 #include<yaml-cpp/yaml.h>
 
@@ -416,8 +417,12 @@ namespace Gart
 				{
 					auto& Sprite = deSerialzeEntity.AddComponent<SpriteRenderer>();
 					Sprite.Color = spriteRenderer["Color"].as<glm::vec4>();
-					if(spriteRenderer["TexturePath"])
-						Sprite.Texture = Texture2D::Create(spriteRenderer["TexturePath"].as<std::string>());
+					if (spriteRenderer["TexturePath"])
+					{
+						std::string texturePath = spriteRenderer["TexturePath"].as<std::string>();
+						auto relativeTexturePath = Project::GetAssetFileSystemPath(texturePath);
+						Sprite.Texture = Texture2D::Create(relativeTexturePath.string());
+					}
 					if(spriteRenderer["TillingFactor"]) Sprite.TillingFactor = spriteRenderer["TillingFactor"].as<float>();
 				}
 

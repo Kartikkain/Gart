@@ -18,7 +18,6 @@ static const char* s_MapTiles =
 
 namespace Gart 
 {
-	const std::filesystem::path s_AssetPath = "assets";
 	EditorLayer::EditorLayer()
 		:Layer("Sandbox2D"), m_OrthoCamera(1280.0f / 720.0f)
 	{
@@ -55,18 +54,23 @@ namespace Gart
 		SceneViewFrameBuffer.Height = 720;
 		m_EditorCamera = EditorCamera(30.0f, 1.77, 0.1f, 1000.0f);
 		m_framebuffer = Gart::FrameBuffer::Create(SceneViewFrameBuffer);
-
-		// Init here
-		/*m_Particle.ColorBegin = { 254 / 255.0f, 212 / 255.0f, 123 / 255.0f, 1.0f };
-		m_Particle.ColorEnd = { 254 / 255.0f, 109 / 255.0f, 41 / 255.0f, 1.0f };
-		m_Particle.SizeBegin = 0.5f, m_Particle.SizeVariation = 0.3f, m_Particle.SizeEnd = 0.0f;
-		m_Particle.LifeTime = 1.0f;
-		m_Particle.Velocity = { 0.0f, 0.0f };
-		m_Particle.VelocityVariation = { 3.0f, 1.0f };
-		m_Particle.Position = { 0.0f, 0.0f };*/
+		auto commandLineArgs = BSS::Application::Get().GetCommandLineArgs();
 
 		m_EditorScene = std::make_shared<Scene>();
 		m_ActiveScene = m_EditorScene;
+
+		if (commandLineArgs.Count > 1)
+		{
+			auto projectPath = commandLineArgs[1];
+			BSS_CORE_WARN("Project Path {0}", projectPath);
+			OpenProject(projectPath);
+		}
+		else
+		{
+			// TODO give user access to select directory
+			NewProject();
+		}
+
 #if 0
 		auto Square = m_ActiveScene->CreateEntity("Square");
 		auto GreenSquare = m_ActiveScene->CreateEntity("Green Square");
@@ -327,7 +331,7 @@ namespace Gart
 		ImGui::ShowDemoWindow(&show);*/
 		
 		m_HierarchyPanel.OnGUIRender();
-		m_ContentBrowserPanel.OnimGuiRender();
+		m_ContentBrowserPanel->OnimGuiRender();
 
 		ImGui::Begin("Setting");
 
@@ -380,7 +384,7 @@ namespace Gart
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
 			{
 				const wchar_t* path = (const wchar_t*)payload->Data;
-				OpenScene(std::filesystem::path(s_AssetPath) / path);
+				OpenScene(path);
 			}
 			ImGui::EndDragDropTarget();
 		}
@@ -529,6 +533,31 @@ namespace Gart
 		}
 	}
 
+	void EditorLayer::OpenProject(const std::filesystem::path& filepath)
+	{
+		BSS_CORE_INFO("Project Path : {0}", filepath);
+		if (Project::Load(filepath))
+		{
+			auto raw = Project::GetActiveProject()->GetConfig().StartScene;
+			BSS_CORE_INFO("Raw Scene: '{0}' size={1}", raw.string(), raw.string().size());
+			BSS_CORE_INFO("just : {0}", raw.string());
+			auto scenePath = Project::GetAssetFileSystemPath(Project::GetActiveProject()->GetConfig().StartScene);
+			BSS_CORE_INFO("Scene Path : {0}", scenePath.string());
+			OpenScene(scenePath);
+			m_ContentBrowserPanel = std::make_unique<ContentBrowserPanel>();
+		}
+	}
+
+	void EditorLayer::NewProject()
+	{
+		Project::New();
+	}
+
+	void EditorLayer::SaveProject()
+	{
+
+	}
+
 	void EditorLayer::OpenScene(const std::filesystem::path& filepath)
 	{
 		if (m_SceneState != SceneState::Edit)
@@ -536,6 +565,8 @@ namespace Gart
 
 		Ref<Scene> newScene = std::make_shared<Scene>();
 		SceneSerialization serializer(newScene);
+
+		BSS_CORE_WARN("Scene Path : {0}", filepath);
 
 		if (serializer.DeSerialize(filepath.string()))
 		{

@@ -30,4 +30,5 @@
 #include "Scene/Components.h"
 #include "Scene/Entity.h"
 #include "Scene/ScriptableEntity.h"
+#include "Project/Project.h"
 

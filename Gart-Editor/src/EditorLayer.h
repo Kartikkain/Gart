@@ -23,6 +23,10 @@ namespace Gart
 	private:
 		void OpenDialog();
 
+		void OpenProject(const std::filesystem::path& filepath);
+		void NewProject();
+		void SaveProject();
+
 		void OpenScene(const std::filesystem::path& filepath);
 		void NewScene();
 		void SaveScene();
@@ -81,7 +85,7 @@ namespace Gart
 		std::unordered_map<char, Gart::Ref<Gart::SubTexture2D>> m_TileSet;
 		uint32_t m_MapWidth, m_MapHeight;
 		SceneHeirarchyPanel m_HierarchyPanel;
-		ContentBrowserPanel m_ContentBrowserPanel;
+		Scope<ContentBrowserPanel> m_ContentBrowserPanel;
 
 		Ref<Texture2D> m_IconPlay, m_IconStop, m_IconSimulate,m_IconSimulateStop,m_IconPause,m_IconStep;
 	};
