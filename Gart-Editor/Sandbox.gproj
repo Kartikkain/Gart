@@ -1,5 +1,0 @@
-Project:
-  ProjectName: Sandbox
-  StartScene: "Scenes/Scene.gart"
-  AssetDirectory: "Assets"
-  ScriptDirectory: "Scripts/Binaries/Sandbox.dll"

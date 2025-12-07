@@ -1498,6 +1498,7 @@
     <ClInclude Include="src\Core\FileSystem.h" />
     <ClInclude Include="src\Project\Project.h" />
     <ClInclude Include="src\Project\ProjectSerializer.h" />
+    <ClInclude Include="src\UI\UI.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Application.cpp">

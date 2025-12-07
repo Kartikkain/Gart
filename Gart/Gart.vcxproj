@@ -203,6 +203,7 @@
     <ClInclude Include="src\Scene\ScriptableEntity.h" />
     <ClInclude Include="src\Scripting\ScriptEngine.h" />
     <ClInclude Include="src\Scripting\ScriptGlue.h" />
+    <ClInclude Include="src\UI\UI.h" />
     <ClInclude Include="src\Utils\PlatformUtils.h" />
     <ClInclude Include="src\bsspch.h" />
     <ClInclude Include="src\imgui\ImGuiLayer.h" />

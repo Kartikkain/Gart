@@ -23,6 +23,7 @@ namespace Gart
 	private:
 		void OpenDialog();
 
+		bool OpenProject();
 		void OpenProject(const std::filesystem::path& filepath);
 		void NewProject();
 		void SaveProject();

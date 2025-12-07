@@ -4,6 +4,7 @@
 #include "Scripting/ScriptEngine.h"
 #include  "imgui.h"
 #include "Core/Log.h"
+#include "UI/UI.h"
 #include <filesystem>
 #include <imgui_internal.h>
 #include <glm/gtc/type_ptr.hpp>
@@ -431,12 +432,12 @@ namespace Gart
 				static char buffer[64];
 				strcpy(buffer, component.Name.c_str());
 
-				if (!IsScriptExist)
-					ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.341f, 0.341f, 0.341f, 1));
-
+				UI::ScopeStyleColor textColor(ImGuiCol_Text, ImVec4(0.341f, 0.341f, 0.341f, 1), !IsScriptExist);
+				
 				if (ImGui::InputText("Class", buffer, sizeof(buffer)))
 				{
 					component.Name = buffer;
+					return;
 				}
 
 				bool scriptRunning = m_Context->IsRunning();
@@ -502,8 +503,6 @@ namespace Gart
 					}
 				}
 
-				if (!IsScriptExist)
-					ImGui::PopStyleColor();
 			});
 
 		DrawComponent<BoxCollider2DComponent>("Box Collider 2D", true, entity, [](auto& component)

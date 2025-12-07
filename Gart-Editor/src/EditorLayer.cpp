@@ -68,7 +68,12 @@ namespace Gart
 		else
 		{
 			// TODO give user access to select directory
-			NewProject();
+			//NewProject();
+
+			if (!OpenProject())
+			{
+				BSS::Application::Get().Close();
+			}
 		}
 
 #if 0
@@ -312,9 +317,11 @@ namespace Gart
 		{
 			if (ImGui::BeginMenu("File"))
 			{
-				if (ImGui::MenuItem("New", "Ctrl+N")) NewScene();
-				if (ImGui::MenuItem("Open...", "Ctrl+O")) OpenDialog();
-				if (ImGui::MenuItem("Save as...", "Ctrl+Shift+S")) SaveScene();
+				if (ImGui::MenuItem("Open Project...", "Ctrl+O")) OpenProject();
+				ImGui::Separator();
+				if (ImGui::MenuItem("New Scene", "Ctrl+N")) NewScene();
+				if (ImGui::MenuItem("Save Scene as...", "Ctrl+Shift+S")) SaveScene();
+				if (ImGui::MenuItem("Save...", "Ctrl+S")) SaveS();
 				if (ImGui::MenuItem("Exit")) BSS::Application::Get().Close();
 				ImGui::EndMenu();
 			}
@@ -472,7 +479,7 @@ namespace Gart
 
 		case BSS_KEY_O:
 			
-			if (control) OpenDialog();
+			if (control) OpenProject();
 			break;
 
 		case BSS_KEY_S:
@@ -531,6 +538,16 @@ namespace Gart
 			SceneSerialization l_Serializer(m_ActiveScene);
 			l_Serializer.DeSerialize(filepath);
 		}
+	}
+
+	bool EditorLayer::OpenProject()
+	{
+		std::string filepath = FileDialogs::OpenFile("Gart Project (*.gproj)\0*.gproj\0");
+		if (filepath.empty())
+			return false;
+
+		OpenProject(filepath);
+		return true;
 	}
 
 	void EditorLayer::OpenProject(const std::filesystem::path& filepath)
