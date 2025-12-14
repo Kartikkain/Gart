@@ -49,7 +49,7 @@ namespace BSS
 		m_Window->SetEventCallback(BSS_EVENT_FN(OnEvent));
 
 		Gart::Renderer::Init();
-		Gart::ScriptEngine::Init();
+		
 
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);

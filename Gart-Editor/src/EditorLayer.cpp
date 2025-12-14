@@ -2,6 +2,7 @@
 #include "imgui.h"
 #include <glm/gtc/type_ptr.hpp>
 #include <chrono>
+#include <imgui/imgui_internal.h>
 #include "Scene/SceneSerialization.h"
 #include "Scripting/ScriptEngine.h"
 #include "Utils/PlatformUtils.h"
@@ -348,12 +349,15 @@ namespace Gart
 		if (m_HoveredEntity)
 			EntityName = m_HoveredEntity.GetComponent<TagComponent>().m_Tag;
 
+		ImGuiContext& g = *GImGui;
+		
 		ImGui::Text("Hovered Entity : %s", EntityName.c_str());
 		ImGui::Text("Draw Calls: %d", l_stats.DrawCalls);
 		ImGui::Text("Quad Counts: %d", l_stats.QuadCounts);
 		ImGui::Text("Number Of Vertices: %d", l_stats.GetNumbersOfVertices());
 		ImGui::Text("Number Of Indicies: %d", l_stats.GetNumbersOfIndices());
 		ImGui::Checkbox("Show Physics Colliders", &m_ShowPhysicsColliders);
+		ImGui::Text("Active ID: %u", g.ActiveId);
 		ImGui::End();
 
 
@@ -509,6 +513,20 @@ namespace Gart
 			m_GizmoType = ImGuizmo::OPERATION::SCALE;
 			break;
 
+		case BSS_KEY_DELETE:
+		{
+			if (BSS::Application::Get().GetImGuiLayer()->ImguiActiveWidget() == 0)
+			{
+				Entity l_SelectedEntity = m_HierarchyPanel.GetSelectedEntity();
+				if (l_SelectedEntity)
+				{
+					m_HierarchyPanel.SetSelectedEntity({});
+					m_ActiveScene->DestroyEntity(l_SelectedEntity);
+
+				}
+			}
+			break;
+		}
 
 		default:
 			break;
@@ -555,11 +573,9 @@ namespace Gart
 		BSS_CORE_INFO("Project Path : {0}", filepath);
 		if (Project::Load(filepath))
 		{
+			ScriptEngine::Init();
 			auto raw = Project::GetActiveProject()->GetConfig().StartScene;
-			BSS_CORE_INFO("Raw Scene: '{0}' size={1}", raw.string(), raw.string().size());
-			BSS_CORE_INFO("just : {0}", raw.string());
 			auto scenePath = Project::GetAssetFileSystemPath(Project::GetActiveProject()->GetConfig().StartScene);
-			BSS_CORE_INFO("Scene Path : {0}", scenePath.string());
 			OpenScene(scenePath);
 			m_ContentBrowserPanel = std::make_unique<ContentBrowserPanel>();
 		}

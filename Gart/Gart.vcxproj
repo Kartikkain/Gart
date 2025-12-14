@@ -167,6 +167,7 @@
     <ClInclude Include="src\Events\KeyEvent.h" />
     <ClInclude Include="src\Events\MouseEvent.h" />
     <ClInclude Include="src\Math\Math.h" />
+    <ClInclude Include="src\Physics\Physics2D.h" />
     <ClInclude Include="src\Platform\OpenGl\OpenGLShader.h" />
     <ClInclude Include="src\Platform\OpenGl\OpenGlBuffer.h" />
     <ClInclude Include="src\Platform\OpenGl\OpenGlContext.h" />

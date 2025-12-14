@@ -2,6 +2,7 @@
 #include "bsspch.h"
 #include "ImGuiLayer.h"
 #include "imgui.h"
+#include "imgui_internal.h"
 #include "Core/Application.h"
 
 #define IMGUI_IMPL_API
@@ -108,6 +109,10 @@ namespace BSS
 		}
 	}
 
+	uint32_t ImGuiLayer::ImguiActiveWidget()
+	{
+		return GImGui->ActiveId;
+	}
 
 	void ImGuiLayer::SetDarkThemeColors()
 	{

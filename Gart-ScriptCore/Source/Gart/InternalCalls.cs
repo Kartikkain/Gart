@@ -44,6 +44,15 @@ namespace Gart
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         extern public static void RigidBody2DComponent_ApplyImpulseToCenter(ulong id, ref Vector2 impulse,bool wake = true);
 
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        extern public static void RigidBody2DComponent_GetLinearVelocity(ulong id, out Vector2 LinearVelocity);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        extern public static RigidBody2DComponent.BodyType RigidBody2DComponent_GetBodyType(ulong id);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        extern public static void RigidBody2DComponent_SetBodyType(ulong id, RigidBody2DComponent.BodyType bodyType);
+
         #endregion
 
     }

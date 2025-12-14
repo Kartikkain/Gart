@@ -31,6 +31,21 @@ namespace Gart
 
     public class RigidBody2DComponent:Component
     {
+        public enum BodyType { Static = 0, Dynamic, Kinematic };
+        public Vector2 LinearVelocity
+        {
+            get
+            {
+                InternalCalls.RigidBody2DComponent_GetLinearVelocity(Entity.ID, out Vector2 linearVelocity);
+                return linearVelocity;
+            }
+        }
+
+        public BodyType Type
+        {
+            get => InternalCalls.RigidBody2DComponent_GetBodyType(Entity.ID);
+            set => InternalCalls.RigidBody2DComponent_SetBodyType(Entity.ID, value);
+        }
         public void ApplyImpulse(Vector2 impulse, Vector2 worldposition,bool wake)
         {
             InternalCalls.RigidBody2DComponent_ApplyImpulse(Entity.ID, ref impulse, ref worldposition,wake);

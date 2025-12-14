@@ -40,8 +40,9 @@ namespace Gart
 		for (auto& directoryEntry : std::filesystem::directory_iterator(m_currentDirectory))
 		{
 			const auto& path = directoryEntry.path();
-			auto relPath = std::filesystem::relative(path);
-			std::string filename = relPath.filename().string();
+			//auto relPath = std::filesystem::relative(path);
+			//std::string filename = relPath.filename().string();
+			std::string filename = path.filename().string();
 
 			ImGui::PushID(filename.c_str());
 
@@ -51,6 +52,7 @@ namespace Gart
 
 			if (ImGui::BeginDragDropSource())
 			{
+				std::filesystem::path relPath(path);
 				const wchar_t* itemPath = relPath.c_str();
 				ImGui::SetDragDropPayload("CONTENT_BROWSER_ITEM", itemPath, (wcslen(itemPath) + 1) * sizeof(wchar_t), ImGuiCond_Once);
 				ImGui::EndDragDropSource();

@@ -390,6 +390,7 @@ namespace Gart
 					{
 						const wchar_t* path = (const wchar_t*)payload->Data;
 						std::filesystem::path texturePath = std::filesystem::path(path);
+						BSS_CORE_INFO(texturePath);
 						component.Texture = Texture2D::Create(texturePath.string());
 					}
 					ImGui::EndDragDropTarget();
@@ -537,7 +538,7 @@ namespace Gart
 			});
 
 	}
-	void SceneHeirarchyPanel::SetSelectedEntity(Entity& entity)
+	void SceneHeirarchyPanel::SetSelectedEntity(Entity entity)
 	{
 		m_SelectedEntity = entity;
 	}

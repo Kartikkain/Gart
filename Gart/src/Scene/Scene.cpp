@@ -5,6 +5,7 @@
 #include "Entity.h"
 #include "ScriptableEntity.h"
 #include "Scripting/ScriptEngine.h"
+#include "Physics/Physics2D.h"
 #include "box2d/b2_world.h"
 #include "box2d/b2_body.h"
 #include "box2d/b2_fixture.h"
@@ -15,18 +16,7 @@
 
 namespace Gart
 {
-	static b2BodyType GartBodyTypeToBox2DBodyType(RigidBody2DComponent::BodyType bodytype)
-	{
-		switch (bodytype)
-		{
-		case Gart::RigidBody2DComponent::BodyType::Static: return b2_staticBody;
-		case Gart::RigidBody2DComponent::BodyType::Dynamic: return b2_dynamicBody;
-		case Gart::RigidBody2DComponent::BodyType::Kinematic: return b2_kinematicBody;
-		}
-
-		
-		return b2_staticBody;
-	}
+	
 	Scene::Scene()
 	{
 		
@@ -73,8 +63,8 @@ namespace Gart
 
 	void Scene::DestroyEntity(Entity entity)
 	{
-		m_Registery.destroy(entity);
 		EntityMap.erase(entity.GetUUID());
+		m_Registery.destroy(entity);
 	}
 
 	template<typename... component>

@@ -18,6 +18,7 @@ namespace BSS {
 		void Begin();
 		void End();
 		void BlockEvent(bool block) { m_blockEvent = block; }
+		uint32_t ImguiActiveWidget();
 		void SetDarkThemeColors();
 	private:
 		float m_Time;

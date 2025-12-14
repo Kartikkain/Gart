@@ -2,6 +2,7 @@
 #include "Core/Log.h"
 #include "ScriptGlue.h"
 #include "Scripting/ScriptEngine.h"
+#include "Physics/Physics2D.h"
 #include "Core/UUID.h"
 #include "mono/metadata/object.h"
 #include "mono/metadata/reflection.h"
@@ -103,6 +104,50 @@ namespace Gart
 
 	}
 
+	static void RigidBody2DComponent_GetLinearVelocity(UUID id, glm::vec2* OutLinearVelocity)
+	{
+		Scene* scene = ScriptEngine::GetContext();
+		BSS_CORE_ASSERT(scene, "No Scene Context");
+
+		Entity entity = scene->GetEntityWithUUID(id);
+
+		BSS_CORE_ASSERT(entity, "No entity found");
+
+		RigidBody2DComponent rb2d = entity.GetComponent<RigidBody2DComponent>();
+		b2Body* body = (b2Body*)rb2d.RuntimeBody;
+		const b2Vec2& linearvelocity = body->GetLinearVelocity();
+
+		*OutLinearVelocity = glm::vec2(linearvelocity.x, linearvelocity.y);
+	}
+
+	static void RigidBody2DComponent_SetBodyType(UUID id, RigidBody2DComponent::BodyType bodytype)
+	{
+		Scene* scene = ScriptEngine::GetContext();
+		BSS_CORE_ASSERT(scene, "No Scene Context");
+
+		Entity entity = scene->GetEntityWithUUID(id);
+
+		BSS_CORE_ASSERT(entity, "No entity found");
+
+		RigidBody2DComponent rb2d = entity.GetComponent<RigidBody2DComponent>();
+		b2Body* body = (b2Body*)rb2d.RuntimeBody;
+		body->SetType(GartBodyTypeToBox2DBodyType(bodytype));
+	}
+
+	static Gart::RigidBody2DComponent::BodyType RigidBody2DComponent_GetBodyType(UUID id)
+	{
+		Scene* scene = ScriptEngine::GetContext();
+		BSS_CORE_ASSERT(scene, "No Scene Context");
+
+		Entity entity = scene->GetEntityWithUUID(id);
+
+		BSS_CORE_ASSERT(entity, "No entity found");
+
+		RigidBody2DComponent rb2d = entity.GetComponent<RigidBody2DComponent>();
+		b2Body* body = (b2Body*)rb2d.RuntimeBody;
+		return GetBox2DToGartBodyType(body->GetType());
+	}
+
 	void ScriptGlue::RegisterFunction()
 	{
 		GART_INTERANAL_CALL(Transform_GetTranslation)
@@ -112,6 +157,9 @@ namespace Gart
 		GART_INTERANAL_CALL(GetScriptInstance)
 		GART_INTERANAL_CALL(RigidBody2DComponent_ApplyImpulse)
 		GART_INTERANAL_CALL(RigidBody2DComponent_ApplyImpulseToCenter)
+		GART_INTERANAL_CALL(RigidBody2DComponent_GetLinearVelocity)
+		GART_INTERANAL_CALL(RigidBody2DComponent_GetBodyType)
+		GART_INTERANAL_CALL(RigidBody2DComponent_SetBodyType)
 		GART_INTERANAL_CALL(Input_GetKeyDown)
 	}
 	

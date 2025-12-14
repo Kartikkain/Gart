@@ -10,6 +10,7 @@
 #include "Core/Application.h"
 #include "Core/Buffer.h"
 #include "Core/FileSystem.h"
+#include "Project/Project.h"
 
 #include<filesystem>
 
@@ -191,7 +192,11 @@ namespace Gart
 		ScriptGlue::RegisterFunction();
 
 		LoadAssembly("Resources/Scripts/Gart-ScriptCore.dll");
-		LoadAppAssembly("SandboxProject/Assets/Scripts/Binaries/Sandbox.dll");
+
+		auto ScriptModulePath = Project::GetAssetDirectory() / Project::GetActiveProject()->GetConfig().ScriptDirectory;
+
+		LoadAppAssembly(ScriptModulePath);
+		//LoadAppAssembly("SandboxProject/Assets/Scripts/Binaries/Sandbox.dll");
 
 		ScriptGlue::RegisterComponents();
 

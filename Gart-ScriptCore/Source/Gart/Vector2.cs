@@ -28,6 +28,16 @@
             return new Vector2(a.x * scalar, a.y * scalar);
         }
 
+        public float LenghtSquared()
+        {
+            return x * x + y * y;
+        }
+
+        public float Lenght()
+        {
+            return (float)System.Math.Sqrt(LenghtSquared());
+        }
+
         
     }
 }
