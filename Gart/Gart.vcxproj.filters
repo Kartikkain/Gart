@@ -16,6 +16,9 @@
     <Filter Include="src\Math">
       <UniqueIdentifier>{261422CF-12E1-7CDA-3BFA-6A822726B268}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Physics">
+      <UniqueIdentifier>{9F8B9316-0B41-0C0C-9435-06E300EA0210}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Platform">
       <UniqueIdentifier>{21CA02E5-0D2D-9289-B6B2-CA3FA2F45D0C}</UniqueIdentifier>
     </Filter>
@@ -25,6 +28,9 @@
     <Filter Include="src\Platform\Windows">
       <UniqueIdentifier>{5B054582-4794-CE4B-F0B2-E246DC20DFF1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Project">
+      <UniqueIdentifier>{732C2D2D-DFE1-A522-68D6-9FF9D48A9C26}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Renderer">
       <UniqueIdentifier>{73D1DFBF-5F34-6F64-08BA-A71AF4FB3AE7}</UniqueIdentifier>
     </Filter>
@@ -33,6 +39,9 @@
     </Filter>
     <Filter Include="src\Scripting">
       <UniqueIdentifier>{6FBC2D98-DB7C-A9CE-A4B7-F24B1037EEAA}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\UI">
+      <UniqueIdentifier>{3A4B661C-26ED-90F2-0FA8-A446FBE81743}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\Utils">
       <UniqueIdentifier>{4D9AFFB3-B904-B42A-0243-65D06EEC917F}</UniqueIdentifier>
@@ -75,10 +84,16 @@
     <ClInclude Include="src\Core\Application.h">
       <Filter>src\Core</Filter>
     </ClInclude>
+    <ClInclude Include="src\Core\Buffer.h">
+      <Filter>src\Core</Filter>
+    </ClInclude>
     <ClInclude Include="src\Core\Core.h">
       <Filter>src\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Core\EntryPoint.h">
+      <Filter>src\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\FileSystem.h">
       <Filter>src\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Core\Input.h">
@@ -129,6 +144,9 @@
     <ClInclude Include="src\Math\Math.h">
       <Filter>src\Math</Filter>
     </ClInclude>
+    <ClInclude Include="src\Physics\Physics2D.h">
+      <Filter>src\Physics</Filter>
+    </ClInclude>
     <ClInclude Include="src\Platform\OpenGl\OpenGLShader.h">
       <Filter>src\Platform\OpenGl</Filter>
     </ClInclude>
@@ -158,6 +176,12 @@
     </ClInclude>
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h">
       <Filter>src\Platform\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Project\Project.h">
+      <Filter>src\Project</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Project\ProjectSerializer.h">
+      <Filter>src\Project</Filter>
     </ClInclude>
     <ClInclude Include="src\Renderer\Buffer.h">
       <Filter>src\Renderer</Filter>
@@ -230,6 +254,9 @@
     </ClInclude>
     <ClInclude Include="src\Scripting\ScriptGlue.h">
       <Filter>src\Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UI\UI.h">
+      <Filter>src\UI</Filter>
     </ClInclude>
     <ClInclude Include="src\Utils\PlatformUtils.h">
       <Filter>src\Utils</Filter>
@@ -1494,15 +1521,12 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Buffer.h" />
-    <ClInclude Include="src\Core\FileSystem.h" />
-    <ClInclude Include="src\Project\Project.h" />
-    <ClInclude Include="src\Project\ProjectSerializer.h" />
-    <ClInclude Include="src\UI\UI.h" />
-    <ClInclude Include="src\Physics\Physics2D.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Application.cpp">
+      <Filter>src\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\FileSystem.cpp">
       <Filter>src\Core</Filter>
     </ClCompile>
     <ClCompile Include="src\Core\Layer.cpp">
@@ -1552,6 +1576,12 @@
     </ClCompile>
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp">
       <Filter>src\Platform\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Project\Project.cpp">
+      <Filter>src\Project</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Project\ProjectSerializer.cpp">
+      <Filter>src\Project</Filter>
     </ClCompile>
     <ClCompile Include="src\Renderer\Buffer.cpp">
       <Filter>src\Renderer</Filter>
@@ -1628,8 +1658,5 @@
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\FileSystem.cpp" />
-    <ClCompile Include="src\Project\Project.cpp" />
-    <ClCompile Include="src\Project\ProjectSerializer.cpp" />
   </ItemGroup>
 </Project>

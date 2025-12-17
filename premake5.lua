@@ -19,6 +19,7 @@ include "Gart-ScriptCore"
 include "Gart/vendor/GLFW"
 include "Gart/vendor/Box2D"
 include "Gart/vendor/Glad"
+include "Gart/vendor/msdf-atlas-gen"
 include "Gart/vendor/ImGui"
 include "Gart/vendor/yaml-cpp"
 
@@ -62,6 +63,8 @@ project "Gart"
 		"%{IncludeDir.Filewatcher}",
 		"%{IncludeDir.yaml_cpp}",
 		"%{IncludeDir.mono}",
+		"%{IncludeDir.msdf_atlas_gen}",
+		"%{IncludeDir.msdfgen}",
 		"%{IncludeDir.ImGuizmo}",
 		"%{IncludeDir.VulkanSDK}"
 	}
@@ -73,6 +76,7 @@ project "Gart"
 		"Glad",
 		"imgui",
 		"yaml-cpp",
+		"msdf-atlas-gen",
 		"opengl32.lib",
 		"%{Library.mono}",
 		"%{Library.WinSock}",

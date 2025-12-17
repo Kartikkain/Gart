@@ -19,3 +19,6 @@
 [submodule "Gart/vendor/Box2D"]
 	path = Gart/vendor/Box2D
 	url = https://github.com/Kartikkain/box2d.git
+[submodule "Gart/vendor/msdf-atlas-gen"]
+	path = Gart/vendor/msdf-atlas-gen
+	url = https://github.com/Kartikkain/msdf-atlas-gen.git

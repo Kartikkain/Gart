@@ -8,6 +8,7 @@
 #include "Utils/PlatformUtils.h"
 #include "ImGuizmo.h"
 #include "Math/Math.h"
+#include "Renderer/Font.h"
 static const uint32_t s_MapWidth = 10;
 static const char* s_MapTiles =
 "WWWWWWWWWW"
@@ -22,7 +23,7 @@ namespace Gart
 	EditorLayer::EditorLayer()
 		:Layer("Sandbox2D"), m_OrthoCamera(1280.0f / 720.0f)
 	{
-
+		Font font("C:\\Windows\\Fonts\\arial.ttf");
 	}
 
 	void EditorLayer::OnAttach()
