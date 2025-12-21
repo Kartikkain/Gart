@@ -5,10 +5,28 @@
 
 namespace Gart
 {
+	enum class ImageFormat
+	{
+		None = 0,
+		R8,
+		RGB8,
+		RGBA8,
+		RGBA32F
+	};
+
+	struct TextureSpecifications
+	{
+		uint32_t m_width = 1;
+		uint32_t m_height = 1;
+		bool GenerateMinMap = true;
+		ImageFormat m_imageFormat = ImageFormat::RGBA8;
+	};
+
 	class Texture
 	{
 	public:
 		virtual ~Texture() = default;
+		virtual const TextureSpecifications& GetTextureSpecs() const = 0;
 		virtual uint32_t GetWidth() const = 0;
 		virtual uint32_t GetHeight() const = 0;
 		virtual uint32_t GetRenderID() const = 0;
@@ -22,7 +40,7 @@ namespace Gart
 	class Texture2D : public Texture
 	{
 	public:
-		static Ref<Texture2D> Create(uint32_t Width, uint32_t Height);
+		static Ref<Texture2D> Create(const TextureSpecifications& spec);
 		static Ref<Texture2D> Create(const std::string& path);
 
 	};

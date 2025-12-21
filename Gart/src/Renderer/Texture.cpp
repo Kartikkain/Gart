@@ -4,11 +4,11 @@
 #include "Platform/OpenGl/OpenGlTexture.h"
 namespace Gart
 {
-	Ref<Texture2D> Texture2D::Create(uint32_t Width,  uint32_t Height)
+	Ref<Texture2D> Texture2D::Create(const TextureSpecifications& spec)
 	{
 		switch (Renderer::GetAPI())
 		{
-		case RendererAPI::API::OpenGl: return std::make_shared<OpenGlTexture>(Width,Height);
+		case RendererAPI::API::OpenGl: return std::make_shared<OpenGlTexture>(spec);
 		}
 
 		return nullptr;

@@ -20,10 +20,11 @@ static const char* s_MapTiles =
 
 namespace Gart 
 {
+	static Font* s_font;
 	EditorLayer::EditorLayer()
 		:Layer("Sandbox2D"), m_OrthoCamera(1280.0f / 720.0f)
 	{
-		Font font("C:\\Windows\\Fonts\\arial.ttf");
+		s_font = new Font("C:\\Windows\\Fonts\\segoesc.ttf");
 	}
 
 	void EditorLayer::OnAttach()
@@ -359,6 +360,9 @@ namespace Gart
 		ImGui::Text("Number Of Indicies: %d", l_stats.GetNumbersOfIndices());
 		ImGui::Checkbox("Show Physics Colliders", &m_ShowPhysicsColliders);
 		ImGui::Text("Active ID: %u", g.ActiveId);
+
+		ImGui::Image((ImTextureID*)s_font->GetFontTexture()->GetRenderID(), { 512,512 },{0,1},{1,0});
+		
 		ImGui::End();
 
 

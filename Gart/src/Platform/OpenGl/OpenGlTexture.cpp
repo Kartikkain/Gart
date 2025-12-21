@@ -1,15 +1,43 @@
 #include "bsspch.h"
 #include "OpenGlTexture.h"
 #include "stb_image.h"
+#include "Core/Log.h"
 
 namespace Gart
 {
-	OpenGlTexture::OpenGlTexture(uint32_t width, uint32_t height)
-		:m_Width(width),m_Height(height)
+	namespace Utils
+	{
+		static GLenum GartFormatToDataFormat(ImageFormat format)
+		{
+			switch (format)
+			{
+			case ImageFormat::RGB8: return GL_RGB;
+			case ImageFormat::RGBA8: return GL_RGBA;
+			}
+			BSS_CORE_ASSERT(false, "No Such Format Found.");
+			return 0;
+		}
+
+		static GLenum GartFormatToInternalFormat(ImageFormat format)
+		{
+			switch (format)
+			{
+			case Gart::ImageFormat::RGB8: return GL_RGB8;
+			case Gart::ImageFormat::RGBA8: return GL_RGBA8;
+			}
+
+			BSS_CORE_ASSERT(false, "No Such Format Found.");
+			return 0;
+		}
+	}
+
+	OpenGlTexture::OpenGlTexture(const TextureSpecifications& spec)
+		:m_TextureSpec(spec), m_Width(spec.m_width), m_Height(spec.m_height)
 	{
 		GART_PROFILE_FUNCTION();
 
-		m_InternalFormat = GL_RGBA8, m_DataFormat = GL_RGBA;
+		m_InternalFormat = Utils::GartFormatToInternalFormat(m_TextureSpec.m_imageFormat);
+		m_DataFormat = Utils::GartFormatToDataFormat(m_TextureSpec.m_imageFormat);
 
 
 		glCreateTextures(GL_TEXTURE_2D, 1, &m_RenderID);

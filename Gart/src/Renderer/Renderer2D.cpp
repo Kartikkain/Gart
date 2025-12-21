@@ -193,7 +193,7 @@ namespace Gart
 
 		s_Data.LineShader = Shader::Create("assets/shaders/Line.glsl");
 
-		s_Data.WhiteTexture = Texture2D::Create(1, 1);
+		s_Data.WhiteTexture = Texture2D::Create(TextureSpecifications());
 		uint32_t whitetexturedata = 0xffffffff;
 		s_Data.WhiteTexture->SetData(&whitetexturedata, sizeof(uint32_t));
 
