@@ -6,6 +6,7 @@
 #include "Renderer/Camera.h"
 #include "EditorCamera.h"
 #include "Scene/Components.h"
+#include "Font.h"
 
 namespace Gart
 {
@@ -49,6 +50,8 @@ namespace Gart
 		static void DrawRotateQuad(const glm::vec3& position, float rotation, const glm::vec2& size, const Ref<SubTexture2D> subTexture, float tilling = 1.0f, glm::vec4 tintcolor = glm::vec4(1.0f));
 
 		static void DrawRect(const glm::mat4& transform, const glm::vec4& color, int entityID = -1);
+
+		static void DrawString(const std::string& outputString, Ref<Font> font, const glm::mat4& transform, const glm::vec4& color);
 
 		static float GetLineWidth();
 		

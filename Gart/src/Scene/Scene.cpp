@@ -421,7 +421,11 @@ namespace Gart
 			Renderer2D::DrawCircle(transform.GetTransform(), circle.Color, circle.Thickness, circle.Fade, (int)entity);
 		}
 
-		
+		Renderer2D::DrawString("Kartik", Font::GetDefault(), glm::mat4(1.0f), glm::vec4(1.0f));
+		Renderer2D::DrawString(
+			R"(Kartik
+				play's the guitar
+				in the concert.)", Font::GetDefault(), glm::mat4(1.0f), glm::vec4(1.0f));
 
 		Renderer2D::EndScene();
 	}

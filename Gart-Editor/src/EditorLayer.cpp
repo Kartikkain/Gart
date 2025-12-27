@@ -20,11 +20,11 @@ static const char* s_MapTiles =
 
 namespace Gart 
 {
-	static Font* s_font;
+	static Ref<Font> s_font;
 	EditorLayer::EditorLayer()
 		:Layer("Sandbox2D"), m_OrthoCamera(1280.0f / 720.0f)
 	{
-		s_font = new Font("C:\\Windows\\Fonts\\segoesc.ttf");
+		s_font = Font::GetDefault();
 	}
 
 	void EditorLayer::OnAttach()
@@ -536,6 +536,8 @@ namespace Gart
 		default:
 			break;
 		}
+
+		return false;
 	}
 
 	bool EditorLayer::OnMouseButtonPressed(BSS::MouseButtonPressedEvent& e)
