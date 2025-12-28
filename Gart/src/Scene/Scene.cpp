@@ -364,18 +364,31 @@ namespace Gart
 		if (maincamera )
 		{
 			Renderer2D::BeginScene(maincamera->GetProjection(), *mainCameraTransform);
-			auto group = m_Registery.group<TransformComponent>(entt::get<SpriteRenderer>);
-			for (auto entity : group)
 			{
-				auto [transform, sprite] = group.get<TransformComponent, SpriteRenderer>(entity);
-				Renderer2D::DrawSprite(transform.GetTransform(), sprite);
+				auto group = m_Registery.group<TransformComponent>(entt::get<SpriteRenderer>);
+				for (auto entity : group)
+				{
+					auto [transform, sprite] = group.get<TransformComponent, SpriteRenderer>(entity);
+					Renderer2D::DrawSprite(transform.GetTransform(), sprite);
+				}
 			}
 
-			auto view = m_Registery.view<TransformComponent, CircleRendererComponent>();
-			for (auto entity : view)
 			{
-				auto [transform, circle] = view.get<TransformComponent, CircleRendererComponent>(entity);
-				Renderer2D::DrawCircle(transform.GetTransform(), circle.Color, circle.Thickness, circle.Fade);
+				auto view = m_Registery.view<TransformComponent, CircleRendererComponent>();
+				for (auto entity : view)
+				{
+					auto [transform, circle] = view.get<TransformComponent, CircleRendererComponent>(entity);
+					Renderer2D::DrawCircle(transform.GetTransform(), circle.Color, circle.Thickness, circle.Fade);
+				}
+			}
+
+			{
+				auto view = m_Registery.view<TransformComponent, TextComponent>();
+				for (auto entity : view)
+				{
+					auto [transform, text] = view.get<TransformComponent, TextComponent>(entity);
+					Renderer2D::DrawString(text.m_TextString, text.m_Font, transform.GetTransform(), text, (int)entity);
+				}
 			}
 			Renderer2D::EndScene();
 		}
@@ -406,26 +419,33 @@ namespace Gart
 	void Scene::RenderScene(const EditorCamera& camera)
 	{
 		Renderer2D::BeginScene(camera);
-		auto group = m_Registery.group<TransformComponent>(entt::get<SpriteRenderer>);
-		for (auto entity : group)
 		{
-			auto [transform, sprite] = group.get<TransformComponent, SpriteRenderer>(entity);
-			Renderer2D::DrawSprite(transform.GetTransform(), sprite, (int)entity);
-			
+			auto group = m_Registery.group<TransformComponent>(entt::get<SpriteRenderer>);
+			for (auto entity : group)
+			{
+				auto [transform, sprite] = group.get<TransformComponent, SpriteRenderer>(entity);
+				Renderer2D::DrawSprite(transform.GetTransform(), sprite, (int)entity);
+
+			}
 		}
 
-		auto view = m_Registery.view<TransformComponent, CircleRendererComponent>();
-		for (auto entity : view)
 		{
-			auto [transform, circle] = view.get<TransformComponent, CircleRendererComponent>(entity);
-			Renderer2D::DrawCircle(transform.GetTransform(), circle.Color, circle.Thickness, circle.Fade, (int)entity);
+			auto view = m_Registery.view<TransformComponent, CircleRendererComponent>();
+			for (auto entity : view)
+			{
+				auto [transform, circle] = view.get<TransformComponent, CircleRendererComponent>(entity);
+				Renderer2D::DrawCircle(transform.GetTransform(), circle.Color, circle.Thickness, circle.Fade, (int)entity);
+			}
 		}
 
-		Renderer2D::DrawString("Kartik", Font::GetDefault(), glm::mat4(1.0f), glm::vec4(1.0f));
-		Renderer2D::DrawString(
-			R"(Kartik
-				play's the guitar
-				in the concert.)", Font::GetDefault(), glm::mat4(1.0f), glm::vec4(1.0f));
+		{
+			auto view = m_Registery.view<TransformComponent, TextComponent>();
+			for (auto entity : view)
+			{
+				auto [transform, text] = view.get<TransformComponent, TextComponent>(entity);
+				Renderer2D::DrawString(text.m_TextString, text.m_Font, transform.GetTransform(), text, (int)entity);
+			}
+		}
 
 		Renderer2D::EndScene();
 	}
@@ -526,6 +546,12 @@ namespace Gart
 
 	template<>
 	void Scene::OnComponentAdded<CircleCollider2DComponent>(Entity entity, CircleCollider2DComponent& component)
+	{
+
+	}
+
+	template<>
+	void Scene::OnComponentAdded<TextComponent>(Entity entity, TextComponent& component)
 	{
 
 	}

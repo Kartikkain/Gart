@@ -902,7 +902,7 @@ namespace Gart
 		DrawLine(Linevertices[3], Linevertices[0], color);
 	}
 
-	void Renderer2D::DrawString(const std::string& outputString, Ref<Font> font, const glm::mat4& transform, const glm::vec4& color)
+	void Renderer2D::DrawString(const std::string& outputString, Ref<Font> font, const glm::mat4& transform,const TextParameter& textParameter, int entityID)
 	{
 		const auto& fontGeometry = font->GetMSDFData()->m_FontGeometry;
 		const auto& fontmetric = fontGeometry.getMetrics();
@@ -913,8 +913,8 @@ namespace Gart
 		double x = 0.0f;
 		double fScale = 1 / (fontmetric.ascenderY - fontmetric.descenderY);
 		double y = 0.0;
-		float lineHeightOffset = 0.0f;
-		
+		float spaceGlyphAdvance = fontGeometry.getGlyph(' ')->getAdvance();
+
 		for (int i = 0;i < outputString.size();i++)
 		{
 
@@ -927,7 +927,29 @@ namespace Gart
 			if (l_character == '\n')
 			{
 				x = 0;
-				y -= fScale * fontmetric.lineHeight + lineHeightOffset;
+				y -= fScale * fontmetric.lineHeight + textParameter.linespacing;
+				continue;
+			}
+
+			if (l_character == ' ')
+			{
+				float advance = spaceGlyphAdvance;
+				if (i < outputString.size() - 1)
+				{
+					char l_nextCharacter = outputString[i + 1];
+					double dAdvance;
+					fontGeometry.getAdvance(dAdvance, l_character, l_nextCharacter);
+
+					advance = (float)dAdvance;
+				}
+
+				x += fScale * advance + textParameter.kerning;
+				continue;
+			}
+
+			if (l_character == '\t')
+			{
+				x += fScale * spaceGlyphAdvance + textParameter.kerning;
 				continue;
 			}
 
@@ -937,8 +959,7 @@ namespace Gart
 			if (!glyph)
 				return;
 
-			if (l_character == '\t')
-				glyph = fontGeometry.getGlyph(' ');
+			
 
 
 			double al, ab, ar, at;
@@ -967,27 +988,27 @@ namespace Gart
 			// Render Text Here
 
 			s_Data.TextVertexBufferPtr->Position = transform * glm::vec4(quadMin, 0.0f, 1.0f);
-			s_Data.TextVertexBufferPtr->Color = color;
+			s_Data.TextVertexBufferPtr->Color = textParameter.color;
 			s_Data.TextVertexBufferPtr->TexCoord = texCoordMin;
-			s_Data.TextVertexBufferPtr->EntityID = 0; // TODO
+			s_Data.TextVertexBufferPtr->EntityID = entityID; // TODO
 			s_Data.TextVertexBufferPtr++;
 
 			s_Data.TextVertexBufferPtr->Position = transform * glm::vec4(quadMin.x, quadMax.y, 0.0f, 1.0f);
-			s_Data.TextVertexBufferPtr->Color = color;
+			s_Data.TextVertexBufferPtr->Color = textParameter.color;
 			s_Data.TextVertexBufferPtr->TexCoord = { texCoordMin.x,texCoordMax.y };
-			s_Data.TextVertexBufferPtr->EntityID = 0; // TODO
+			s_Data.TextVertexBufferPtr->EntityID = entityID; // TODO
 			s_Data.TextVertexBufferPtr++;
 
 			s_Data.TextVertexBufferPtr->Position = transform * glm::vec4(quadMax, 0.0f, 1.0f);
-			s_Data.TextVertexBufferPtr->Color = color;
+			s_Data.TextVertexBufferPtr->Color = textParameter.color;
 			s_Data.TextVertexBufferPtr->TexCoord = texCoordMax;
-			s_Data.TextVertexBufferPtr->EntityID = 0; // TODO
+			s_Data.TextVertexBufferPtr->EntityID = entityID; // TODO
 			s_Data.TextVertexBufferPtr++;
 
 			s_Data.TextVertexBufferPtr->Position = transform * glm::vec4(quadMax.x, quadMin.y, 0.0f, 1.0f);
-			s_Data.TextVertexBufferPtr->Color = color;
+			s_Data.TextVertexBufferPtr->Color = textParameter.color;
 			s_Data.TextVertexBufferPtr->TexCoord = { texCoordMax.x,texCoordMin.y };
-			s_Data.TextVertexBufferPtr->EntityID = 0; // TODO
+			s_Data.TextVertexBufferPtr->EntityID = entityID; // TODO
 			s_Data.TextVertexBufferPtr++;
 
 			s_Data.TextindexCount += 6;
@@ -999,10 +1020,15 @@ namespace Gart
 				char l_nextCharacter = outputString[i + 1];
 				fontGeometry.getAdvance(fontAdvance, l_character, l_nextCharacter);
 
-				float kerningOffset = 0.0f;
-				x += fScale * fontAdvance + kerningOffset;
+				
+				x += fScale * fontAdvance + textParameter.kerning;
 			}
 		}
+	}
+
+	void Renderer2D::DrawString(const std::string& outputString, Ref<Font> font, const glm::mat4& transform,const TextComponent& textComponent,int entityID)
+	{
+		DrawString(outputString, font, transform, { textComponent.m_Color,textComponent.m_Kerning,textComponent.m_LineSpacing },entityID);
 	}
 
 	float Renderer2D::GetLineWidth()

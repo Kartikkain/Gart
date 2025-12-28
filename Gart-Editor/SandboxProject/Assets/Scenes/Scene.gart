@@ -1,139 +1,46 @@
 Scene: Untitled
 Entities:
-  - Entity: 15243605338624530002
+  - Entity: 5353435217890197678
     TagComponent:
-      Tag: Blocker
-    TransformComponent:
-      Position: [-31.319881, -7.190777, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1.5, 1]
-    SpriteRenderer:
-      Color: [1, 1, 1, 1]
-      TillingFactor: 1
-    RigidBody2DComponent:
-      BodyType: Static
-      FixedRotation: false
-    BoxCollider2DComponent:
-      Offset: [0, 0]
-      Size: [0.5, 0.5]
-      Density: 1
-      Friction: 0.5
-      Restitution: 0
-      RestitutionThreshHold: 0.5
-  - Entity: 15122779516181844271
-    TagComponent:
-      Tag: Blocker2
-    TransformComponent:
-      Position: [-0.94365984, -12.442719, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1.5, 1]
-    SpriteRenderer:
-      Color: [1, 1, 1, 1]
-      TillingFactor: 1
-    RigidBody2DComponent:
-      BodyType: Static
-      FixedRotation: false
-    BoxCollider2DComponent:
-      Offset: [0, 0]
-      Size: [0.5, 0.5]
-      Density: 1
-      Friction: 0.5
-      Restitution: 0
-      RestitutionThreshHold: 0.5
-  - Entity: 6053261642336665199
-    TagComponent:
-      Tag: Ground
-    TransformComponent:
-      Position: [-7.9533625, -4.761022, 0]
-      Rotation: [0, 0, 0]
-      Scale: [13.81, 1, 1]
-    SpriteRenderer:
-      Color: [1, 1, 1, 1]
-      TillingFactor: 1
-    RigidBody2DComponent:
-      BodyType: Static
-      FixedRotation: false
-    BoxCollider2DComponent:
-      Offset: [0, 0]
-      Size: [0.5, 0.5]
-      Density: 1
-      Friction: 0.5
-      Restitution: 0
-      RestitutionThreshHold: 0.5
-  - Entity: 1115797879137429183
-    TagComponent:
-      Tag: GroundG
-    TransformComponent:
-      Position: [7.3419485, -8.560911, 0]
-      Rotation: [0, 0, 0]
-      Scale: [13.81, 1, 1]
-    SpriteRenderer:
-      Color: [1, 1, 1, 1]
-      TillingFactor: 1
-    RigidBody2DComponent:
-      BodyType: Static
-      FixedRotation: false
-    BoxCollider2DComponent:
-      Offset: [0, 0]
-      Size: [0.5, 0.5]
-      Density: 1
-      Friction: 0.5
-      Restitution: 0
-      RestitutionThreshHold: 0.5
-  - Entity: 13680160572914509270
-    TagComponent:
-      Tag: Green Square
-    TransformComponent:
-      Position: [-3, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [2.31, 2.5, 1]
-    SpriteRenderer:
-      Color: [0, 1, 0, 1]
-      TexturePath: Textures\smile.png
-      TillingFactor: 1
-    RigidBody2DComponent:
-      BodyType: Dynamic
-      FixedRotation: false
-    ScriptComponent:
-      Class: Sandbox.Player
-      ScriptFields:
-        - Name: Speed
-          Type: Float
-          Data: 70
-    BoxCollider2DComponent:
-      Offset: [0, 0]
-      Size: [0.5, 0.5]
-      Density: 1
-      Friction: 0.5
-      Restitution: 0
-      RestitutionThreshHold: 0.5
-  - Entity: 13049467939748602940
-    TagComponent:
-      Tag: Main Camera
+      Tag: Text
     TransformComponent:
       Position: [0, 0, 0]
       Rotation: [0, 0, 0]
       Scale: [1.01, 1, 1]
-    CameraComponent:
-      Camera:
-        ProjetionType: 1
-        PerspectiveFOV: 0.7853982
-        PerspectiveNearClip: 0.01
-        PerspectiveFarClip: 1000
-        OrthographicSize: 25
-        OrthographicNearClip: -1
-        OrthographicFarClip: 1
-      Primary: true
-      FixedAspectRatio: false
-  - Entity: 15930859019182637460
+    TextComponent:
+      TextString: Kartik
+      Color: [1, 1, 1, 1]
+      Kerning: 0
+      LineSpacing: 0
+  - Entity: 8953594305978070457
     TagComponent:
-      Tag: Ground1
+      Tag: GroundG3
     TransformComponent:
-      Position: [-25.14265, -8.411123, 0]
+      Position: [-21.841726, -19.067146, 0]
       Rotation: [0, 0, 0]
       Scale: [13.81, 1, 1]
     SpriteRenderer:
-      Color: [1, 0, 0, 1]
+      Color: [1, 1, 1, 1]
+      TillingFactor: 1
+    RigidBody2DComponent:
+      BodyType: Static
+      FixedRotation: false
+    BoxCollider2DComponent:
+      Offset: [0, 0]
+      Size: [0.5, 0.5]
+      Density: 1
+      Friction: 0.5
+      Restitution: 0
+      RestitutionThreshHold: 0.5
+  - Entity: 2895531684169346761
+    TagComponent:
+      Tag: GroundG2
+    TransformComponent:
+      Position: [-6.9535856, -13.970106, 0]
+      Rotation: [0, 0, 0]
+      Scale: [13.81, 1, 1]
+    SpriteRenderer:
+      Color: [1, 1, 1, 1]
       TillingFactor: 1
     RigidBody2DComponent:
       BodyType: Static
@@ -168,11 +75,76 @@ Entities:
       Color: [1, 0, 0.3243246, 1]
       Thickness: 1
       Fade: 0.005
-  - Entity: 2895531684169346761
+  - Entity: 15930859019182637460
     TagComponent:
-      Tag: GroundG2
+      Tag: Ground1
     TransformComponent:
-      Position: [-6.9535856, -13.970106, 0]
+      Position: [-25.14265, -8.411123, 0]
+      Rotation: [0, 0, 0]
+      Scale: [13.81, 1, 1]
+    SpriteRenderer:
+      Color: [1, 0, 0, 1]
+      TillingFactor: 1
+    RigidBody2DComponent:
+      BodyType: Static
+      FixedRotation: false
+    BoxCollider2DComponent:
+      Offset: [0, 0]
+      Size: [0.5, 0.5]
+      Density: 1
+      Friction: 0.5
+      Restitution: 0
+      RestitutionThreshHold: 0.5
+  - Entity: 13049467939748602940
+    TagComponent:
+      Tag: Main Camera
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1.01, 1, 1]
+    CameraComponent:
+      Camera:
+        ProjetionType: 1
+        PerspectiveFOV: 0.7853982
+        PerspectiveNearClip: 0.01
+        PerspectiveFarClip: 1000
+        OrthographicSize: 25
+        OrthographicNearClip: -1
+        OrthographicFarClip: 1
+      Primary: true
+      FixedAspectRatio: false
+  - Entity: 13680160572914509270
+    TagComponent:
+      Tag: Green Square
+    TransformComponent:
+      Position: [-3, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [2.31, 2.5, 1]
+    SpriteRenderer:
+      Color: [0, 1, 0, 1]
+      TexturePath: E:\C++ Projects\Gart\Gart\Gart-Editor\SandboxProject\Assets\Textures\smile.png
+      TillingFactor: 1
+    RigidBody2DComponent:
+      BodyType: Dynamic
+      FixedRotation: false
+    ScriptComponent:
+      Class: Sandbox.Player
+      ScriptFields:
+        - Name: Speed
+          Type: Float
+          Data: 70
+    BoxCollider2DComponent:
+      Offset: [0, 0]
+      Size: [0.5, 0.5]
+      Density: 1
+      Friction: 0.5
+      Restitution: 0
+      RestitutionThreshHold: 0.5
+  - Entity: 1115797879137429183
+    TagComponent:
+      Tag: GroundG
+    TransformComponent:
+      Position: [7.3419485, -8.560911, 0]
       Rotation: [0, 0, 0]
       Scale: [13.81, 1, 1]
     SpriteRenderer:
@@ -188,13 +160,53 @@ Entities:
       Friction: 0.5
       Restitution: 0
       RestitutionThreshHold: 0.5
-  - Entity: 8953594305978070457
+  - Entity: 6053261642336665199
     TagComponent:
-      Tag: GroundG3
+      Tag: Ground
     TransformComponent:
-      Position: [-21.841726, -19.067146, 0]
+      Position: [-7.9533625, -4.761022, 0]
       Rotation: [0, 0, 0]
       Scale: [13.81, 1, 1]
+    SpriteRenderer:
+      Color: [1, 1, 1, 1]
+      TillingFactor: 1
+    RigidBody2DComponent:
+      BodyType: Static
+      FixedRotation: false
+    BoxCollider2DComponent:
+      Offset: [0, 0]
+      Size: [0.5, 0.5]
+      Density: 1
+      Friction: 0.5
+      Restitution: 0
+      RestitutionThreshHold: 0.5
+  - Entity: 15122779516181844271
+    TagComponent:
+      Tag: Blocker2
+    TransformComponent:
+      Position: [-0.94365984, -12.442719, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1.5, 1]
+    SpriteRenderer:
+      Color: [1, 1, 1, 1]
+      TillingFactor: 1
+    RigidBody2DComponent:
+      BodyType: Static
+      FixedRotation: false
+    BoxCollider2DComponent:
+      Offset: [0, 0]
+      Size: [0.5, 0.5]
+      Density: 1
+      Friction: 0.5
+      Restitution: 0
+      RestitutionThreshHold: 0.5
+  - Entity: 15243605338624530002
+    TagComponent:
+      Tag: Blocker
+    TransformComponent:
+      Position: [-31.319881, -7.190777, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1.5, 1]
     SpriteRenderer:
       Color: [1, 1, 1, 1]
       TillingFactor: 1

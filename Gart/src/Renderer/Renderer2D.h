@@ -51,7 +51,15 @@ namespace Gart
 
 		static void DrawRect(const glm::mat4& transform, const glm::vec4& color, int entityID = -1);
 
-		static void DrawString(const std::string& outputString, Ref<Font> font, const glm::mat4& transform, const glm::vec4& color);
+		struct TextParameter
+		{
+			glm::vec4 color;
+			float kerning;
+			float linespacing;
+		};
+
+		static void DrawString(const std::string& outputString, Ref<Font> font, const glm::mat4& transform, const TextParameter& textParameter,int entityID = -1);
+		static void DrawString(const std::string& outputString, Ref<Font> font, const glm::mat4& transform, const TextComponent& textComponent,int entityID = -1);
 
 		static float GetLineWidth();
 		

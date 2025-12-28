@@ -8,6 +8,7 @@
 #include <filesystem>
 #include <imgui_internal.h>
 #include <glm/gtc/type_ptr.hpp>
+#include "imgui/misc/cpp/imgui_stdlib.h"
 namespace Gart
 {
 
@@ -299,6 +300,15 @@ namespace Gart
 					}
 				}
 
+				if (!m_SelectedEntity.HasComponent<TextComponent>())
+				{
+					if (ImGui::MenuItem("Text Component"))
+					{
+						m_SelectedEntity.AddComponent<TextComponent>();
+						ImGui::CloseCurrentPopup();
+					}
+				}
+
 				ImGui::EndPopup();
 
 			}
@@ -535,6 +545,17 @@ namespace Gart
 				ImGui::DragFloat("Thickness", &component.Thickness, 0.025f, 0.0, 1.0);
 				ImGui::DragFloat("Fade", &component.Fade, 0.00025f, 0.0, 1.0);
 				
+			});
+
+		DrawComponent<TextComponent>("Text Component", true, entity, [](auto& component) 
+			{
+
+				ImGui::InputTextMultiline("Text", &component.m_TextString);
+				ImGui::ColorEdit4("Color", glm::value_ptr(component.m_Color));
+				ImGui::DragFloat("Kerning", &component.m_Kerning, 0.0025f);
+				ImGui::DragFloat("Line Spacing", &component.m_LineSpacing, 0.0025f);
+
+
 			});
 
 	}

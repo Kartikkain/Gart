@@ -335,6 +335,18 @@ namespace Gart
 			out << YAML::EndMap;
 		}
 
+		if (entity.HasComponent<TextComponent>())
+		{
+			out << YAML::Key << "TextComponent";
+			out << YAML::BeginMap;
+			auto& textComponent = entity.GetComponent<TextComponent>();
+			out << YAML::Key << "TextString" << YAML::Value << textComponent.m_TextString;
+			out << YAML::Key << "Color" << YAML::Value << textComponent.m_Color;
+			out << YAML::Key << "Kerning" << YAML::Value << textComponent.m_Kerning;
+			out << YAML::Key << "LineSpacing" << YAML::Value << textComponent.m_LineSpacing;
+			out << YAML::EndMap;
+		}
+
 		out << YAML::EndMap;
 	}
 	void SceneSerialization::Serialize(const std::string& filePath)
@@ -517,6 +529,15 @@ namespace Gart
 					crc.Fade = circleRendererComponent["Fade"].as<float>();
 				}
 
+				auto textComponent = entity["TextComponent"];
+				if (textComponent)
+				{
+					auto& tc = deSerialzeEntity.AddComponent<TextComponent>();
+					tc.m_TextString = textComponent["TextString"].as<std::string>();
+					tc.m_Color = textComponent["Color"].as<glm::vec4>();
+					tc.m_Kerning = textComponent["Kerning"].as<float>();
+					tc.m_LineSpacing = textComponent["LineSpacing"].as<float>();
+				}
 
 			}
 

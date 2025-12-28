@@ -4,6 +4,7 @@
 #include "SceneCamera.h"
 #include "Renderer/Texture.h"
 #include "Core/UUID.h"
+#include "Renderer/Font.h"
 #include <glm/gtc/matrix_transform.hpp>
 namespace Gart
 {
@@ -161,6 +162,15 @@ namespace Gart
 
 	};
 
+	struct TextComponent
+	{
+		std::string m_TextString;
+		float m_Kerning;
+		float m_LineSpacing;
+		Ref<Font> m_Font = Font::GetDefault();
+		glm::vec4 m_Color = glm::vec4(1.0);
+	};
+
 	template<typename... component>
 	struct ComponentGroup
 	{
@@ -168,6 +178,6 @@ namespace Gart
 	};
 
 	using AllComponent = ComponentGroup<TransformComponent,SpriteRenderer,CameraComponent,CircleRendererComponent
-		,CircleCollider2DComponent,BoxCollider2DComponent,RigidBody2DComponent,ScriptComponent>;
+		,CircleCollider2DComponent,BoxCollider2DComponent,RigidBody2DComponent,ScriptComponent,TextComponent>;
 
 }
