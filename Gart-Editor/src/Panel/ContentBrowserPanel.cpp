@@ -1,6 +1,7 @@
 #include "bsspch.h"
 #include "ContentBrowserPanel.h"
 #include "Project/Project.h"
+#include "AssetHandler/AssetHandler.h"
 #include "imgui.h"
 
 
@@ -16,10 +17,12 @@ namespace Gart
 
 	void ContentBrowserPanel::OnimGuiRender()
 	{
+		// Begin Content Browser
 		ImGui::Begin("Content Browser");
 
 		if (m_currentDirectory != std::filesystem::path(m_BaseDirectory))
-		{
+		{	
+			// Back Button
 			if (ImGui::Button("<-"))
 			{
 				m_currentDirectory = m_currentDirectory.parent_path();
@@ -35,13 +38,22 @@ namespace Gart
 
 		if (columnCount < 1) columnCount = 1;
 
-		ImGui::Columns(columnCount, 0, false);
+		if (ImGui::BeginPopupContextWindow(0, 1 | ImGuiPopupFlags_NoOpenOverItems))
+		{
+			if (ImGui::MenuItem("Create Folder"))
+			{
+				AssetHandler::CreateFolder(m_currentDirectory);
+			}
 
+			ImGui::EndPopup();
+		}
+
+
+		// Show Folders
+		ImGui::Columns(columnCount, 0, false);
 		for (auto& directoryEntry : std::filesystem::directory_iterator(m_currentDirectory))
 		{
 			const auto& path = directoryEntry.path();
-			//auto relPath = std::filesystem::relative(path);
-			//std::string filename = relPath.filename().string();
 			std::string filename = path.filename().string();
 
 			ImGui::PushID(filename.c_str());
@@ -57,8 +69,8 @@ namespace Gart
 				ImGui::SetDragDropPayload("CONTENT_BROWSER_ITEM", itemPath, (wcslen(itemPath) + 1) * sizeof(wchar_t), ImGuiCond_Once);
 				ImGui::EndDragDropSource();
 			}
-			ImGui::PopStyleColor();
 
+			ImGui::PopStyleColor();
 
 			if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
 			{
@@ -67,13 +79,88 @@ namespace Gart
 					m_currentDirectory /= path.filename();
 				}
 			}
+
 			
-			ImGui::TextWrapped(filename.c_str());
+
+			if (ImGui::BeginPopupContextItem())
+			{
+				
+				if (ImGui::MenuItem("Rename Item"))
+				{
+					AssetHandler::CopyRenameItemPath(path);
+				}
+
+				if (ImGui::MenuItem("Delete Item"))
+				{
+					AssetHandler::SetDeleteTarget(path);
+					AssetHandler::SetDeleting(true);
+					
+				}
+
+				ImGui::EndPopup();
+			}
+
+			if (AssetHandler::GetRenameTarget() == path)
+			{
+				BSS_CORE_INFO("RenamingStarted: {0}", AssetHandler::GetRenameTarget());
+				ImGui::SetNextItemWidth(thumbnailSize);
+				if (!AssetHandler::IsRenaming())
+				{
+					ImGui::SetKeyboardFocusHere();
+					AssetHandler::SetRenaming(true);
+				}
+				size_t buff = AssetHandler::GetRenameBufferSize();
+				bool Submitted = ImGui::InputText("##Rename", AssetHandler::GetRenameBuffer(), AssetHandler::GetRenameBufferSize());
+				bool IsEntered = ImGui::IsKeyPressed(ImGuiKey_Enter);
+				BSS_CORE_INFO("IsEntered: {0}", IsEntered);
+				if(IsEntered )
+				{
+					BSS_CORE_INFO("Enter Pressed");
+					AssetHandler::RenameItem(path.parent_path());
+				}
+			}
+			else
+			{
+				ImGui::TextWrapped(filename.c_str());
+				
+			}
+			
 			ImGui::NextColumn();
 			ImGui::PopID();
 		}
 
 		ImGui::Columns(1);
+
+		//<--------- Delete Confirmation Popup --------->//
+			//Always center this window when appearing
+
+		if(AssetHandler::IsDeleting()) ImGui::OpenPopup("Confirm Delete");
+
+		ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+		ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+		if (ImGui::BeginPopupModal("Confirm Delete", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+		{
+			BSS_CORE_INFO("Delete Popup Opened");
+			ImGui::Text("Are you sure you want to delete the file.\nThis action cannot be undone!\n\n");
+			ImGui::Separator();
+
+			if (ImGui::Button("Yes", ImVec2(120, 0))) {
+				AssetHandler::DeleteItem();
+				AssetHandler::SetDeleting(false);
+				ImGui::CloseCurrentPopup(); 
+			}
+			ImGui::SetItemDefaultFocus();
+			ImGui::SameLine();
+			if (ImGui::Button("No", ImVec2(120, 0))) { 
+				AssetHandler::SetDeleting(false);
+				ImGui::CloseCurrentPopup(); 
+			}
+			ImGui::EndPopup();
+		}
+		//<--------- End Delete Confirmation Popup --------->//
+
+		// Show Content brwoser Setting
 
 		ImVec2 windowPos = ImGui::GetWindowPos();
 		ImVec2 windowSize = ImGui::GetWindowSize();
