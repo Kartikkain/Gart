@@ -51,17 +51,35 @@ namespace Gart
 
 		// Show Folders
 		ImGui::Columns(columnCount, 0, false);
+
+		Ref<Texture2D> icon;
+
 		for (auto& directoryEntry : std::filesystem::directory_iterator(m_currentDirectory))
 		{
 			const auto& path = directoryEntry.path();
 			std::string filename = path.filename().string();
 
 			ImGui::PushID(filename.c_str());
-
-			Ref<Texture2D> icon = directoryEntry.is_directory() ? m_DirectoryIcon : m_FileIcon;
+			// <-- Show Thumbnails --> // TODO: Cache Thumbnails
+			if (path.extension() == ".jpg" || path.extension() == ".png")
+			{
+				
+				if(m_Thumbnails.find(path.string()) == m_Thumbnails.end())
+				{
+					BSS_CORE_INFO("Image File Found: {0}", path.string());
+					Ref<Texture2D> thumbnail = Texture2D::Create(path.string());
+					m_Thumbnails[path.string()] = thumbnail;
+				}
+				
+				icon = m_Thumbnails[path.string()];
+			}
+			else
+			{
+				icon = directoryEntry.is_directory() ? m_DirectoryIcon : m_FileIcon;
+			}
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
 			ImGui::ImageButton((ImTextureID)icon->GetRenderID(), { thumbnailSize,thumbnailSize }, { 0,1 }, { 1,0 });
-
+			// --> End Show Thumbnails <-- //
 			if (ImGui::BeginDragDropSource())
 			{
 				std::filesystem::path relPath(path);

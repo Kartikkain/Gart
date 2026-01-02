@@ -55,6 +55,34 @@ namespace Gart
 
         #endregion
 
+        #region TextComponent
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        extern public static string TextComponent_GetText(ulong id);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        extern public static void TextComponent_SetText(ulong id, string text);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        extern public static void TextComponent_GetColor(ulong id, out Vector4 color);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        extern public static void TextComponent_SetColor(ulong id, ref Vector4 color);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        extern public static float TextComponent_GetKerning(ulong id);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        extern public static void TextComponent_SetKerning(ulong id, float kerning);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        extern public static float TextComponent_GetLineSpacing(ulong id);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        extern public static void TextComponent_SetLineSpacing(ulong id, float lineSpacing);
+
+        #endregion
+
     }
 
 }

@@ -472,6 +472,11 @@ namespace Gart
 		UUID id = entity.GetUUID();
 		return s_Data->EntityFieldMap[id];
 	}
+
+	MonoString* ScriptEngine::CreateString(const char* str)
+	{
+		return mono_string_new(s_Data->AppDomain, str);
+	}
 #pragma endregion
 
 

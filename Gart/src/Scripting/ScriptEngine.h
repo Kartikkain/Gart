@@ -10,6 +10,7 @@ extern "C"
 	typedef struct _MonoAssembly MonoAssembly;
 	typedef struct _MonoImage MonoImage;
 	typedef struct _MonoClassField MonoClassField;
+	typedef struct _MonoString MonoString;
 }
 
 namespace Gart
@@ -152,6 +153,8 @@ namespace Gart
 		static Ref<ScriptInstance> GetEntityScriptInstance(UUID id);
 		static MonoObject* GetManagedInstance(UUID id);
 		static MonoImage* GetCoreAssemblyImage();
+
+		static MonoString* CreateString(const char* str);
 		static ScriptFieldMap& GetFieldMap(Entity entity);
 
 	private:

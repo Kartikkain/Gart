@@ -11,9 +11,23 @@
 namespace Gart
 {
 
+	namespace Utils
+	{
+		std::string MonoStringToString(MonoString* string)
+		{
+			char* cstr = mono_string_to_utf8(string);
+			std::string str(cstr);
+			mono_free(cstr);
+			return str;
+		}
+	}
+
+
 #define GART_INTERANAL_CALL(Name) mono_add_internal_call("Gart.InternalCalls::" #Name, Name);
 
 	static std::unordered_map<MonoType*, std::function<bool(Entity)>> m_EntitHasComponentFun;
+
+#pragma region Transform
 
 	static void Transform_GetTranslation(UUID id,glm::vec3* OutResult)
 	{
@@ -29,6 +43,7 @@ namespace Gart
 		entity.GetComponent<TransformComponent>().Translate = *Parameter;
 	}
 
+#pragma endregion
 	static bool Input_GetKeyDown(KeyCode keycode)
 	{
 		return BSS::Input::IsKeyPressed(keycode);
@@ -74,6 +89,10 @@ namespace Gart
 		return ScriptEngine::GetManagedInstance(entityID);
 	}
 
+#pragma region RigidBody
+
+
+	// RigidBody2DComponent
 	static void RigidBody2DComponent_ApplyImpulse(UUID id,glm::vec3* impulse, glm::vec3* worldposition, bool wake)
 	{
 		Scene* scene = ScriptEngine::GetContext();
@@ -148,6 +167,119 @@ namespace Gart
 		return GetBox2DToGartBodyType(body->GetType());
 	}
 
+#pragma endregion
+
+	
+#pragma region TextComponent
+
+
+
+	// Text Component
+
+	static MonoString* TextComponent_GetText(UUID id)
+	{
+		Scene* scene = ScriptEngine::GetContext();
+		BSS_CORE_ASSERT(scene, "No Scene Context");
+
+		Entity entity = scene->GetEntityWithUUID(id);
+
+		BSS_CORE_ASSERT(entity, "No entity found");
+
+		TextComponent& textComp = entity.GetComponent<TextComponent>();
+		return ScriptEngine::CreateString(textComp.m_TextString.c_str());
+
+	}
+
+	static void TextComponent_SetText(UUID id, MonoString* text)
+	{
+		Scene* scene = ScriptEngine::GetContext();
+		BSS_CORE_ASSERT(scene, "No Scene Context");
+
+		Entity entity = scene->GetEntityWithUUID(id);
+
+		BSS_CORE_ASSERT(entity, "No entity found");
+
+		TextComponent& textComp = entity.GetComponent<TextComponent>();
+		textComp.m_TextString = Utils::MonoStringToString(text);
+	}
+
+	static void TextComponent_GetColor(UUID id, glm::vec4* color)
+	{
+		Scene* scene = ScriptEngine::GetContext();
+		BSS_CORE_ASSERT(scene, "No Scene Context");
+
+		Entity entity = scene->GetEntityWithUUID(id);
+
+		BSS_CORE_ASSERT(entity, "No entity found");
+
+		TextComponent& textComp = entity.GetComponent<TextComponent>();
+		*color = textComp.m_Color;
+	}
+
+	static void TextComponent_SetColor(UUID id, glm::vec4* color)
+	{
+		Scene* scene = ScriptEngine::GetContext();
+		BSS_CORE_ASSERT(scene, "No Scene Context");
+
+		Entity entity = scene->GetEntityWithUUID(id);
+
+		BSS_CORE_ASSERT(entity, "No entity found");
+
+		TextComponent& textComp = entity.GetComponent<TextComponent>();
+		textComp.m_Color = *color;
+	}
+
+	static float TextComponent_GetKerning(UUID id)
+	{
+		Scene* scene = ScriptEngine::GetContext();
+		BSS_CORE_ASSERT(scene, "No Scene Context");
+
+		Entity entity = scene->GetEntityWithUUID(id);
+
+		BSS_CORE_ASSERT(entity, "No entity found");
+
+		TextComponent& textComp = entity.GetComponent<TextComponent>();
+		return textComp.m_Kerning;
+	}
+
+	static void TextComponent_SetKerning(UUID id, float Kerning)
+	{
+		Scene* scene = ScriptEngine::GetContext();
+		BSS_CORE_ASSERT(scene, "No Scene Context");
+
+		Entity entity = scene->GetEntityWithUUID(id);
+
+		BSS_CORE_ASSERT(entity, "No entity found");
+
+		TextComponent& textComp = entity.GetComponent<TextComponent>();
+		textComp.m_Kerning = Kerning;
+	}
+
+	static float TextComponent_GetLineSpacing(UUID id)
+	{
+		Scene* scene = ScriptEngine::GetContext();
+		BSS_CORE_ASSERT(scene, "No Scene Context");
+
+		Entity entity = scene->GetEntityWithUUID(id);
+
+		BSS_CORE_ASSERT(entity, "No entity found");
+
+		TextComponent& textComp = entity.GetComponent<TextComponent>();
+		return textComp.m_LineSpacing;
+	}
+
+	static void TextComponent_SetLineSpacing(UUID id, float LineSpacing)
+	{
+		Scene* scene = ScriptEngine::GetContext();
+		BSS_CORE_ASSERT(scene, "No Scene Context");
+		Entity entity = scene->GetEntityWithUUID(id);
+		BSS_CORE_ASSERT(entity, "No entity found");
+		TextComponent& textComp = entity.GetComponent<TextComponent>();
+		textComp.m_LineSpacing = LineSpacing;
+	}
+
+#pragma endregion
+
 	void ScriptGlue::RegisterFunction()
 	{
 		GART_INTERANAL_CALL(Transform_GetTranslation)
@@ -161,6 +293,14 @@ namespace Gart
 		GART_INTERANAL_CALL(RigidBody2DComponent_GetBodyType)
 		GART_INTERANAL_CALL(RigidBody2DComponent_SetBodyType)
 		GART_INTERANAL_CALL(Input_GetKeyDown)
+		GART_INTERANAL_CALL(TextComponent_GetText)
+		GART_INTERANAL_CALL(TextComponent_SetText)
+		GART_INTERANAL_CALL(TextComponent_GetColor)
+		GART_INTERANAL_CALL(TextComponent_SetColor)
+		GART_INTERANAL_CALL(TextComponent_GetKerning)
+		GART_INTERANAL_CALL(TextComponent_SetKerning)
+		GART_INTERANAL_CALL(TextComponent_GetLineSpacing)
+		GART_INTERANAL_CALL(TextComponent_SetLineSpacing)
 	}
 	
 	template<typename... component>
