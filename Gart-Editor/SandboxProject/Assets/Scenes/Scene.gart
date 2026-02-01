@@ -4,9 +4,9 @@ Entities:
     TagComponent:
       Tag: Text
     TransformComponent:
-      Position: [1.90734863e-06, 0, 0]
+      Position: [1.9073486e-06, 0, 0]
       Rotation: [0, 0, 0]
-      Scale: [1.00999999, 1, 1]
+      Scale: [1.01, 1, 1]
     TextComponent:
       TextString: Gart Game Engine
       Color: [1, 1, 1, 1]
@@ -16,7 +16,7 @@ Entities:
     TagComponent:
       Tag: Blocker
     TransformComponent:
-      Position: [-31.3198814, -7.19077682, 0]
+      Position: [-31.319881, -7.190777, 0]
       Rotation: [0, 0, 0]
       Scale: [1, 1.5, 1]
     SpriteRenderer:
@@ -36,7 +36,7 @@ Entities:
     TagComponent:
       Tag: Blocker2
     TransformComponent:
-      Position: [-0.943659842, -12.4427195, 0]
+      Position: [-0.94365984, -12.442719, 0]
       Rotation: [0, 0, 0]
       Scale: [1, 1.5, 1]
     SpriteRenderer:
@@ -56,9 +56,9 @@ Entities:
     TagComponent:
       Tag: Ground
     TransformComponent:
-      Position: [-7.95336246, -4.76102209, 0]
+      Position: [-7.9533625, -4.761022, 0]
       Rotation: [0, 0, 0]
-      Scale: [13.8100004, 1, 1]
+      Scale: [13.81, 1, 1]
     SpriteRenderer:
       Color: [1, 1, 1, 1]
       TillingFactor: 1
@@ -76,9 +76,9 @@ Entities:
     TagComponent:
       Tag: GroundG
     TransformComponent:
-      Position: [7.34194851, -8.56091118, 0]
+      Position: [7.3419485, -8.560911, 0]
       Rotation: [0, 0, 0]
-      Scale: [13.8100004, 1, 1]
+      Scale: [13.81, 1, 1]
     SpriteRenderer:
       Color: [1, 1, 1, 1]
       TillingFactor: 1
@@ -98,10 +98,10 @@ Entities:
     TransformComponent:
       Position: [-3, 0, 0]
       Rotation: [0, 0, 0]
-      Scale: [2.30999994, 2.5, 1]
+      Scale: [2.31, 2.5, 1]
     SpriteRenderer:
       Color: [0, 1, 0, 1]
-      TexturePath: D:\Repo\C++\Gart\Gart-Editor\SandboxProject\Assets\Textures\smile.png
+      TextureHandle: 16601707371521168961
       TillingFactor: 1
     RigidBody2DComponent:
       BodyType: Dynamic
@@ -125,12 +125,12 @@ Entities:
     TransformComponent:
       Position: [0, 0, 0]
       Rotation: [0, 0, 0]
-      Scale: [1.00999999, 1, 1]
+      Scale: [1.01, 1, 1]
     CameraComponent:
       Camera:
         ProjetionType: 1
-        PerspectiveFOV: 0.785398185
-        PerspectiveNearClip: 0.00999999978
+        PerspectiveFOV: 0.7853982
+        PerspectiveNearClip: 0.01
         PerspectiveFarClip: 1000
         OrthographicSize: 25
         OrthographicNearClip: -1
@@ -141,9 +141,9 @@ Entities:
     TagComponent:
       Tag: Ground1
     TransformComponent:
-      Position: [-25.1426506, -8.41112328, 0]
+      Position: [-25.14265, -8.411123, 0]
       Rotation: [0, 0, 0]
-      Scale: [13.8100004, 1, 1]
+      Scale: [13.81, 1, 1]
     SpriteRenderer:
       Color: [1, 0, 0, 1]
       TillingFactor: 1
@@ -161,7 +161,7 @@ Entities:
     TagComponent:
       Tag: Circle
     TransformComponent:
-      Position: [-6.69999981, 0, 0]
+      Position: [-6.7, 0, 0]
       Rotation: [0, 0, 0]
       Scale: [2, 2, 1]
     RigidBody2DComponent:
@@ -177,16 +177,16 @@ Entities:
       Restitution: 0
       RestitutionThreshHold: 0.5
     CircleRendererComponent:
-      Color: [1, 0, 0.324324608, 1]
+      Color: [1, 0, 0.3243246, 1]
       Thickness: 1
-      Fade: 0.00499999989
+      Fade: 0.005
   - Entity: 2895531684169346761
     TagComponent:
       Tag: GroundG2
     TransformComponent:
-      Position: [-6.95358562, -13.9701061, 0]
+      Position: [-6.9535856, -13.970106, 0]
       Rotation: [0, 0, 0]
-      Scale: [13.8100004, 1, 1]
+      Scale: [13.81, 1, 1]
     SpriteRenderer:
       Color: [1, 1, 1, 1]
       TillingFactor: 1
@@ -204,9 +204,9 @@ Entities:
     TagComponent:
       Tag: GroundG3
     TransformComponent:
-      Position: [-21.8417263, -19.0671463, 0]
+      Position: [-21.841726, -19.067146, 0]
       Rotation: [0, 0, 0]
-      Scale: [13.8100004, 1, 1]
+      Scale: [13.81, 1, 1]
     SpriteRenderer:
       Color: [1, 1, 1, 1]
       TillingFactor: 1

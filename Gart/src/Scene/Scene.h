@@ -1,6 +1,7 @@
 #pragma once
 
 #include<entt.hpp>
+#include "Asset/Asset.h"
 #include"Core/TimeStep.h"
 #include"Core/UUID.h"
 #include "Renderer/EditorCamera.h"
@@ -10,11 +11,13 @@ namespace Gart
 {
 	class Entity;
 
-	class Scene
+	class Scene : public Asset
 	{
 		public:
 			Scene();
 			~Scene();
+
+			virtual AssetType GetType() const { return AssetType::Scene; }
 
 			Entity CreateEntity(const std::string& name = std::string());
 			Entity CreateEntityWithUUID(UUID uuid,const std::string& name = std::string());

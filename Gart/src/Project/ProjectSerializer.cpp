@@ -21,8 +21,9 @@ namespace Gart
 			{
 				out << YAML::BeginMap;
 				out << YAML::Key << "ProjectName" << YAML::Value << config.ProjectName;
-				out << YAML::Key << "StartScene" << YAML::Value << config.StartScene.string();
+				out << YAML::Key << "StartScene" << YAML::Value << (uint64_t)config.StartScene;
 				out << YAML::Key << "AssetDirectory" << YAML::Value << config.AssetDirectory.string();
+				out << YAML::Key << "AssetRegistery" << YAML::Value << config.AssetRegistery.string();
 				out << YAML::Key << "ScriptDirectory" << YAML::Value << config.ScriptDirectory.string();
 				out << YAML::EndMap;
 			}
@@ -54,8 +55,12 @@ namespace Gart
 		auto& config = m_Project->GetConfig();
 
 		config.ProjectName = projectData["ProjectName"].as<std::string>();
-		config.StartScene = projectData["StartScene"].as<std::string>();
+		config.StartScene = projectData["StartScene"].as<uint64_t>();
 		config.AssetDirectory = projectData["AssetDirectory"].as<std::string>();
+		
+		if (projectData["AssetRegistery"])
+			config.AssetRegistery = projectData["AssetRegistery"].as<std::string>();
+
 		config.ScriptDirectory = projectData["ScriptDirectory"].as<std::string>();
 
 		return true;

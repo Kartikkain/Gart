@@ -8,14 +8,13 @@ namespace Gart
 	class OpenGlTexture: public Texture2D
 	{
 	public:
-		OpenGlTexture(const TextureSpecifications& spec);
-		OpenGlTexture(const std::string& path);
+		OpenGlTexture(const TextureSpecifications& spec, Buffer data=Buffer());
 		virtual ~OpenGlTexture();
 		virtual const TextureSpecifications& GetTextureSpecs() const override { return m_TextureSpec; }
 		virtual uint32_t GetWidth() const override { return m_Width; }
 		virtual uint32_t GetHeight() const override { return m_Height; }
 		virtual uint32_t GetRenderID() const override { return m_RenderID; }
-		virtual void SetData(void* data, uint32_t size) override;
+		virtual void SetData(Buffer data) override;
 		virtual const std::string GetPath() const override { return m_Path; }
 		virtual void Bind(uint32_t slot = 0) const override;
 

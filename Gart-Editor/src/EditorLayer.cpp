@@ -6,6 +6,9 @@
 #include "Scene/SceneSerialization.h"
 #include "Scripting/ScriptEngine.h"
 #include "Utils/PlatformUtils.h"
+#include "Asset/AssetManager.h"
+#include "Asset/TextureImpoter.h"
+#include "Asset/SceneImpoter.h"
 #include "ImGuizmo.h"
 #include "Math/Math.h"
 #include "Renderer/Font.h"
@@ -33,15 +36,15 @@ namespace Gart
 
 		m_OrthoCamera.SetZoomLevel(7.0f);
 
-		m_IconPlay = Gart::Texture2D::Create("Resources/Icons/PlayButton.png");
-		m_IconStop = Gart::Texture2D::Create("Resources/Icons/StopButton.png");
-		m_IconSimulate = Gart::Texture2D::Create("Resources/Icons/SimulateButton.png");
-		m_IconSimulateStop = Gart::Texture2D::Create("Resources/Icons/SimulationStop.png");
-		m_IconPause = Gart::Texture2D::Create("Resources/Icons/PauseButton.png");
-		m_IconStep = Gart::Texture2D::Create("Resources/Icons/StepButton.png");
+		m_IconPlay = Gart::TextureImpoter::LoadTexture2D("Resources/Icons/PlayButton.png");
+		m_IconStop = Gart::TextureImpoter::LoadTexture2D("Resources/Icons/StopButton.png");
+		m_IconSimulate = Gart::TextureImpoter::LoadTexture2D("Resources/Icons/SimulateButton.png");
+		m_IconSimulateStop = Gart::TextureImpoter::LoadTexture2D("Resources/Icons/SimulationStop.png");
+		m_IconPause = Gart::TextureImpoter::LoadTexture2D("Resources/Icons/PauseButton.png");
+		m_IconStep = Gart::TextureImpoter::LoadTexture2D("Resources/Icons/StepButton.png");
 
-		m_Texture = Gart::Texture2D::Create("assets/textures/smile.png");
-		m_SpriteSheet = Gart::Texture2D::Create("assets/game/textures/RPG.png");
+		m_Texture = Gart::TextureImpoter::LoadTexture2D("assets/textures/smile.png");
+		m_SpriteSheet = Gart::TextureImpoter::LoadTexture2D("assets/game/textures/RPG.png");
 		m_Tree = Gart::SubTexture2D::CreateFromCoords(m_SpriteSheet, { 2,1 }, { 128,128 }, { 1,2 });
 		m_Stairs = Gart::SubTexture2D::CreateFromCoords(m_SpriteSheet, { 7,6 }, { 128,128 }, { 1,1 });
 		m_TileSet['D'] = Gart::SubTexture2D::CreateFromCoords(m_SpriteSheet, { 1,11 }, { 128,128 }, { 1,1 });
@@ -399,8 +402,8 @@ namespace Gart
 		{
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
 			{
-				const wchar_t* path = (const wchar_t*)payload->Data;
-				OpenScene(path);
+				AssetHandle handle = *(AssetHandle*)payload->Data;
+				OpenScene(handle);
 			}
 			ImGui::EndDragDropTarget();
 		}
@@ -581,9 +584,10 @@ namespace Gart
 		if (Project::Load(filepath))
 		{
 			ScriptEngine::Init();
-			auto raw = Project::GetActiveProject()->GetConfig().StartScene;
-			auto scenePath = Project::GetAssetFileSystemPath(Project::GetActiveProject()->GetConfig().StartScene);
-			OpenScene(scenePath);
+			AssetHandle startScene = Project::GetActiveProject()->GetConfig().StartScene;
+			if(startScene)
+				OpenScene(startScene);
+
 			m_ContentBrowserPanel = std::make_unique<ContentBrowserPanel>();
 		}
 	}
@@ -598,26 +602,21 @@ namespace Gart
 
 	}
 
-	void EditorLayer::OpenScene(const std::filesystem::path& filepath)
+	void EditorLayer::OpenScene(AssetHandle handle)
 	{
+		BSS_CORE_ASSERT(handle, "No Asset in Directory");
+
 		if (m_SceneState != SceneState::Edit)
 			OnScreenStop();
 
-		Ref<Scene> newScene = std::make_shared<Scene>();
-		SceneSerialization serializer(newScene);
+		Ref<Scene> readOnlyScene = AssetManager::GetAsset<Scene>(handle);
 
-		BSS_CORE_WARN("Scene Path : {0}", filepath);
+		Ref<Scene> newScene = Scene::Copy(readOnlyScene);
 
-		if (serializer.DeSerialize(filepath.string()))
-		{
-			m_EditorScene = newScene;
-			m_EditorScene->OnViewportResize((uint32_t)m_ViewPortSize.x, (uint32_t)m_ViewPortSize.y);
-			m_ActiveScene = m_EditorScene;
-			m_HierarchyPanel.SetContext(m_ActiveScene);
-			m_EditorScenePath = filepath;
-			//SceneSerialization l_Serializer(m_ActiveScene);
-			//l_Serializer.DeSerialize(filepath.string());
-		}
+		m_EditorScene = newScene;
+		m_HierarchyPanel.SetContext(m_EditorScene);
+		m_ActiveScene = m_EditorScene;
+		m_EditorScenePath = Project::GetActiveProject()->GetEditorAssetManager()->GetFilePath(handle);
 	}
 
 	void EditorLayer::NewScene()
@@ -709,8 +708,8 @@ namespace Gart
 	}
 	void EditorLayer::SerializeScene(Ref<Scene> scene, const std::filesystem::path& filepath)
 	{
-		SceneSerialization l_Serializer(scene);
-		l_Serializer.Serialize(filepath.string());
+		
+		SceneImpoter::SaveScene(scene, filepath);
 	}
 
 	void EditorLayer::OnScreenPlay()

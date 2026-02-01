@@ -1,0 +1,10 @@
+AssetRegistery:
+  - Handle: 11345816536246655850
+    FilePath: Textures/smile.png
+    Type: Texture2D
+  - Handle: 16601707371521168961
+    FilePath: Textures/Checkerboard.png
+    Type: Texture2D
+  - Handle: 17837102585895060273
+    FilePath: Scenes/Scene.gart
+    Type: Scene

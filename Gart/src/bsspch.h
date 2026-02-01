@@ -13,6 +13,7 @@
 #include<unordered_set>
 
 #include "Debug/Instrumentor.h"
+#include "Core/Buffer.h"
 
 #define NOMINMAX
 

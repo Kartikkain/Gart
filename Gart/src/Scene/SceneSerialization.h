@@ -9,11 +9,11 @@ namespace Gart
 		public:
 			SceneSerialization(Ref<Scene> scene);
 
-			void Serialize(const std::string& filePath);
-			void SerializeRuntime(const std::string& filePath);
+			void Serialize(const std::filesystem::path& filePath);
+			void SerializeRuntime(const std::filesystem::path& filePath);
 
-			bool DeSerialize(const std::string& filePath);
-			bool DeSerializeRuntime(const std::string& filePath);
+			bool DeSerialize(const std::filesystem::path& filePath);
+			bool DeSerializeRuntime(const std::filesystem::path& filePath);
 
 		private:
 			

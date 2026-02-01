@@ -32,7 +32,7 @@ namespace Gart
 		l_FontTexSpecs.GenerateMinMap = false;
 
 		Ref<Texture2D> texture = Texture2D::Create(l_FontTexSpecs);
-		texture->SetData((void*)bitmap.pixels, bitmap.width * bitmap.height * 3);
+		texture->SetData(Buffer((void*)bitmap.pixels, bitmap.width * bitmap.height * 3));
 		return texture;
 	}
 

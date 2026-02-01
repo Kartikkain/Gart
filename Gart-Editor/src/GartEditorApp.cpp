@@ -2,6 +2,7 @@
 #include "Core/EntryPoint.h"
 #include "Platform/OpenGl/OpenGLShader.h"
 #include "imgui.h"
+#include "Asset/TextureImpoter.h"
 #include <glm/gtc/type_ptr.hpp>
 #include "EditorLayer.h"
 class ExampleLayer :public BSS::Layer
@@ -42,7 +43,7 @@ public:
 
 		auto m_Shader = m_shadeLibrary.Load("assets/shaders/Texture.glsl");
 		//m_Shader = Gart::Shader::Create("assets/shaders/Texture.glsl");
-		m_Texture = Gart::Texture2D::Create("assets/textures/smile.png");
+		m_Texture = Gart::TextureImpoter::LoadTexture2D("assets/textures/smile.png");
 		m_Shader->Bind();
 		std::dynamic_pointer_cast<Gart::OpenGLShader>(m_Shader)->UploadUniformInt("u_Texture", 0);
 	}

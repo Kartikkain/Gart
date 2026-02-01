@@ -1524,6 +1524,17 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
+    <ClInclude Include="src\AssetHandler\AssetHandler.h" />
+    <ClInclude Include="src\Asset\Asset.h" />
+    <ClInclude Include="src\Asset\AssetImpoter.h" />
+    <ClInclude Include="src\Asset\AssetManager.h" />
+    <ClInclude Include="src\Asset\AssetManagerBase.h" />
+    <ClInclude Include="src\Asset\AssetMetaData.h" />
+    <ClInclude Include="src\Asset\EditorAssetManager.h" />
+    <ClInclude Include="src\Asset\RuntimeAssetManager.h" />
+    <ClInclude Include="src\Asset\TextureImpoter.h" />
+    <ClInclude Include="src\Renderer\MSDFData.h" />
+    <ClInclude Include="src\Asset\SceneImpoter.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Application.cpp">
@@ -1664,5 +1675,14 @@
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
+    <ClCompile Include="src\AssetHandler\AssetHandler.cpp" />
+    <ClCompile Include="src\Asset\Asset.cpp" />
+    <ClCompile Include="src\Asset\AssetImpoter.cpp" />
+    <ClCompile Include="src\Asset\AssetManager.cpp" />
+    <ClCompile Include="src\Asset\AssetManagerBase.cpp" />
+    <ClCompile Include="src\Asset\EditorAssetManager.cpp" />
+    <ClCompile Include="src\Asset\RuntimeAssetManager.cpp" />
+    <ClCompile Include="src\Asset\TextureImpoter.cpp" />
+    <ClCompile Include="src\Asset\SceneImpoter.cpp" />
   </ItemGroup>
 </Project>

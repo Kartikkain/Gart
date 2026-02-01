@@ -227,7 +227,7 @@ namespace Gart
 			auto& spriteRenderer = entity.GetComponent<SpriteRenderer>();
 			out << YAML::Key << "Color" << YAML::Value << spriteRenderer.Color;
 			if(spriteRenderer.Texture)
-				out << YAML::Key << "TexturePath" << YAML::Value << spriteRenderer.Texture->GetPath();
+				out << YAML::Key << "TextureHandle" << YAML::Value << spriteRenderer.Texture;
 			out << YAML::Key << "TillingFactor" << YAML::Value << spriteRenderer.TillingFactor;
 			out << YAML::EndMap;
 		}
@@ -349,7 +349,7 @@ namespace Gart
 
 		out << YAML::EndMap;
 	}
-	void SceneSerialization::Serialize(const std::string& filePath)
+	void SceneSerialization::Serialize(const std::filesystem::path& filePath)
 	{
 		YAML::Emitter out;
 		out << YAML::BeginMap;
@@ -370,10 +370,10 @@ namespace Gart
 
 		fout << out.c_str();
 	}
-	void SceneSerialization::SerializeRuntime(const std::string& filePath)
+	void SceneSerialization::SerializeRuntime(const std::filesystem::path& filePath)
 	{
 	}
-	bool SceneSerialization::DeSerialize(const std::string& filePath)
+	bool SceneSerialization::DeSerialize(const std::filesystem::path& filePath)
 	{
 		std::ifstream stream(filePath);
 		std::stringstream strStream;
@@ -431,9 +431,14 @@ namespace Gart
 					Sprite.Color = spriteRenderer["Color"].as<glm::vec4>();
 					if (spriteRenderer["TexturePath"])
 					{
-						std::string texturePath = spriteRenderer["TexturePath"].as<std::string>();
+						/*std::string texturePath = spriteRenderer["TexturePath"].as<std::string>();
 						auto relativeTexturePath = Project::GetAssetFileSystemPath(texturePath);
-						Sprite.Texture = Texture2D::Create(relativeTexturePath.string());
+						Sprite.Texture = Texture2D::Create(relativeTexturePath.string());*/
+					}
+
+					if (spriteRenderer["TextureHandle"])
+					{
+						Sprite.Texture = spriteRenderer["TextureHandle"].as<AssetHandle>();
 					}
 					if(spriteRenderer["TillingFactor"]) Sprite.TillingFactor = spriteRenderer["TillingFactor"].as<float>();
 				}
@@ -547,7 +552,7 @@ namespace Gart
 
 		return true;
 	}
-	bool SceneSerialization::DeSerializeRuntime(const std::string& filePath)
+	bool SceneSerialization::DeSerializeRuntime(const std::filesystem::path& filePath)
 	{
 		return false;
 	}

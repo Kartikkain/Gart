@@ -4,6 +4,7 @@
 #include "Shader.h"
 #include "UniformBuffer.h"
 #include "Renderer/RenderCommand.h"
+#include "Asset/AssetManager.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
@@ -235,7 +236,7 @@ namespace Gart
 
 		s_Data.WhiteTexture = Texture2D::Create(TextureSpecifications());
 		uint32_t whitetexturedata = 0xffffffff;
-		s_Data.WhiteTexture->SetData(&whitetexturedata, sizeof(uint32_t));
+		s_Data.WhiteTexture->SetData(Buffer(&whitetexturedata, sizeof(uint32_t)));
 
 		
 		s_Data.TextureSlots[0] = s_Data.WhiteTexture;
@@ -348,7 +349,11 @@ namespace Gart
 	}
 	void Renderer2D::DrawSprite(const glm::mat4& transform, SpriteRenderer& str, int entityID)
 	{
-		if (str.Texture) DrawQuad(transform, str.Texture, str.TillingFactor, str.Color, entityID);
+		if (str.Texture)
+		{
+			Ref<Texture2D> tex = AssetManager::GetAsset<Texture2D>(str.Texture);
+			DrawQuad(transform, tex, str.TillingFactor, str.Color, entityID);
+		}
 		else DrawQuad(transform, str.Color, entityID);
 	}
 	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color)

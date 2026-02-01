@@ -1,5 +1,6 @@
 Project:
   ProjectName: Sandbox
-  StartScene: "Scenes/Scene.gart"
+  StartScene: 17837102585895060273
   AssetDirectory: "Assets"
+  AssetRegistery: "EditorAssetRegistery.gartar"
   ScriptDirectory: "Scripts/Binaries/Sandbox.dll"

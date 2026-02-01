@@ -28,7 +28,7 @@ namespace Gart
 		void NewProject();
 		void SaveProject();
 
-		void OpenScene(const std::filesystem::path& filepath);
+		void OpenScene(AssetHandle handle);
 		void NewScene();
 		void SaveScene();
 

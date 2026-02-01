@@ -2,6 +2,7 @@
 #include "SceneHeirarchyPanel.h"
 #include "Scene/Components.h"
 #include "Scripting/ScriptEngine.h"
+#include "Asset/AssetManager.h"
 #include  "imgui.h"
 #include "Core/Log.h"
 #include "UI/UI.h"
@@ -392,16 +393,51 @@ namespace Gart
 		DrawComponent<SpriteRenderer>("Sprite Renderer", true, entity, [](auto& component)
 		{
 				ImGui::ColorEdit4("Color", glm::value_ptr(component.Color));
-				ImGui::Button("Texture",ImVec2(100.0f,0.0f));
+				std::string l_TextureLable = "None";
+				bool IsTexture = false;
+				if (component.Texture != 0)
+				{
+					if (AssetManager::IsValidHandle(component.Texture) && AssetManager::GetAssetType(component.Texture) == AssetType::Texture2D)
+					{
+						AssetMetaData metadata = Project::GetActiveProject()->GetEditorAssetManager()->GetMetaData(component.Texture);
+						l_TextureLable = metadata.filePath.filename().string();
+						IsTexture = true;
+					}
+					else
+					{
+						l_TextureLable = "Invalid";
+					}
+				}
+
+				ImVec2 TextureButtonSize = ImGui::CalcTextSize(l_TextureLable.c_str());
+				TextureButtonSize.x += 20.0f;
+				float TextureButtonWidth = glm::max<float>(100.0f, TextureButtonSize.x);
+				ImGui::Button(l_TextureLable.c_str(), ImVec2(TextureButtonWidth, 0.0f));
+				
+				if (IsTexture)
+				{
+					ImVec2 xButtonLabelSize = ImGui::CalcTextSize("X");
+					float xButtonSize = xButtonLabelSize.y + ImGui::GetStyle().FramePadding.y * 2.0f;
+					ImGui::SameLine();
+					if (ImGui::Button("X", ImVec2(xButtonSize, xButtonSize)))
+					{
+						component.Texture = 0;
+					}
+				}
+				ImGui::SameLine();
+				ImGui::Text("Texture");
 
 				if (ImGui::BeginDragDropTarget())
 				{
 					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
 					{
-						const wchar_t* path = (const wchar_t*)payload->Data;
-						std::filesystem::path texturePath = std::filesystem::path(path);
-						BSS_CORE_INFO(texturePath);
-						component.Texture = Texture2D::Create(texturePath.string());
+						
+						AssetHandle handle = *(AssetHandle*)payload->Data;
+						
+						if (AssetManager::GetAssetType(handle) == AssetType::Texture2D)
+						{
+							component.Texture = handle;
+						}
 					}
 					ImGui::EndDragDropTarget();
 				}

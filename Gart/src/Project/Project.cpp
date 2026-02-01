@@ -17,6 +17,9 @@ namespace Gart
 		{
 			project->m_ProjectDirctory = filepath.parent_path();
 			m_ActiveProject = project;
+			Ref<EditorAssetManager> l_editorAssetManager = std::make_shared<EditorAssetManager>();
+			m_ActiveProject->m_Assetmanager = l_editorAssetManager;
+			l_editorAssetManager->DeserializeAssetRegistery();
 			return m_ActiveProject;
 		}
 

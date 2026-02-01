@@ -55,7 +55,7 @@ namespace Gart
 	struct SpriteRenderer
 	{
 		glm::vec4 Color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-		Ref<Texture2D> Texture;
+		AssetHandle Texture = 0;
 		float TillingFactor = 1.0f;
 
 		SpriteRenderer() = default;
