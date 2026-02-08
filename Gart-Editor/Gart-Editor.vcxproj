@@ -139,12 +139,14 @@
     <ClInclude Include="src\EditorLayer.h" />
     <ClInclude Include="src\Panel\ContentBrowserPanel.h" />
     <ClInclude Include="src\Panel\SceneHeirarchyPanel.h" />
+    <ClInclude Include="src\Panel\ThumbnailCache.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\EditorLayer.cpp" />
     <ClCompile Include="src\GartEditorApp.cpp" />
     <ClCompile Include="src\Panel\ContentBrowserPanel.cpp" />
     <ClCompile Include="src\Panel\SceneHeirarchyPanel.cpp" />
+    <ClCompile Include="src\Panel\ThumbnailCache.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Gart\Gart.vcxproj">

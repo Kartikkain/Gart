@@ -13,6 +13,7 @@
     <ClInclude Include="src\Panel\SceneHeirarchyPanel.h">
       <Filter>Panel</Filter>
     </ClInclude>
+    <ClInclude Include="src\Panel\ThumbnailCache.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\EditorLayer.cpp" />
@@ -23,5 +24,6 @@
     <ClCompile Include="src\Panel\SceneHeirarchyPanel.cpp">
       <Filter>Panel</Filter>
     </ClCompile>
+    <ClCompile Include="src\Panel\ThumbnailCache.cpp" />
   </ItemGroup>
 </Project>

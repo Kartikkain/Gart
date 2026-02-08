@@ -3,6 +3,7 @@
 #include <filesystem>
 #include <map>
 #include "Renderer/Texture.h"
+#include "ThumbnailCache.h"
 
 namespace Gart
 {
@@ -46,6 +47,7 @@ namespace Gart
 			}
 		};
 
+		Ref<ThumbnailCache> m_ThumbanailCache;
 
 		std::vector<TreeNode> m_TreeNodes;
 

@@ -16,6 +16,8 @@ namespace Gart
 		m_DirectoryIcon = TextureImpoter::LoadTexture2D("Resources/Icons/ContentBrowser/DirectoryIcon.png");
 		m_FileIcon = TextureImpoter::LoadTexture2D("Resources/Icons/ContentBrowser/FileIcon.png");
 		
+		m_ThumbanailCache = std::make_shared<ThumbnailCache>();
+
 		RefreshAssetTree();
 
 		m_Mode = Mode::Asset;
@@ -82,6 +84,13 @@ namespace Gart
 				ImGui::PushID(itemStr.c_str());
 				Ref<Texture2D> icon;
 				icon = IsDirectory? m_DirectoryIcon : m_FileIcon;
+				if (!IsDirectory)
+				{
+					std::filesystem::path l_relPath = std::filesystem::relative(m_currentDirectory, Project::GetActiveProject()->GetAssetDirectory()) / item;
+					Ref<Texture2D> l_thumbanil = m_ThumbanailCache->GetorCreateCachedImage(l_relPath);
+					if (l_thumbanil)
+						icon = l_thumbanil;
+				}
 				ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
 				ImGui::ImageButton((ImTextureID)icon->GetRenderID(), { thumbnailSize,thumbnailSize }, { 0,1 }, { 1,0 });
 
@@ -154,6 +163,13 @@ namespace Gart
 				}*/
 
 				icon = directoryEntry.is_directory() ? m_DirectoryIcon : m_FileIcon;
+				if (!directoryEntry.is_directory())
+				{
+					std::filesystem::path rel = std::filesystem::relative(path, Project::GetActiveProject()->GetAssetDirectory());
+					Ref<Texture2D> l_thumbnail = m_ThumbanailCache->GetorCreateCachedImage(rel);
+					if (l_thumbnail)
+						icon = l_thumbnail;
+				}
 				ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
 				ImGui::ImageButton((ImTextureID)icon->GetRenderID(), { thumbnailSize,thumbnailSize }, { 0,1 }, { 1,0 });
 				// --> End Show Thumbnails <-- //
